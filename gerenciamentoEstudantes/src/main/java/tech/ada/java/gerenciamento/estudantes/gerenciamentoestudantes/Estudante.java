@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "alunos")
-public class Aluno {
+public class Estudante {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,10 +12,9 @@ public class Aluno {
     //Matricula * Chave primária - auto-incrementado
     private Long id;
     private String nomeAluno;
-
-    private String email;
+    private String nomeResponsavel;
     private String dataNascimento;
-    private String numeroTelefone;
+    private String contatoResponsavel;
 
     // Getters and setters
 }

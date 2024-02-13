@@ -3,16 +3,16 @@ package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "cursos")
-public class Curso {
+@Table(name = "turmas")
+public class Turma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     //Chave primária - auto-incrementar
     private Long id;
-    private String nomeCurso;
-    private String nomeProfessor;
+    private String idTurma;
+    private String listaIdEstudantes;
 
     // Getters and setters
 }
