@@ -8,11 +8,11 @@
         <version>3.2.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>tech.ada.java.gerenciamento.estudantes</groupId>
-    <artifactId>gerenciamentoEstudantes</artifactId>
+    <groupId>tech.ada.java</groupId>
+    <artifactId>todolist</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>gerenciamentoEstudantes</name>
-    <description>gerenciamentoEstudantes</description>
+    <name>todolist</name>
+    <description>todolist</description>
     <properties>
         <java.version>21</java.version>
     </properties>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>runtime</scope>git
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -43,9 +43,14 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
