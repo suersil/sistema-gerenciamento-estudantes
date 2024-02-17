@@ -8,10 +8,10 @@ public class Turma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     //Chave primária - auto-incrementar
     private Long id;
-    private String idTurma;
+    private String nomeTurma;
+    private boolean ativa;
     private String listaIdEstudantes;
 
     // Getters and setters

@@ -3,18 +3,14 @@ package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "alunos")
-public class Estudante {
+@Table(name = "usuario")
 
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //Matricula * Chave primária - auto-incrementado
     private Long id;
-    private boolean ativo;
-    private String nomeAluno;
-    private String nomeResponsavel;
-    private String dataNascimento;
-    private String contatoResponsavel;
-
-    // Getters and setters
+    private String username;
+    private String password;
+    
 }

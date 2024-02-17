@@ -8,10 +8,10 @@ import jakarta.persistence.*;
 public class Professor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     //Chave Primária
     private Long id;
     private String nomeProfessor;
+    private String email;
     private String disciplinaLecionada;
 
 }
