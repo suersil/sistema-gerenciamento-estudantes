@@ -4,12 +4,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarProfessorRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.ProfessorRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
+
+import java.util.List;
+import java.util.Optional;
 
 // TODO: 18/02/24 cadastrarProfessor()
 // TODO: 18/02/24 listarTodos()
@@ -40,4 +42,31 @@ public class ControllerProfessor {
         return ResponseEntity.status(HttpStatus.CREATED).body(novoProfessor).getBody();
 
     }
+
+    @GetMapping("/professor")
+    public List<Professor> listarTodos() {
+        List<Professor> listarProfessores = repositorioProfessor.findAll();
+        return listarProfessores;
+    }
+
+    @PutMapping("/professor/{id}")
+    public ResponseEntity<Professor> editarProfessor(@PathVariable("id") Long id, @RequestBody AtualizarProfessorRequest atualizarProfessorRequest) throws Exception {
+        Optional<Professor> optionalProfessor = repositorioProfessor.findById(id);
+
+        if (optionalProfessor.isPresent()) {
+            Professor professorExistente = optionalProfessor.get();
+
+            professorExistente.setNomeProfessor(atualizarProfessorRequest.nomeProfessor());
+            professorExistente.setEmail(atualizarProfessorRequest.email());
+            professorExistente.setDisciplinaLecionada(atualizarProfessorRequest.disciplinaLecionada());
+
+            Professor professorSalvo = repositorioProfessor.save(professorExistente);
+
+            return ResponseEntity.ok(professorSalvo);
+        }
+        else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
