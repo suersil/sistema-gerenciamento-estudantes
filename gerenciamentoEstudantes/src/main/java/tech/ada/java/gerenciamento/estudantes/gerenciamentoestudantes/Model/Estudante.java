@@ -1,10 +1,7 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -17,7 +14,6 @@ public class Estudante {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //Matricula * Chave primária - auto-incrementado
     private Long id;
     private boolean ativo;
     private String nomeAluno;
@@ -29,5 +25,13 @@ public class Estudante {
     public Estudante(){
         this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
         this.ativo= true;
+    }
+    
+    public Estudante(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {
+        this.nomeAluno = nomeAluno;
+        this.nomeResponsavel = nomeResponsavel;
+        this.dataNascimento = dataNascimento;
+        this.contatoResponsavel = contatoResponsavel;
+        System.out.println("usou");
     }
 }
