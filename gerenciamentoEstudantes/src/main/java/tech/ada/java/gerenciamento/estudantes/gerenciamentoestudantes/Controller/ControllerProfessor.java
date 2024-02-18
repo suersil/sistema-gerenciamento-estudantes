@@ -32,21 +32,21 @@ public class ControllerProfessor {
     }
 
     @PostMapping("/professor")
-    public Professor cadastrarProfessor(@RequestBody ProfessorRequest professorRequest) {
+    public ResponseEntity<Professor> cadastrarProfessor(@RequestBody ProfessorRequest professorRequest) {
 
         //converter a request que chegou no body para uma entidade Professor
         Professor professorConvertido = modelMapper.map(professorRequest, Professor.class);
 
         Professor novoProfessor = repositorioProfessor.save(professorConvertido);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoProfessor).getBody();
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoProfessor);
 
     }
 
     @GetMapping("/professor")
-    public List<Professor> listarTodos() {
+    public ResponseEntity<List<Professor>> listarTodos() {
         List<Professor> listarProfessores = repositorioProfessor.findAll();
-        return listarProfessores;
+        return ResponseEntity.status(HttpStatus.OK).body(listarProfessores);
     }
 
     @PutMapping("/professor/{id}")
