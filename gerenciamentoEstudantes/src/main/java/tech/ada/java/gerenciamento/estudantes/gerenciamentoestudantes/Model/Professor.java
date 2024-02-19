@@ -17,15 +17,17 @@ public class Professor {
     private String nomeProfessor;
     private String email;
     private String disciplinaLecionada;
+    private Boolean estaAtivo;
 
     //apagar quando o modelmapper funcionar
     public Professor() {
     }
 
-    public Professor(String nomeProfessor, String email, String disciplinaLecionada) {
+    public Professor(String nomeProfessor, String email, String disciplinaLecionada, Boolean estaAtivo) {
         this.nomeProfessor = nomeProfessor;
         this.email = email;
         this.disciplinaLecionada = disciplinaLecionada;
+        this.estaAtivo = estaAtivo;
     }
 
 }
