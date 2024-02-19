@@ -52,7 +52,6 @@ public class ControllerEstudante {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
     }
 
-
     @PutMapping("/estudante/{id}") //AtualizandoTudo
     public ResponseEntity<Estudante> editarEstudante
             (@PathVariable("id") Long id, @RequestBody AtualizarEstudanteRequest atualizarEstudante) throws Exception {
