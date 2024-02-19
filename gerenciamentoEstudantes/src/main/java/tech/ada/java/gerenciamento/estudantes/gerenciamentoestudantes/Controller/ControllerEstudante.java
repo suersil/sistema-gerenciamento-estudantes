@@ -57,7 +57,7 @@ public class ControllerEstudante {
      */
     @GetMapping(value= "/estudante", params = {"nomeAluno"})
     public ResponseEntity<List<Estudante>> filtrarEstudanteNome (@RequestParam String nomeAluno) {
-        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAlunoQuery(nomeAluno));
+        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAluno(nomeAluno));
     }
 
     @PutMapping("/estudante/{id}") //AtualizandoTudo
