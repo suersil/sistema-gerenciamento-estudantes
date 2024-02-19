@@ -31,7 +31,7 @@ public class ControllerEstudante {
     public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request) {
         
         Estudante estudante = modelMapper.map(request, Estudante.class);
-       
+        estudante.setDataDeCadastro(LocalDateTime.now(ZoneId.of("UTC")));
         Estudante novoEstudante = repositorioEstudante.save(estudante);
         
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante);
@@ -42,14 +42,22 @@ public class ControllerEstudante {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
     }
 
-    //By ID
+    /**
+     * Método para filtrar um estudante pelo ID.
+     */
+    @GetMapping(value= "/estudante", params = {"id"})
+    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId (@RequestParam Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
+    }
+
+
     @PutMapping("/estudante/{id}") //AtualizandoTudo
     public ResponseEntity<Estudante> editarEstudante
             (@PathVariable("id") Long id, @RequestBody AtualizarEstudanteRequest atualizarEstudante) throws Exception {
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
 
         //Primeiro checar cadastro existente
-        if (optionalEstudante.isPresent()) {
+        if (!optionalEstudante.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -61,7 +69,7 @@ public class ControllerEstudante {
             estudanteExistente.setDataNascimento(atualizarEstudante.dataNascimento());
             estudanteExistente.setNomeResponsavel(atualizarEstudante.nomeResponsavel());
             estudanteExistente.setContatoResponsavel(atualizarEstudante.contatoResponsavel());
-            //estudanteExistente.setDataAtualizacaoCadastro(LocalDateTime.now());
+            estudanteExistente.setDataAtualizacaoCadastro(LocalDateTime.now(ZoneId.of("UTC")));
 
             Estudante estudanteSalvo = repositorioEstudante.save(estudanteExistente);
 
@@ -91,7 +99,7 @@ public class ControllerEstudante {
             return ResponseEntity.ok(estudanteSalvo);
         }
 
-            // Caso nao encontramos na valor no Optional retornamos o codigo 404 - nao encontrado
+            //Retornar o codigo 404 - nao encontrado
             return ResponseEntity.notFound().build();
     }
 }

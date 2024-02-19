@@ -12,6 +12,5 @@ public record AtualizarEstudanteRequest
         this.dataNascimento = Objects.requireNonNull(dataNascimento, "Data de nascimento do aluno é necessário");
         this.nomeResponsavel = Objects.requireNonNull(nomeResponsavel, "Nome do responsável é necessário");
         this.contatoResponsavel = Objects.requireNonNull(contatoResponsavel, "Contato do responsável é necessário");
-       // this.dataAtualizacaoCadastro = Objects.requireNonNull(dataAtualizacaoCadastro);
     }
 }
