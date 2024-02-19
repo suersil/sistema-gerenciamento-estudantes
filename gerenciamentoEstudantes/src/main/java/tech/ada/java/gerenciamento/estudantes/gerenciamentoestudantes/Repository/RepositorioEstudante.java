@@ -6,5 +6,4 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estu
 
 @Repository
 public interface RepositorioEstudante extends JpaRepository<Estudante, Long> {
-
 }

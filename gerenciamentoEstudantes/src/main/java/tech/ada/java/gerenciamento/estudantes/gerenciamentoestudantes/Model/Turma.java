@@ -11,7 +11,7 @@ public class Turma {
     //Chave primária - auto-incrementar
     private Long id;
     private String nomeTurma;
-    private Boolean estaAtiva;
+    private boolean ativa;
     private String listaIdEstudantes;
 
     // Getters and setters
