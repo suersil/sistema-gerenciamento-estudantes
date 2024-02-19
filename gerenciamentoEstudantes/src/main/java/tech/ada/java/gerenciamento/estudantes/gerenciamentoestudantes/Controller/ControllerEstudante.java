@@ -48,7 +48,7 @@ public class ControllerEstudante {
      * Método para filtrar um estudante pelo ID.
      */
     @GetMapping(value= "/estudante", params = {"id"})
-    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId (@RequestParam Long id)   {
+    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId (@RequestParam Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
     }
 
