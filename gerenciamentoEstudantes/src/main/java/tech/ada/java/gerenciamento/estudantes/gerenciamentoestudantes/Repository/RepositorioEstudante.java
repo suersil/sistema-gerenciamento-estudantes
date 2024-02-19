@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
 
 @Repository
-public interface RepositorioEstudante extends JpaRepository<Estudante, Long> {
+public interface RepositorioEstudante extends JpaRepository <Estudante, Long> {
 
 }
