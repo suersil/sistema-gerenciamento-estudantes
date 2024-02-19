@@ -15,7 +15,7 @@ public class Estudante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private boolean ativo;
+    private Boolean estaAtivo;
     private String nomeAluno;
     private String nomeResponsavel;
     private String dataNascimento;
@@ -24,7 +24,7 @@ public class Estudante {
     
     public Estudante(){
         this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
-        this.ativo= true;
+        this.estaAtivo = true;
     }
     
     public Estudante(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {

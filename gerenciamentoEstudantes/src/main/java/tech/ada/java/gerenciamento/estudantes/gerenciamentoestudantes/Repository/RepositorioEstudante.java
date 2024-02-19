@@ -4,7 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
 
+import java.util.List;
+
 @Repository
 public interface RepositorioEstudante extends JpaRepository<Estudante, Long> {
 
+    public List<Estudante> findEstudantesByEstaAtivo(Boolean status);
 }

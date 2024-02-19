@@ -6,12 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 
 
@@ -43,5 +41,24 @@ public class ControllerEstudante {
     @GetMapping("/estudante")
     public ResponseEntity<List<Estudante>>listarTodosEstudantes(){
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
+    }
+
+    @GetMapping(value = "/estudantes", params = "status")
+    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status){
+        List<Estudante> statusEstudantesFiltrados;
+
+        if(status){
+            statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(true);
+        }else{
+            statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(false);
+        }
+
+        if(!statusEstudantesFiltrados.isEmpty()){
+            return ResponseEntity.status(HttpStatus.OK).body(statusEstudantesFiltrados);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+
     }
 }
