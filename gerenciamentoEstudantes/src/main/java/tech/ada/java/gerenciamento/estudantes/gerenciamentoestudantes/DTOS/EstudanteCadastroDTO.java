@@ -1,21 +1,20 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
 public class EstudanteCadastroDTO {
     
-    @NotBlank
+    @NotBlank(message = "o nome do aluno é obrigatório")
     private String nomeAluno;
+    
     @NotBlank
     private String nomeResponsavel;
+    
     @NotBlank
     private String dataNascimento;
- 
+    
+    @NotBlank
     private String contatoResponsavel;
+
 }

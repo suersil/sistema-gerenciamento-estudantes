@@ -16,5 +16,4 @@ public class GerenciamentoEstudantesApplication {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-
 }

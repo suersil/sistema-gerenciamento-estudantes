@@ -1,20 +1,22 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.*;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
+@Validated
 @RestController("estudante")
 public class ControllerEstudante {
     
@@ -46,7 +48,7 @@ public class ControllerEstudante {
      * Método para filtrar um estudante pelo ID.
      */
     @GetMapping(value= "/estudante", params = {"id"})
-    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId (@RequestParam Long id){
+    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId (@RequestParam Long id)   {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
     }
 
