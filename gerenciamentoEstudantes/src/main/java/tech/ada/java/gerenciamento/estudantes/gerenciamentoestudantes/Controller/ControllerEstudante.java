@@ -1,9 +1,11 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,11 +14,10 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.Estud
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 
-import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+
 import java.util.List;
 
+@Validated
 @RestController("estudante")
 public class ControllerEstudante {
     
@@ -30,10 +31,10 @@ public class ControllerEstudante {
     }
     
     @PostMapping("/estudante")
-    public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request) {
+    public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request){
         
         Estudante estudante = modelMapper.map(request, Estudante.class);
-       
+     
         Estudante novoEstudante = repositorioEstudante.save(estudante);
         
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante);
