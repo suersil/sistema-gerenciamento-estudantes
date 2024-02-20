@@ -23,6 +23,8 @@ public class Estudante {
     private LocalDateTime dataDeCadastro;
     private LocalDateTime dataAtualizacaoCadastro;
 
+    //Turma turma;
+
     public Estudante(){
         this.ativo= false;
     }
