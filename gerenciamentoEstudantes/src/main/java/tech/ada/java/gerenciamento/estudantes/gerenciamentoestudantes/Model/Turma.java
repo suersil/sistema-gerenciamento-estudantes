@@ -14,17 +14,17 @@ public class Turma {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nomeTurma;
-    private boolean turmaAtiva;
+    private Boolean estaAtiva;
 //    private String listaIdEstudantes;
 //    private String listaIdProfessores;
 
 
-    public Turma(String nomeTurma, boolean turmaAtiva) {
+    public Turma(String nomeTurma, boolean estaAtiva) {
         this.nomeTurma = nomeTurma;
-        this.turmaAtiva = turmaAtiva;
+        this.estaAtiva = estaAtiva;
     }
 
     public Turma() {
-        this.turmaAtiva = false;
+        this.estaAtiva = false;
     }
 }

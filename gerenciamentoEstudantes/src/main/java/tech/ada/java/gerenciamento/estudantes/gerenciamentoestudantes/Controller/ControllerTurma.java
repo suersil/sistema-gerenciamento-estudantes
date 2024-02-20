@@ -11,7 +11,6 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turm
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.TurmaRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +53,7 @@ public class ControllerTurma {
         Optional<Turma> optionalTurma = turmaRepositorio.findById(id);
         if(optionalTurma.isPresent()) {
             Turma turmaModificada = optionalTurma.get();
-            if(request.turmaAtiva() != null) turmaModificada.setTurmaAtiva(request.turmaAtiva());
+            if(request.turmaAtiva() != null) turmaModificada.setEstaAtiva(request.turmaAtiva());
             if(request.nomeTurma() != null) turmaModificada.setNomeTurma(request.nomeTurma());
             Turma turmaSalva =  turmaRepositorio.save(turmaModificada);
             return ResponseEntity.ok(turmaSalva);
@@ -71,12 +70,29 @@ public class ControllerTurma {
         Optional<Turma> optionalTurma = turmaRepositorio.findById(id);
         if(optionalTurma.isPresent()) {
             Turma turmaModificada = optionalTurma.get();
-            turmaModificada.setTurmaAtiva(request.turmaAtiva());
+            turmaModificada.setEstaAtiva(request.turmaAtiva());
             turmaModificada.setNomeTurma(request.nomeTurma());
             Turma turmaSalva = turmaRepositorio.save(turmaModificada);
             return ResponseEntity.ok(turmaSalva);
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping(value = "/turmas", params = "estaAtiva")
+    public ResponseEntity<List<Turma>> filtrarStatusTurma(@RequestParam Boolean estaAtiva){
+        List<Turma> statusTurmaFiltrada;
+
+        if(estaAtiva){
+            statusTurmaFiltrada = turmaRepositorio.findTurmaByEstaAtiva(true);
+        }else{
+            statusTurmaFiltrada = turmaRepositorio.findTurmaByEstaAtiva(false);
+        }
+
+        if(!statusTurmaFiltrada.isEmpty()){
+            return ResponseEntity.status(HttpStatus.OK).body(statusTurmaFiltrada);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }
