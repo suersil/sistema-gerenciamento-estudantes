@@ -17,7 +17,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository
 
 import java.util.List;
 
-@Validated
+
 @RestController("estudante")
 public class ControllerEstudante {
     
@@ -31,11 +31,12 @@ public class ControllerEstudante {
     }
     
     @PostMapping("/estudante")
-    public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request){
+    public ResponseEntity<Estudante> cadastrarEstudante( @RequestBody  @Valid
+                                        EstudanteCadastroDTO request){
         
         Estudante estudante = modelMapper.map(request, Estudante.class);
      
-        Estudante novoEstudante = repositorioEstudante.save(estudante);
+        Estudante novoEstudante= repositorioEstudante.save(estudante);
         
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante);
     }

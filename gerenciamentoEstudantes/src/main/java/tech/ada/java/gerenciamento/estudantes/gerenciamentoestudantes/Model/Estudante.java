@@ -25,6 +25,7 @@ public class Estudante {
     public Estudante(){
         this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
         this.ativo= true;
+       
     }
     
     public Estudante(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {
@@ -32,6 +33,6 @@ public class Estudante {
         this.nomeResponsavel = nomeResponsavel;
         this.dataNascimento = dataNascimento;
         this.contatoResponsavel = contatoResponsavel;
-        System.out.println("usou");
     }
+    
 }
