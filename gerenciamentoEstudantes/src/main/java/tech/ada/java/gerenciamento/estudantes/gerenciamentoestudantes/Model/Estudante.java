@@ -26,6 +26,7 @@ public class Estudante {
     //Turma turma;
 
     public Estudante(){
+
         this.ativo= false;
     }
 
@@ -37,13 +38,12 @@ public class Estudante {
         this.nomeResponsavel = nomeResponsavel;
         this.contatoResponsavel = contatoResponsavel;
         this.dataAtualizacaoCadastro = LocalDateTime.now(ZoneId.of("UTC"));
+
+        this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
+        this.ativo= true;
+       
+
     }
     
-    public Estudante(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {
-        this.nomeAluno = nomeAluno;
-        this.nomeResponsavel = nomeResponsavel;
-        this.dataNascimento = dataNascimento;
-        this.contatoResponsavel = contatoResponsavel;
-        System.out.println("usou");
-    }
+    
 }
