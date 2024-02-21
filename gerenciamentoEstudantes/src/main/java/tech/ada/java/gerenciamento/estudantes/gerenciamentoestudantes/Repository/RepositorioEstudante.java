@@ -12,6 +12,10 @@ public interface RepositorioEstudante extends JpaRepository <Estudante, Long> {
 
     List<Estudante> findByNomeAluno(String nomeAluno);
 
+
+    public List<Estudante> findEstudantesByEstaAtivo(Boolean status);
+
     @Query("SELECT e FROM Estudante e WHERE e.nomeAluno = ?1")
     List<Estudante> findByNomeAlunoQuery(String nomeAluno);
+
 }

@@ -15,7 +15,7 @@ public class Estudante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private boolean ativo;
+    private Boolean estaAtivo;
     private String nomeAluno;
     private String dataNascimento;
     private String nomeResponsavel;
@@ -27,7 +27,10 @@ public class Estudante {
 
     public Estudante(){
 
+        this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
+        this.estaAtivo = true;
         this.ativo= false;
+
     }
 
     //Editando dados cadastrados
