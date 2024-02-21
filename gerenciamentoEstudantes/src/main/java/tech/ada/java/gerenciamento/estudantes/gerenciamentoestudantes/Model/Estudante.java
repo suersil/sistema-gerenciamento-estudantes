@@ -29,13 +29,13 @@ public class Estudante {
 
         this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
         this.estaAtivo = true;
-        this.ativo= false;
+        this.estaAtivo= false;
 
     }
 
     //Editando dados cadastrados
     public Estudante(boolean ativo, String nomeAluno, String dataNascimento, String nomeResponsavel, String contatoResponsavel){
-        this.ativo = ativo;
+        this.estaAtivo = ativo;
         this.nomeAluno = nomeAluno;
         this.dataNascimento = dataNascimento;
         this.nomeResponsavel = nomeResponsavel;
@@ -43,10 +43,12 @@ public class Estudante {
         this.dataAtualizacaoCadastro = LocalDateTime.now(ZoneId.of("UTC"));
 
         this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
-        this.ativo= true;
+        this.estaAtivo= true;
        
 
     }
     
     
+    public void setAtivo(boolean ativo) {
+    }
 }
