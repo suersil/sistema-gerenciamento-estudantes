@@ -7,8 +7,8 @@ import java.time.LocalDate;
 @Getter
 public class TurmaRequest {
     private String nomeTurma;
-    private boolean turmaAtiva;
+    private Boolean estaAtiva;
     public Turma toEntity() {
-        return new Turma(nomeTurma, turmaAtiva);
+        return new Turma(nomeTurma, estaAtiva);
     }
 }

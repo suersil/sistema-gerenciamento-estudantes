@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Setter
 @Getter
@@ -14,17 +16,24 @@ public class Turma {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nomeTurma;
-    private boolean turmaAtiva;
+
+    private Boolean estaAtiva;
 //    private String listaIdEstudantes;
 //    private String listaIdProfessores;
 
+    private boolean turmaAtiva;
 
-    public Turma(String nomeTurma, boolean turmaAtiva) {
+//    private List<Estudante> listaEstudantes;
+//    private List<Professor> listaProfessores;
+
+
+
+    public Turma(String nomeTurma, boolean estaAtiva) {
         this.nomeTurma = nomeTurma;
-        this.turmaAtiva = turmaAtiva;
+        this.estaAtiva = estaAtiva;
     }
 
     public Turma() {
-        this.turmaAtiva = false;
+        this.estaAtiva = false;
     }
 }
