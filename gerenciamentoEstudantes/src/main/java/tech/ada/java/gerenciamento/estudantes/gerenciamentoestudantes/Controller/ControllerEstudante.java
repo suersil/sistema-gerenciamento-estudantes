@@ -56,11 +56,11 @@ public class ControllerEstudante {
     }
     
     
-    @GetMapping(value = "/estudantes", params = "status")
-    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
+    @GetMapping(value = "/estudantes", params = "estaAtiva")
+    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean estaAtiva) {
         List<Estudante> statusEstudantesFiltrados;
         
-        if (status) {
+        if (estaAtiva) {
             statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(true);
         } else {
             statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(false);
@@ -101,7 +101,7 @@ public class ControllerEstudante {
         // Se existir vamos fazer o get(by ID)
         Estudante estudanteExistente = optionalEstudante.get();
         
-        estudanteExistente.setAtivo(atualizarEstudante.ativo());
+        estudanteExistente.setEstaAtivo(atualizarEstudante.estaAtivo());
         estudanteExistente.setNomeAluno(atualizarEstudante.nomeAluno());
         estudanteExistente.setDataNascimento(atualizarEstudante.dataNascimento());
         estudanteExistente.setNomeResponsavel(atualizarEstudante.nomeResponsavel());
@@ -112,33 +112,37 @@ public class ControllerEstudante {
         
         return ResponseEntity.ok(estudanteSalvo);
     }
-    
+
     @PatchMapping("/estudante/{id}") //Status Request e outros
     public ResponseEntity<Estudante> alteraStatus(
             @PathVariable Long id,
-            @RequestBody EstudanteStatusRequest request) throws Exception {
-        // Buscar pelo metodo findById que retorna um Optional<TodoItem>
-        Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
-        
-        // Verificamos se existe valor dentro do Optional
-        if (optionalEstudante.isPresent()) {
-            // Se existir - fazer o get()
-            Estudante estudanteItemModificado = optionalEstudante.get();
-            // verificamos se um das tres variaveis que esperamos foi passada para ser atualizada
-            if (request.ativo()) estudanteItemModificado.setAtivo(request.ativo());
-            if (request.nomeAluno() != null) estudanteItemModificado.setNomeAluno(request.nomeAluno());
-            if (request.nomeResponsavel() != null)
-                estudanteItemModificado.setNomeResponsavel(request.nomeResponsavel());
-            if (request.contatoResponsavel() != null)
-                estudanteItemModificado.setContatoResponsavel(request.contatoResponsavel());
-            
-            //Depois de atualizar - vamos salvar
-            Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado);
-            return ResponseEntity.ok(estudanteSalvo);
+            @RequestBody EstudanteStatusRequest request) {
+        try {
+            Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
+
+            if (optionalEstudante.isPresent()) {
+                Estudante estudanteItemModificado = optionalEstudante.get();
+
+                if (request.estaAtivo() != null) {
+                    estudanteItemModificado.setEstaAtivo(request.estaAtivo());
+                }
+                if (request.nomeAluno() != null && !request.nomeAluno().isEmpty()) {
+                    estudanteItemModificado.setNomeAluno(request.nomeAluno());
+                }
+                if (request.nomeResponsavel() != null && !request.nomeResponsavel().isEmpty()) {
+                    estudanteItemModificado.setNomeResponsavel(request.nomeResponsavel());
+                }
+                if (request.contatoResponsavel() != null && !request.contatoResponsavel().isEmpty()) {
+                    estudanteItemModificado.setContatoResponsavel(request.contatoResponsavel());
+                }
+
+                Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado);
+                return ResponseEntity.ok(estudanteSalvo);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        
-        //Retornar o codigo 404 - nao encontrado
-        return ResponseEntity.notFound().build();
-        
     }
 }
