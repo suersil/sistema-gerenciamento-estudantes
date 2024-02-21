@@ -24,7 +24,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
-
+@Validated
 @RestController("estudante")
 public class ControllerEstudante {
     
@@ -36,14 +36,17 @@ public class ControllerEstudante {
         this.repositorioEstudante = repositorioEstudante;
         this.modelMapper = modelMapper;
     }
-    
     @PostMapping("/estudante")
-    public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request) {
+    public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request)
+    throws Exception{
         
         Estudante estudante = modelMapper.map(request, Estudante.class);
-        estudante.setDataDeCadastro(LocalDateTime.now(ZoneId.of("UTC")));
-        Estudante novoEstudante = repositorioEstudante.save(estudante);
         
+        estudante.setDataDeCadastro(LocalDateTime.now(ZoneId.of("UTC")));
+        estudante.setEstaAtivo(false);
+        estudante.setDataAtualizacaoCadastro(LocalDateTime.now(ZoneId.of("UTC")));
+       
+        Estudante novoEstudante = repositorioEstudante.save(estudante);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante);
     }
     
@@ -73,6 +76,7 @@ public class ControllerEstudante {
         }
     }
     
+    
     /**
      * Método para filtrar um estudante pelo ID.
      */
@@ -101,13 +105,13 @@ public class ControllerEstudante {
         // Se existir vamos fazer o get(by ID)
         Estudante estudanteExistente = optionalEstudante.get();
         
-        estudanteExistente.setAtivo(atualizarEstudante.ativo());
+        estudanteExistente.setEstaAtivo(atualizarEstudante.estaAtivo());
         estudanteExistente.setNomeAluno(atualizarEstudante.nomeAluno());
         estudanteExistente.setDataNascimento(atualizarEstudante.dataNascimento());
         estudanteExistente.setNomeResponsavel(atualizarEstudante.nomeResponsavel());
         estudanteExistente.setContatoResponsavel(atualizarEstudante.contatoResponsavel());
         estudanteExistente.setDataAtualizacaoCadastro(LocalDateTime.now(ZoneId.of("UTC")));
-        
+        estudanteExistente.setDataDeCadastro(estudanteExistente.getDataDeCadastro());
         Estudante estudanteSalvo = repositorioEstudante.save(estudanteExistente);
         
         return ResponseEntity.ok(estudanteSalvo);
@@ -125,7 +129,7 @@ public class ControllerEstudante {
             // Se existir - fazer o get()
             Estudante estudanteItemModificado = optionalEstudante.get();
             // verificamos se um das tres variaveis que esperamos foi passada para ser atualizada
-            if (request.ativo()) estudanteItemModificado.setAtivo(request.ativo());
+            if (request.estaAtivo()) estudanteItemModificado.setEstaAtivo(request.estaAtivo());
             if (request.nomeAluno() != null) estudanteItemModificado.setNomeAluno(request.nomeAluno());
             if (request.nomeResponsavel() != null)
                 estudanteItemModificado.setNomeResponsavel(request.nomeResponsavel());

@@ -4,5 +4,5 @@ import lombok.Getter;
 import lombok.Setter;
 
 public record EstudanteStatusRequest
-        (boolean ativo, String nomeAluno, String nomeResponsavel, String contatoResponsavel){ }
+        (boolean estaAtivo, String nomeAluno, String nomeResponsavel, String contatoResponsavel){ }
 

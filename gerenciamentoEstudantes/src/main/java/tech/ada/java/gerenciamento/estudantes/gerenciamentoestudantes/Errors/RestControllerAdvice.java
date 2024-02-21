@@ -17,7 +17,7 @@ import java.util.Map;
 @ControllerAdvice
 public class RestControllerAdvice {
     
-   /* @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exceptionHandler(Exception ex){
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         
@@ -29,6 +29,6 @@ public class RestControllerAdvice {
     public class ErrorResponse {
         private HttpStatus status;
         private String message;
-    }*/
+    }
     
 }

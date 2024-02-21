@@ -1,24 +1,14 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS;
 
-import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Objects;
 
-@Setter
-@Getter
-public class EstudanteCadastroDTO {
+public record EstudanteCadastroDTO
+        (String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {
     
-    @NotBlank(message = "informe o nome do aluno")
-    private String nomeAluno;
-    
-    @NotBlank
-    private String nomeResponsavel;
-    
-    @NotBlank
-    private String dataNascimento;
-    
-    @NotBlank
-    private String contatoResponsavel;
-    
- 
+    public EstudanteCadastroDTO(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {
+        this.nomeAluno = Objects.requireNonNull(nomeAluno, "Informe o nome do aluno");
+        this.nomeResponsavel = Objects.requireNonNull(nomeResponsavel, "Informe o nome do responsável");
+        this.dataNascimento = Objects.requireNonNull(dataNascimento, "Informe a data de nascimento");
+        this.contatoResponsavel = Objects.requireNonNull(contatoResponsavel, "Informe o contato do responsável");
+    }
 }

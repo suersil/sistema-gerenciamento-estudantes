@@ -9,6 +9,8 @@ import java.time.ZoneId;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "alunos")
 public class Estudante {
 
@@ -24,31 +26,25 @@ public class Estudante {
     private LocalDateTime dataAtualizacaoCadastro;
 
     //Turma turma;
-
-    public Estudante(){
-
-        this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
-        this.estaAtivo = true;
-        this.estaAtivo= false;
-
+    
+    
+    public Estudante(Boolean estaAtivo) {
+        this.estaAtivo = false;
     }
-
+    
     //Editando dados cadastrados
-    public Estudante(boolean ativo, String nomeAluno, String dataNascimento, String nomeResponsavel, String contatoResponsavel){
-        this.estaAtivo = ativo;
+    public Estudante(boolean estaAtivo, String nomeAluno, String dataNascimento, String nomeResponsavel,
+                     String contatoResponsavel){
+        this.estaAtivo = true ;
         this.nomeAluno = nomeAluno;
         this.dataNascimento = dataNascimento;
         this.nomeResponsavel = nomeResponsavel;
         this.contatoResponsavel = contatoResponsavel;
         this.dataAtualizacaoCadastro = LocalDateTime.now(ZoneId.of("UTC"));
-
         this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
-        this.estaAtivo= true;
        
 
     }
     
     
-    public void setAtivo(boolean ativo) {
-    }
 }
