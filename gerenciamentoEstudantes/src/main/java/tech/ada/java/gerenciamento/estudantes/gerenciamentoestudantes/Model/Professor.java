@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -17,6 +19,8 @@ public class Professor {
     private String nomeProfessor;
     private String email;
     private String disciplinaLecionada;
+
+    //private List<Turma> listaTurmas;
 
     //apagar quando o modelmapper funcionar
     public Professor() {
