@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Setter
 @Getter
@@ -15,8 +17,9 @@ public class Turma {
     private Long id;
     private String nomeTurma;
     private boolean turmaAtiva;
-//    private String listaIdEstudantes;
-//    private String listaIdProfessores;
+
+//    private List<Estudante> listaEstudantes;
+//    private List<Professor> listaProfessores;
 
 
     public Turma(String nomeTurma, boolean turmaAtiva) {

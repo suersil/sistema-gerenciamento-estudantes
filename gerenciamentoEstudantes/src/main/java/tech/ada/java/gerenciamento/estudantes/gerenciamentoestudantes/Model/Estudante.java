@@ -17,21 +17,36 @@ public class Estudante {
     private Long id;
     private Boolean estaAtivo;
     private String nomeAluno;
-    private String nomeResponsavel;
     private String dataNascimento;
+    private String nomeResponsavel;
     private String contatoResponsavel;
     private LocalDateTime dataDeCadastro;
-    
+    private LocalDateTime dataAtualizacaoCadastro;
+
+    //Turma turma;
+
     public Estudante(){
+
         this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
         this.estaAtivo = true;
+        this.ativo= false;
+
+    }
+
+    //Editando dados cadastrados
+    public Estudante(boolean ativo, String nomeAluno, String dataNascimento, String nomeResponsavel, String contatoResponsavel){
+        this.ativo = ativo;
+        this.nomeAluno = nomeAluno;
+        this.dataNascimento = dataNascimento;
+        this.nomeResponsavel = nomeResponsavel;
+        this.contatoResponsavel = contatoResponsavel;
+        this.dataAtualizacaoCadastro = LocalDateTime.now(ZoneId.of("UTC"));
+
+        this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
+        this.ativo= true;
+       
+
     }
     
-    public Estudante(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {
-        this.nomeAluno = nomeAluno;
-        this.nomeResponsavel = nomeResponsavel;
-        this.dataNascimento = dataNascimento;
-        this.contatoResponsavel = contatoResponsavel;
-        System.out.println("usou");
-    }
+    
 }
