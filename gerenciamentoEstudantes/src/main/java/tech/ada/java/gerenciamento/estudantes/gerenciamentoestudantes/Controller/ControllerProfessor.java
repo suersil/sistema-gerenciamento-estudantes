@@ -60,6 +60,7 @@ public class ControllerProfessor {
             professorExistente.setNomeProfessor(atualizarProfessorRequest.nomeProfessor());
             professorExistente.setEmail(atualizarProfessorRequest.email());
             professorExistente.setDisciplinaLecionada(atualizarProfessorRequest.disciplinaLecionada());
+            professorExistente.setEstaAtivo(atualizarProfessorRequest.estaAtivo());
 
             Professor professorSalvo = repositorioProfessor.save(professorExistente);
 
