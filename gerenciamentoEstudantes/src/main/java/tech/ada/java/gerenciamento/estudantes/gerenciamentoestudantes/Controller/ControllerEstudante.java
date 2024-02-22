@@ -27,7 +27,6 @@ import java.util.Optional;
 @Validated
 @RestController("estudante")
 public class ControllerEstudante {
-    
     private final RepositorioEstudante repositorioEstudante;
     private final ModelMapper modelMapper;
     
@@ -41,24 +40,22 @@ public class ControllerEstudante {
     throws Exception{
         
         Estudante estudante = modelMapper.map(request, Estudante.class);
-        
-        estudante.setDataDeCadastro(LocalDateTime.now(ZoneId.of("UTC")));
-        estudante.setEstaAtivo(false);
-        estudante.setDataAtualizacaoCadastro(LocalDateTime.now(ZoneId.of("UTC")));
-       
+
+        estudante.setEstaAtivo(true);
         Estudante novoEstudante = repositorioEstudante.save(estudante);
+        novoEstudante.setDataAtualizacao(null);  //Devolvendo Null ao criar cadastro
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante);
     }
     
-    /**
-     * ALL
-     */
+    /*** Get ALL */
     @GetMapping("/estudante")
     public ResponseEntity<List<Estudante>> listarTodosEstudantes() {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
     }
-    
-    
+
+    /**
+     * Método para filtrar um estudante pelo STATUS
+     */
     @GetMapping(value = "/estudantes", params = "status")
     public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
         List<Estudante> statusEstudantesFiltrados;
@@ -75,8 +72,7 @@ public class ControllerEstudante {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-    
-    
+
     /**
      * Método para filtrar um estudante pelo ID.
      */
@@ -90,7 +86,7 @@ public class ControllerEstudante {
      */
     @GetMapping(value = "/estudante", params = {"nomeAluno"})
     public ResponseEntity<List<Estudante>> filtrarEstudanteNome(@RequestParam String nomeAluno) {
-        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAluno(nomeAluno));
+        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAlunoQuery(nomeAluno));
     }
     
     @PutMapping("/estudante/{id}") //AtualizandoTudo
@@ -98,7 +94,7 @@ public class ControllerEstudante {
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
         
         //Primeiro checar cadastro existente
-        if (!optionalEstudante.isPresent()) {
+        if (optionalEstudante.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         
@@ -110,8 +106,8 @@ public class ControllerEstudante {
         estudanteExistente.setDataNascimento(atualizarEstudante.dataNascimento());
         estudanteExistente.setNomeResponsavel(atualizarEstudante.nomeResponsavel());
         estudanteExistente.setContatoResponsavel(atualizarEstudante.contatoResponsavel());
-        estudanteExistente.setDataAtualizacaoCadastro(LocalDateTime.now(ZoneId.of("UTC")));
         estudanteExistente.setDataDeCadastro(estudanteExistente.getDataDeCadastro());
+
         Estudante estudanteSalvo = repositorioEstudante.save(estudanteExistente);
         
         return ResponseEntity.ok(estudanteSalvo);
@@ -140,9 +136,7 @@ public class ControllerEstudante {
             Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado);
             return ResponseEntity.ok(estudanteSalvo);
         }
-        
-        //Retornar o codigo 404 - nao encontrado
+        //Retornar o codigo 404 - se nao encontrado
         return ResponseEntity.notFound().build();
-        
     }
 }
