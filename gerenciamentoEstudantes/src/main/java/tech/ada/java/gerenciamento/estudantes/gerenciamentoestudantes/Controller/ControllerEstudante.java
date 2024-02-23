@@ -60,7 +60,7 @@ public class ControllerEstudante {
     
     
     @GetMapping(value = "/estudantes", params = "status")
-    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
+    public ResponseEntity<List<Estudante>> filtrarStatusEstudante(@RequestParam Boolean status) {
         List<Estudante> statusEstudantesFiltrados;
         
         if (status) {
@@ -80,10 +80,16 @@ public class ControllerEstudante {
     /**
      * Método para filtrar um estudante pelo ID.
      */
-    @GetMapping(value = "/estudante", params = {"id"})
-    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@RequestParam Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
+    @GetMapping(value = "/estudante/{id}")
+    public ResponseEntity<Estudante> buscarEstudantePorId(@PathVariable Long id) {
+        Optional<Estudante> estudante = repositorioEstudante.findById(id);
+        if (estudante.isPresent()) {
+            return ResponseEntity.ok(estudante.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+    
     
     /**
      * Método para filtrar um estudante pelo NOME.

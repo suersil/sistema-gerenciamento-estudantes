@@ -71,20 +71,12 @@ public class ControllerProfessor {
     }
 
     @GetMapping(value = "/professor", params = {"nomeProfessor"})
-    public ResponseEntity<List<String>> filtrarProfessorPorNome(@RequestParam String nomeProfessor) {
+    public ResponseEntity<List<Professor>> filtrarProfessorPorNome(@RequestParam String nomeProfessor) throws Exception {
         List<Professor> professoresEncontrados = repositorioProfessor.findProfessorsByNomeProfessor(nomeProfessor);
-        if (!professoresEncontrados.isEmpty()) {
-            List<String> nomesDosProfessores = new ArrayList<>();
-            for (Professor professor : professoresEncontrados) {
-                nomesDosProfessores.add(professor.getNomeProfessor());
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(nomesDosProfessores);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      
+        return ResponseEntity.status(HttpStatus.OK).body(professoresEncontrados);
+       
         }
-    }
-
-
-
-
 }
+
+
