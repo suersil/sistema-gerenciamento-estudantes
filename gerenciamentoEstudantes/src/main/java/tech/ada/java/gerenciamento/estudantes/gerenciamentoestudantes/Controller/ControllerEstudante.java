@@ -1,6 +1,7 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Exception.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.*;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 
@@ -116,10 +117,15 @@ public class ControllerEstudante {
     @PatchMapping("/estudante/{id}") //Status Request e outros
     public ResponseEntity<Estudante> alteraStatus(
             @PathVariable Long id,
-            @RequestBody EstudanteStatusRequest request) throws Exception {
+            @RequestBody EstudanteStatusRequest request) {
+
+
         // Buscar pelo metodo findById que retorna um Optional<TodoItem>
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
-        
+
+        if(optionalEstudante == null){
+            throw new ResourceNotFoundException("Estudante", "ID", id);
+        }
         // Verificamos se existe valor dentro do Optional
         if (optionalEstudante.isPresent()) {
             // Se existir - fazer o get()
@@ -136,7 +142,7 @@ public class ControllerEstudante {
             Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado);
             return ResponseEntity.ok(estudanteSalvo);
         }
-        
+
         //Retornar o codigo 404 - nao encontrado
         return ResponseEntity.notFound().build();
         
