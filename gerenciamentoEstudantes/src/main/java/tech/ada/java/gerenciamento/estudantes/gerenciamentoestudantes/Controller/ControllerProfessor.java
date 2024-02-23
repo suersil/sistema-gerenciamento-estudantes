@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarProfessorRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.ProfessorStatusRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.ProfessorRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class ControllerProfessor {
     @PatchMapping("/professor/{id}")
     public ResponseEntity<Professor> alterarProfessor(
             @PathVariable("id") Long id,
-            @RequestBody ProfessorStatusRequest professorRequest) throws Exception {
+            @RequestBody ProfessorRequest professorRequest) throws Exception {
         Optional<Professor> optionalProfessor = repositorioProfessor.findById(id);
 
         if (optionalProfessor.isPresent()) {

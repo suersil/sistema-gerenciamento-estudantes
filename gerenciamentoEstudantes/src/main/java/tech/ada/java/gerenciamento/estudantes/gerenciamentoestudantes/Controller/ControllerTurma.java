@@ -1,5 +1,6 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class ControllerTurma {
     }
 
     @PostMapping("/turma")
-    public ResponseEntity<Turma> cadastrarTurma(@RequestBody TurmaRequest request) {
+    public ResponseEntity<Turma> cadastrarTurma(@RequestBody @Valid TurmaRequest request) {
         Turma turmaConvertida = modelMapper.map(request, Turma.class);
         Turma novaTurma = turmaRepositorio.save(turmaConvertida);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaTurma);

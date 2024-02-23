@@ -1,9 +1,11 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -15,6 +17,8 @@ public class Turma {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "{nomeTurma.not.blank}")
     private String nomeTurma;
 
     private Boolean estaAtiva;
@@ -25,7 +29,6 @@ public class Turma {
 
 //    private List<Estudante> listaEstudantes;
 //    private List<Professor> listaProfessores;
-
 
 
     public Turma(String nomeTurma, boolean estaAtiva) {
