@@ -53,7 +53,7 @@ public class ControllerTurma {
         Optional<Turma> optionalTurma = turmaRepositorio.findById(id);
         if(optionalTurma.isPresent()) {
             Turma turmaModificada = optionalTurma.get();
-            if(request.turmaAtiva() != null) turmaModificada.setEstaAtiva(request.turmaAtiva());
+            if(request.estaAtiva() != null) turmaModificada.setEstaAtiva(request.estaAtiva());
             if(request.nomeTurma() != null) turmaModificada.setNomeTurma(request.nomeTurma());
             Turma turmaSalva =  turmaRepositorio.save(turmaModificada);
             return ResponseEntity.ok(turmaSalva);
@@ -70,7 +70,7 @@ public class ControllerTurma {
         Optional<Turma> optionalTurma = turmaRepositorio.findById(id);
         if(optionalTurma.isPresent()) {
             Turma turmaModificada = optionalTurma.get();
-            turmaModificada.setEstaAtiva(request.turmaAtiva());
+            turmaModificada.setEstaAtiva(request.estaAtiva());
             turmaModificada.setNomeTurma(request.nomeTurma());
             Turma turmaSalva = turmaRepositorio.save(turmaModificada);
             return ResponseEntity.ok(turmaSalva);
