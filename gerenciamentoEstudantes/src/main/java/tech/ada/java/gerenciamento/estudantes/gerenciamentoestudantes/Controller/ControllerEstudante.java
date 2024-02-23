@@ -87,7 +87,8 @@ public class ControllerEstudante {
 
     /*** Método para Atualizar TUDO de um estudante.*/
     @PutMapping("/estudante/{id}")
-    public ResponseEntity<Estudante> editarEstudante(@PathVariable("id") Long id, @RequestBody AtualizarEstudanteRequest atualizarEstudante) throws Exception {
+    public ResponseEntity<Estudante> editarTudoEstudante
+    (@PathVariable("id") Long id, @RequestBody AtualizarEstudanteRequest atualizarEstudante) throws Exception {
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
 
         //Primeiro checar cadastro existente
@@ -110,11 +111,11 @@ public class ControllerEstudante {
         return ResponseEntity.ok(estudanteSalvo);
     }
 
-    /*** Método para Atualizar STATUS e outros de um estudante.*/
-    @PatchMapping("/estudante/{id}") //Status Request e outros
-    public ResponseEntity<Estudante> alteraStatus(
+    /*** Método para Atualizar STATUS e outras info. de um estudante.*/
+    @PatchMapping("/estudante/{id}")
+    public ResponseEntity<Estudante> atualizarEstudante(
             @PathVariable Long id,
-            @RequestBody EstudanteStatusRequest request) throws Exception {
+            @RequestBody EstudanteRequest request) throws Exception {
         // Buscar pelo metodo findById que retorna um Optional<TodoItem>
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
         
