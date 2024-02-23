@@ -98,8 +98,7 @@ public class ControllerEstudante {
 
         // Se existir vamos fazer o get(by ID)
         Estudante estudanteExistente = optionalEstudante.get();
-        
-        estudanteExistente.setEstaAtivo(atualizarEstudante.estaAtivo());
+
         estudanteExistente.setNomeAluno(atualizarEstudante.nomeAluno());
         estudanteExistente.setDataNascimento(atualizarEstudante.dataNascimento());
         estudanteExistente.setNomeResponsavel(atualizarEstudante.nomeResponsavel());
