@@ -14,7 +14,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository
 import java.util.List;
 import java.util.Optional;
 
-@RestController("/turmas")
+@RestController("/turma")
 public class ControllerTurma {
 
     private final RepositorioTurma turmaRepositorio;
@@ -26,18 +26,18 @@ public class ControllerTurma {
         this.modelMapper = modelMapper;
     }
 
-    @PostMapping("/turmas")
+    @PostMapping("/turma")
     public ResponseEntity<Turma> cadastrarTurma(@RequestBody TurmaRequest request) {
         Turma turmaConvertida = modelMapper.map(request, Turma.class);
         Turma novaTurma = turmaRepositorio.save(turmaConvertida);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaTurma);
     }
 
-    @GetMapping("/turmas")
+    @GetMapping("/turma")
     public List<Turma> buscarTurmas(){
         return turmaRepositorio.findAll();
     }
-    @GetMapping("/turmas/{id}")
+    @GetMapping("/turma/{id}")
     public ResponseEntity<Turma> buscarTurmaEspecifica(@PathVariable Long id) throws Exception{
         Optional<Turma> optionalTurma = turmaRepositorio.findById(id);
         if(optionalTurma.isPresent()) {
@@ -46,7 +46,7 @@ public class ControllerTurma {
             return ResponseEntity.notFound().build();
         }
     }
-    @PatchMapping("/turmas/{id}")
+    @PatchMapping("/turma/{id}")
     public ResponseEntity<Turma> alterarTurma(
             @PathVariable Long id,
             @RequestBody AlterarTurmaRequest request) throws Exception {
@@ -62,7 +62,7 @@ public class ControllerTurma {
         }
     }
 
-    @PutMapping("/turmas/{id}")
+    @PutMapping("/turma/{id}")
     public ResponseEntity<Turma> alteraTurmaCompleto(
             @PathVariable Long id,
             @RequestBody AlterarTurmaRequest request
@@ -79,7 +79,7 @@ public class ControllerTurma {
         }
     }
 
-    @GetMapping(value = "/turmas", params = "estaAtiva")
+    @GetMapping(value = "/turma", params = "estaAtiva")
     public ResponseEntity<List<Turma>> filtrarStatusTurma(@RequestParam Boolean estaAtiva){
         List<Turma> statusTurmaFiltrada;
 

@@ -56,7 +56,7 @@ public class ControllerEstudante {
     /**
      * Método para filtrar um estudante pelo STATUS
      */
-    @GetMapping(value = "/estudantes", params = "status")
+    @GetMapping(value = "/estudante", params = "status")
     public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
         List<Estudante> statusEstudantesFiltrados;
         
