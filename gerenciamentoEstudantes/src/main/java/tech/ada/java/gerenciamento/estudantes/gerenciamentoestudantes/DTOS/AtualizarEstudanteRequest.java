@@ -1,4 +1,4 @@
-package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model;
+package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

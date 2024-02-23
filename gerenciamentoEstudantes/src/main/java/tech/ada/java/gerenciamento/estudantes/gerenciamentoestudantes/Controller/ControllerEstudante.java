@@ -1,7 +1,8 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.*;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.AtualizarEstudanteRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteStatusRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 
 import jakarta.validation.Valid;
@@ -12,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 
 
 import java.time.LocalDateTime;
@@ -37,7 +35,7 @@ public class ControllerEstudante {
         this.modelMapper = modelMapper;
     }
     @PostMapping("/estudante")
-    public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request)
+    public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroRequest request)
     throws Exception{
         
         Estudante estudante = modelMapper.map(request, Estudante.class);

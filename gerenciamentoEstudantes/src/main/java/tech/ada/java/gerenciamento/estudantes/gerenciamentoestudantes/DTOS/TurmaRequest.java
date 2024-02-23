@@ -1,6 +1,7 @@
-package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model;
+package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS;
 
 import lombok.Getter;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 
 import java.time.LocalDate;
 
