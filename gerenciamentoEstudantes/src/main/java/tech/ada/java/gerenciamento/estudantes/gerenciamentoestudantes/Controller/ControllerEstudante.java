@@ -73,31 +73,28 @@ public class ControllerEstudante {
         }
     }
 
-    /**
-     * Método para filtrar um estudante pelo ID.
-     */
-    @GetMapping(value = "/estudante", params = {"id"})
-    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@RequestParam Long id) {
+    /*** Método para filtrar um estudante pelo ID.*/
+    @GetMapping(value = "/estudante/{id}")
+    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@PathVariable Long id) throws Exception{
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
     }
     
-    /**
-     * Método para filtrar um estudante pelo NOME.
-     */
+    /*** Método para filtrar um estudante pelo NOME.*/
     @GetMapping(value = "/estudante", params = {"nomeAluno"})
     public ResponseEntity<List<Estudante>> filtrarEstudanteNome(@RequestParam String nomeAluno) {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAlunoQuery(nomeAluno));
     }
-    
-    @PutMapping("/estudante/{id}") //AtualizandoTudo
+
+    /*** Método para Atualizar TUDO de um estudante.*/
+    @PutMapping("/estudante/{id}")
     public ResponseEntity<Estudante> editarEstudante(@PathVariable("id") Long id, @RequestBody AtualizarEstudanteRequest atualizarEstudante) throws Exception {
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
-        
+
         //Primeiro checar cadastro existente
         if (optionalEstudante.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        
+
         // Se existir vamos fazer o get(by ID)
         Estudante estudanteExistente = optionalEstudante.get();
         
@@ -112,7 +109,8 @@ public class ControllerEstudante {
         
         return ResponseEntity.ok(estudanteSalvo);
     }
-    
+
+    /*** Método para Atualizar STATUS e outros de um estudante.*/
     @PatchMapping("/estudante/{id}") //Status Request e outros
     public ResponseEntity<Estudante> alteraStatus(
             @PathVariable Long id,
