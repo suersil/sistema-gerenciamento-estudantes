@@ -13,10 +13,6 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository
 import java.util.List;
 import java.util.Optional;
 
-// TODO: 18/02/24 cadastrarProfessor()
-// TODO: 18/02/24 listarTodos()
-// TODO: 18/02/24 editarProfessor
-// TODO: 18/02/24 checar modelMapper - implementacao do Estudante
 
 @RestController
 public class ControllerProfessor {
@@ -32,7 +28,7 @@ public class ControllerProfessor {
     }
 
     @PostMapping("/professor")
-    public ResponseEntity<Professor> cadastrarProfessor(@RequestBody ProfessorRequest professorRequest) {
+    public ResponseEntity<Professor> cadastrarProfessor(@RequestBody ProfessorDTO professorRequest) {
 
         //converter a request que chegou no body para uma entidade Professor
         Professor professorConvertido = modelMapper.map(professorRequest, Professor.class);
@@ -50,7 +46,9 @@ public class ControllerProfessor {
     }
 
     @PutMapping("/professor/{id}")
-    public ResponseEntity<Professor> editarProfessor(@PathVariable("id") Long id, @RequestBody AtualizarProfessorRequest atualizarProfessorRequest) throws Exception {
+    public ResponseEntity<Professor> editarProfessor(
+            @PathVariable("id") Long id,
+            @RequestBody AtualizarProfessorRequest atualizarProfessorRequest) throws Exception {
         Optional<Professor> optionalProfessor = repositorioProfessor.findById(id);
 
         if (optionalProfessor.isPresent()) {
@@ -59,8 +57,33 @@ public class ControllerProfessor {
             professorExistente.setNomeProfessor(atualizarProfessorRequest.nomeProfessor());
             professorExistente.setEmail(atualizarProfessorRequest.email());
             professorExistente.setDisciplinaLecionada(atualizarProfessorRequest.disciplinaLecionada());
+            professorExistente.setEstaAtivo(atualizarProfessorRequest.estaAtivo());
 
             Professor professorSalvo = repositorioProfessor.save(professorExistente);
+
+            return ResponseEntity.ok(professorSalvo);
+        }
+        else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PatchMapping("/professor/{id}")
+    public ResponseEntity<Professor> alterarProfessor(
+            @PathVariable("id") Long id,
+            @RequestBody ProfessorRequest professorRequest) throws Exception {
+        Optional<Professor> optionalProfessor = repositorioProfessor.findById(id);
+
+        if (optionalProfessor.isPresent()) {
+            Professor professorModificado = optionalProfessor.get();
+
+            // verificamos se um das tres variaveis que esperamos foi passada para ser atualizada
+            if (professorRequest.nomeProfessor() != null) professorModificado.setNomeProfessor(professorRequest.nomeProfessor());
+            if (professorRequest.email() != null) professorModificado.setEmail(professorRequest.email());
+            if (professorRequest.disciplinaLecionada() != null) professorModificado.setDisciplinaLecionada(professorRequest.disciplinaLecionada());
+            if (professorRequest.estaAtivo() != null) professorModificado.setEstaAtivo(professorRequest.estaAtivo());
+
+            Professor professorSalvo = repositorioProfessor.save(professorModificado);
 
             return ResponseEntity.ok(professorSalvo);
         }
