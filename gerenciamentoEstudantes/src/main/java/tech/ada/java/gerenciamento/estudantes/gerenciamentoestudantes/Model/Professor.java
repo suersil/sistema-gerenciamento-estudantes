@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -20,8 +23,8 @@ public class Professor {
     private String email;
     private String disciplinaLecionada;
     private Boolean estaAtivo;
-
-    //private List<Turma> listaTurmas;
+    @ManyToMany(mappedBy = "professores")
+    private List<Turma> listaTurmas;
 
     //apagar quando o modelmapper funcionar
     public Professor() {
@@ -32,6 +35,11 @@ public class Professor {
         this.email = email;
         this.disciplinaLecionada = disciplinaLecionada;
         this.estaAtivo = estaAtivo;
+    }
+
+    public void AdicionarTurma (Turma turma){
+        listaTurmas = new ArrayList<>();
+        listaTurmas.add(turma);
     }
 
 }

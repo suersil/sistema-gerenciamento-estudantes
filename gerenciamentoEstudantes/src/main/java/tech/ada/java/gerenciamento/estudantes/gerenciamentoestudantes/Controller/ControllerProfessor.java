@@ -9,7 +9,9 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Atua
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.ProfessorRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +22,14 @@ import java.util.Optional;
 public class ControllerProfessor {
 
     private final RepositorioProfessor repositorioProfessor;
+    private final RepositorioTurma turmaRepositorio;
     private final ModelMapper modelMapper;
 
     @Autowired
     //injetando a dependencia via construtor com padrão inversao de dependencia
-    public ControllerProfessor(RepositorioProfessor repositorioProfessor, ModelMapper modelMapper) {
+    public ControllerProfessor(RepositorioProfessor repositorioProfessor, ModelMapper modelMapper, RepositorioTurma turmaRepositorio) {
         this.repositorioProfessor = repositorioProfessor;
+        this.turmaRepositorio = turmaRepositorio;
         this.modelMapper = modelMapper;
     }
 
@@ -34,11 +38,8 @@ public class ControllerProfessor {
 
         //converter a request que chegou no body para uma entidade Professor
         Professor professorConvertido = modelMapper.map(professorRequest, Professor.class);
-
         Professor novoProfessor = repositorioProfessor.save(professorConvertido);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(novoProfessor);
-
     }
 
     @GetMapping("/professor")
@@ -84,7 +85,12 @@ public class ControllerProfessor {
             if (professorRequest.email() != null) professorModificado.setEmail(professorRequest.email());
             if (professorRequest.disciplinaLecionada() != null) professorModificado.setDisciplinaLecionada(professorRequest.disciplinaLecionada());
             if (professorRequest.estaAtivo() != null) professorModificado.setEstaAtivo(professorRequest.estaAtivo());
-
+            Optional<Turma> optionalTurma;
+            if (professorRequest.turma_id() != null) {
+                optionalTurma = turmaRepositorio.findById(professorRequest.turma_id());
+//                listaTurma
+                if(optionalTurma.isPresent()) { professorModificado.AdicionarTurma(optionalTurma.get()); }
+            }
             Professor professorSalvo = repositorioProfessor.save(professorModificado);
 
             return ResponseEntity.ok(professorSalvo);

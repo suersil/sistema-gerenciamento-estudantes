@@ -1,5 +1,6 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,7 +32,8 @@ public class Estudante {
     @UpdateTimestamp
     private LocalDateTime dataAtualizacao;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "2")
+    @JoinColumn(name = "turma_id")
+    @JsonIgnore
     private Turma turma;
     
     public Estudante(Boolean estaAtivo) {
