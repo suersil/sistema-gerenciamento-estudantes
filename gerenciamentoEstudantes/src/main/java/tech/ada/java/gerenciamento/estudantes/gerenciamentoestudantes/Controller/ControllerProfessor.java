@@ -13,9 +13,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turm
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @RestController
@@ -86,8 +84,7 @@ public class ControllerProfessor {
             Optional<Turma> optionalTurma;
             if (professorRequest.turma_id() != null) {
                 optionalTurma = turmaRepositorio.findById(professorRequest.turma_id());
-//                listaTurma
-                if(optionalTurma.isPresent()) { professorModificado.AdicionarTurma(optionalTurma.get()); }
+                if(optionalTurma.isPresent()) {professorModificado.AdicionarTurma(optionalTurma.get());}
             }
             Professor professorSalvo = repositorioProfessor.save(professorModificado);
             return ResponseEntity.ok(professorSalvo);
