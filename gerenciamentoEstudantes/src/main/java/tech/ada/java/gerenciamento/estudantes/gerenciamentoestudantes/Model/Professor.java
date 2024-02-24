@@ -24,7 +24,7 @@ public class Professor {
     private String disciplinaLecionada;
     private Boolean estaAtivo;
     @ManyToMany(mappedBy = "professores")
-    private List<Turma> listaTurmas;
+    private Set<Turma> listaTurmas = new HashSet<>();
 
     //apagar quando o modelmapper funcionar
     public Professor() {
@@ -38,7 +38,6 @@ public class Professor {
     }
 
     public void AdicionarTurma (Turma turma){
-        listaTurmas = new ArrayList<>();
         listaTurmas.add(turma);
     }
 

@@ -76,10 +76,8 @@ public class ControllerProfessor {
             @PathVariable("id") Long id,
             @RequestBody ProfessorRequest professorRequest) throws Exception {
         Optional<Professor> optionalProfessor = repositorioProfessor.findById(id);
-
         if (optionalProfessor.isPresent()) {
             Professor professorModificado = optionalProfessor.get();
-
             // verificamos se um das tres variaveis que esperamos foi passada para ser atualizada
             if (professorRequest.nomeProfessor() != null) professorModificado.setNomeProfessor(professorRequest.nomeProfessor());
             if (professorRequest.email() != null) professorModificado.setEmail(professorRequest.email());
@@ -92,7 +90,6 @@ public class ControllerProfessor {
                 if(optionalTurma.isPresent()) { professorModificado.AdicionarTurma(optionalTurma.get()); }
             }
             Professor professorSalvo = repositorioProfessor.save(professorModificado);
-
             return ResponseEntity.ok(professorSalvo);
         }
         else {
