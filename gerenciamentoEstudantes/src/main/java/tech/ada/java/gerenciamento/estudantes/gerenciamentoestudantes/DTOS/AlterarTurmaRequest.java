@@ -1,4 +1,4 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS;
 
-public record AlterarTurmaRequest(Boolean turmaAtiva, String nomeTurma) {
+public record AlterarTurmaRequest(Boolean estaAtiva, String nomeTurma) {
 }

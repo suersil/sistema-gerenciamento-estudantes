@@ -3,6 +3,8 @@ package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controlle
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.AtualizarEstudanteRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteStatusRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Exception.ResourceNotFoundException;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.*;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 
 import jakarta.validation.Valid;
@@ -45,10 +47,17 @@ public class ControllerEstudante {
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante);
     }
     
-    /*** Get ALL */
-    @GetMapping("/estudante")
+    /**
+     * ALL
+     */
+    @GetMapping("/estudantes")
     public ResponseEntity<List<Estudante>> listarTodosEstudantes() {
-        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
+        List<Estudante> obterLista = repositorioEstudante.findAll();
+
+        if(obterLista == null || obterLista.isEmpty()){
+            throw new ResourceNotFoundException("estudantes");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(obterLista);
     }
     
 
@@ -65,24 +74,27 @@ public class ControllerEstudante {
         if (!statusEstudantesFiltrados.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(statusEstudantesFiltrados);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    };
-
-    /*Método para filtrar um estudante pelo ID.*/
-    @GetMapping(value = "/estudante/{id}")
-    public ResponseEntity<Estudante> buscarEstudantePorId(@PathVariable Long id) {
-        Optional<Estudante> estudante = repositorioEstudante.findById(id);
-        if (estudante.isPresent()) {
-            return ResponseEntity.ok(estudante.get());
-        } else {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("estudantes", "status", status);
         }
     }
     
-    
-    /*** Método para filtrar um estudante pelo NOME.*/
+    /**
+     * Método para filtrar um estudante pelo ID.
+     */
+    @GetMapping(value = "/estudante", params = {"id"})
+    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@RequestParam Long id) {
 
+        Optional<Estudante> estudantePorId = repositorioEstudante.findById(id);
+
+        if(estudantePorId.isEmpty()){
+            throw new ResourceNotFoundException("ID");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
+    }
+    
+    /**
+     * Método para filtrar um estudante pelo NOME.
+     */
     @GetMapping(value = "/estudante", params = {"nomeAluno"})
     public ResponseEntity<List<Estudante>> filtrarEstudanteNome(@RequestParam String nomeAluno) {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAlunoQuery(nomeAluno));
@@ -116,10 +128,15 @@ public class ControllerEstudante {
     @PatchMapping("/estudante/{id}")
     public ResponseEntity<Estudante> atualizarEstudante(
             @PathVariable Long id,
-            @RequestBody EstudanteStatusRequest request) throws Exception {
+            @RequestBody EstudanteStatusRequest request) {
+
+
         // Buscar pelo metodo findById que retorna um Optional<TodoItem>
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
-        
+
+        if(optionalEstudante == null){
+            throw new ResourceNotFoundException("Estudante", "ID", id);
+        }
         // Verificamos se existe valor dentro do Optional
         if (optionalEstudante.isPresent()) {
             // Se existir - fazer o get()
@@ -136,7 +153,8 @@ public class ControllerEstudante {
             Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado);
             return ResponseEntity.ok(estudanteSalvo);
         }
-        //Retornar o codigo 404 - se nao encontrado
+
+        //Retornar o codigo 404 - nao encontrado
         return ResponseEntity.notFound().build();
     }
 }
