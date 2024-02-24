@@ -2,13 +2,13 @@ package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS;
 
 import java.util.Objects;
 
-public class EstudanteCadastroDTO {
+public class EstudanteCadastroRequest {
     private String nomeAluno;
     private String nomeResponsavel;
     private String dataNascimento;
     private String contatoResponsavel;
     
-    public EstudanteCadastroDTO(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {
+    public EstudanteCadastroRequest(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {
         this.nomeAluno = Objects.requireNonNull(nomeAluno, "Informe o nome do aluno");
         this.nomeResponsavel = Objects.requireNonNull(nomeResponsavel, "Informe o nome do responsável");
         this.dataNascimento = Objects.requireNonNull(dataNascimento, "Informe a data de nascimento");

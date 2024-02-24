@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AlterarTurmaRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.AlterarTurmaRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.TurmaRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 
 import java.util.List;

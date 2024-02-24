@@ -5,13 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarProfessorRequest;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.AtualizarProfessorRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.ProfessorRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,10 +79,10 @@ public class ControllerProfessor {
             Professor professorModificado = optionalProfessor.get();
 
             // verificamos se um das tres variaveis que esperamos foi passada para ser atualizada
-            if (professorRequest.nomeProfessor() != null) professorModificado.setNomeProfessor(professorRequest.nomeProfessor());
-            if (professorRequest.email() != null) professorModificado.setEmail(professorRequest.email());
-            if (professorRequest.disciplinaLecionada() != null) professorModificado.setDisciplinaLecionada(professorRequest.disciplinaLecionada());
-            if (professorRequest.estaAtivo() != null) professorModificado.setEstaAtivo(professorRequest.estaAtivo());
+            if (professorRequest.getNomeProfessor() != null) professorModificado.setNomeProfessor(professorRequest.getNomeProfessor());
+            if (professorRequest.getEmail() != null) professorModificado.setEmail(professorRequest.getEmail());
+            if (professorRequest.getDisciplinaLecionada() != null) professorModificado.setDisciplinaLecionada(professorRequest.getDisciplinaLecionada());
+            if (professorRequest.getEstaAtivo()!= null) professorModificado.setEstaAtivo(professorRequest.getEstaAtivo());
 
             Professor professorSalvo = repositorioProfessor.save(professorModificado);
 
@@ -95,20 +94,12 @@ public class ControllerProfessor {
     }
 
     @GetMapping(value = "/professor", params = {"nomeProfessor"})
-    public ResponseEntity<List<String>> filtrarProfessorPorNome(@RequestParam String nomeProfessor) {
+    public ResponseEntity<List<Professor>> filtrarProfessorPorNome(@RequestParam String nomeProfessor) throws Exception {
         List<Professor> professoresEncontrados = repositorioProfessor.findProfessorsByNomeProfessor(nomeProfessor);
-        if (!professoresEncontrados.isEmpty()) {
-            List<String> nomesDosProfessores = new ArrayList<>();
-            for (Professor professor : professoresEncontrados) {
-                nomesDosProfessores.add(professor.getNomeProfessor());
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(nomesDosProfessores);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      
+        return ResponseEntity.status(HttpStatus.OK).body(professoresEncontrados);
+       
         }
-    }
-
-
-
-
 }
+
+

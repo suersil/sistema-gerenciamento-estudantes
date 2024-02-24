@@ -4,7 +4,7 @@ import lombok.Getter;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
 
 @Getter
-public class ProfessorDTO {
+public class ProfessorRequest {
 
     private String nomeProfessor;
     private String email;
@@ -14,21 +14,5 @@ public class ProfessorDTO {
     //Transformar a request em entidade
     public Professor paraEntidade(){
         return new Professor(nomeProfessor, email, disciplinaLecionada, estaAtivo);
-    }
-    
-    public String getNomeProfessor() {
-        return nomeProfessor;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public String getDisciplinaLecionada() {
-        return disciplinaLecionada;
-    }
-    
-    public Boolean getEstaAtivo() {
-        return estaAtivo;
     }
 }

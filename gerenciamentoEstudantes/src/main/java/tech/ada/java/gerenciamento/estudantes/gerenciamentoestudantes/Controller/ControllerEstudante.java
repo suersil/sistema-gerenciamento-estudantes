@@ -1,7 +1,8 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.*;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.AtualizarEstudanteRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteStatusRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 
 import jakarta.validation.Valid;
@@ -12,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 
 
 import java.time.LocalDateTime;
@@ -36,7 +34,7 @@ public class ControllerEstudante {
         this.modelMapper = modelMapper;
     }
     @PostMapping("/estudante")
-    public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request)
+    public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroRequest request)
     throws Exception{
         
         Estudante estudante = modelMapper.map(request, Estudante.class);
@@ -52,34 +50,39 @@ public class ControllerEstudante {
     public ResponseEntity<List<Estudante>> listarTodosEstudantes() {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
     }
+    
 
-    /**
-     * Método para filtrar um estudante pelo STATUS
-     */
+    /* Método para filtrar um estudante pelo STATUS */
     @GetMapping(value = "/estudante", params = "status")
-    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
+    public ResponseEntity<List<Estudante>> filtrarStatusEstudante(@RequestParam Boolean status) {
         List<Estudante> statusEstudantesFiltrados;
-        
         if (status) {
             statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(true);
         } else {
             statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(false);
-        }
+        };
         
         if (!statusEstudantesFiltrados.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(statusEstudantesFiltrados);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-    }
+    };
 
-    /*** Método para filtrar um estudante pelo ID.*/
+    /*Método para filtrar um estudante pelo ID.*/
     @GetMapping(value = "/estudante/{id}")
-    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@PathVariable Long id) throws Exception{
-        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
+    public ResponseEntity<Estudante> buscarEstudantePorId(@PathVariable Long id) {
+        Optional<Estudante> estudante = repositorioEstudante.findById(id);
+        if (estudante.isPresent()) {
+            return ResponseEntity.ok(estudante.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
     
+    
     /*** Método para filtrar um estudante pelo NOME.*/
+
     @GetMapping(value = "/estudante", params = {"nomeAluno"})
     public ResponseEntity<List<Estudante>> filtrarEstudanteNome(@RequestParam String nomeAluno) {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAlunoQuery(nomeAluno));
@@ -109,12 +112,11 @@ public class ControllerEstudante {
         
         return ResponseEntity.ok(estudanteSalvo);
     }
-
-    /*** Método para Atualizar STATUS e outras info. de um estudante.*/
+    /* Método para Atualizar STATUS e outras info. de um estudante.*/
     @PatchMapping("/estudante/{id}")
     public ResponseEntity<Estudante> atualizarEstudante(
             @PathVariable Long id,
-            @RequestBody EstudanteRequest request) throws Exception {
+            @RequestBody EstudanteStatusRequest request) throws Exception {
         // Buscar pelo metodo findById que retorna um Optional<TodoItem>
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
         
