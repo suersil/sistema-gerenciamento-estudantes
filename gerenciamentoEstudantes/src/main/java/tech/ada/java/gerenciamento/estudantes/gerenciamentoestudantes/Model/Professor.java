@@ -1,6 +1,8 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,14 +21,22 @@ public class Professor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //Chave Primária
     private Long id;
+
+    @NotBlank(message = "{nomeProfessor.not.blank}")
     private String nomeProfessor;
+
+    @NotBlank(message = "{email.not.blank}")
+    @Email(message = "{email.not.valid}")
     private String email;
+
+    @NotBlank(message = "{disciplinaLecionada.not.blank}")
     private String disciplinaLecionada;
+
     private Boolean estaAtivo;
+
     @ManyToMany(mappedBy = "professores")
     private List<Turma> listaTurmas;
 
-    //apagar quando o modelmapper funcionar
     public Professor() {
     }
 
