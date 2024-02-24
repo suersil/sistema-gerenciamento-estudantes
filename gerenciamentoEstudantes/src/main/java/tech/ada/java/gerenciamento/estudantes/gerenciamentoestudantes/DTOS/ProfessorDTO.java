@@ -15,4 +15,20 @@ public class ProfessorDTO {
     public Professor paraEntidade(){
         return new Professor(nomeProfessor, email, disciplinaLecionada, estaAtivo);
     }
+    
+    public String getNomeProfessor() {
+        return nomeProfessor;
+    }
+    
+    public String getEmail() {
+        return email;
+    }
+    
+    public String getDisciplinaLecionada() {
+        return disciplinaLecionada;
+    }
+    
+    public Boolean getEstaAtivo() {
+        return estaAtivo;
+    }
 }

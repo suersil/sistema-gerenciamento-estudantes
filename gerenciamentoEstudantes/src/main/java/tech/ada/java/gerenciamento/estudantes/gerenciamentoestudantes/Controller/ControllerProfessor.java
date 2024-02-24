@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.AtualizarProfessorRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
@@ -78,10 +79,10 @@ public class ControllerProfessor {
             Professor professorModificado = optionalProfessor.get();
 
             // verificamos se um das tres variaveis que esperamos foi passada para ser atualizada
-            if (professorRequest.nomeProfessor() != null) professorModificado.setNomeProfessor(professorRequest.nomeProfessor());
-            if (professorRequest.email() != null) professorModificado.setEmail(professorRequest.email());
-            if (professorRequest.disciplinaLecionada() != null) professorModificado.setDisciplinaLecionada(professorRequest.disciplinaLecionada());
-            if (professorRequest.estaAtivo() != null) professorModificado.setEstaAtivo(professorRequest.estaAtivo());
+            if (professorRequest.getNomeProfessor() != null) professorModificado.setNomeProfessor(professorRequest.getNomeProfessor());
+            if (professorRequest.getEmail() != null) professorModificado.setEmail(professorRequest.getEmail());
+            if (professorRequest.getDisciplinaLecionada() != null) professorModificado.setDisciplinaLecionada(professorRequest.getDisciplinaLecionada());
+            if (professorRequest.getEstaAtivo()!= null) professorModificado.setEstaAtivo(professorRequest.getEstaAtivo());
 
             Professor professorSalvo = repositorioProfessor.save(professorModificado);
 

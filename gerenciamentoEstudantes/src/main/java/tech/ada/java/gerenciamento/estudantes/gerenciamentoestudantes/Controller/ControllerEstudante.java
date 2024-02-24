@@ -51,33 +51,25 @@ public class ControllerEstudante {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
     }
     
-    
-    @GetMapping(value = "/estudantes", params = "status")
-    public ResponseEntity<List<Estudante>> filtrarStatusEstudante(@RequestParam Boolean status) {
 
-    /**
-     * Método para filtrar um estudante pelo STATUS
-     */
+    /* Método para filtrar um estudante pelo STATUS */
     @GetMapping(value = "/estudante", params = "status")
-    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
+    public ResponseEntity<List<Estudante>> filtrarStatusEstudante(@RequestParam Boolean status) {
         List<Estudante> statusEstudantesFiltrados;
-        
         if (status) {
             statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(true);
         } else {
             statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(false);
-        }
+        };
         
         if (!statusEstudantesFiltrados.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(statusEstudantesFiltrados);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-    }
+    };
 
-    /**
-     * Método para filtrar um estudante pelo ID.
-     */
+    /*Método para filtrar um estudante pelo ID.*/
     @GetMapping(value = "/estudante/{id}")
     public ResponseEntity<Estudante> buscarEstudantePorId(@PathVariable Long id) {
         Optional<Estudante> estudante = repositorioEstudante.findById(id);
@@ -88,12 +80,6 @@ public class ControllerEstudante {
         }
     }
     
-    
-    /*** Método para filtrar um estudante pelo ID.*/
-    @GetMapping(value = "/estudante/{id}")
-    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@PathVariable Long id) throws Exception{
-        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
-    }
     
     /*** Método para filtrar um estudante pelo NOME.*/
 
@@ -130,7 +116,7 @@ public class ControllerEstudante {
     @PatchMapping("/estudante/{id}")
     public ResponseEntity<Estudante> atualizarEstudante(
             @PathVariable Long id,
-            @RequestBody EstudanteRequest request) throws Exception {
+            @RequestBody EstudanteStatusRequest request) throws Exception {
         // Buscar pelo metodo findById que retorna um Optional<TodoItem>
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
         
