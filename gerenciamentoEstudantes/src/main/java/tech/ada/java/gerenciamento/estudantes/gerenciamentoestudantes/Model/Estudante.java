@@ -21,32 +21,32 @@ public class Estudante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Boolean estaAtivo;
-    @Setter
-    @Getter
+    @Column(name="nome_completo", nullable = false)
     private String nomeAluno;
     private String dataNascimento;
     private String nomeResponsavel;
     private String contatoResponsavel;
     @CreationTimestamp
     private LocalDateTime dataDeCadastro;
-
     @UpdateTimestamp
     private LocalDateTime dataAtualizacao;
-
-    //Turma turma;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "2")
+    private Turma turma;
     
     public Estudante(Boolean estaAtivo) {
         this.estaAtivo = true;
     }
-    
+
     //Construtor - Editando dados cadastrados // PUT
-    public Estudante(boolean estaAtivo, String nomeAluno, String dataNascimento, String nomeResponsavel,
-                     String contatoResponsavel){
-        this.estaAtivo = estaAtivo ;
+    public Estudante(Boolean estaAtivo, String nomeAluno, String dataNascimento, String nomeResponsavel,
+                     String contatoResponsavel, LocalDateTime dataDeCadastro, Turma turma) {
+        this.estaAtivo = estaAtivo;
         this.nomeAluno = nomeAluno;
         this.dataNascimento = dataNascimento;
         this.nomeResponsavel = nomeResponsavel;
         this.contatoResponsavel = contatoResponsavel;
-        this.dataDeCadastro= LocalDateTime.now(ZoneId.of("UTC"));
+        this.dataDeCadastro = LocalDateTime.now(ZoneId.of("UTC"));
+        this.turma = turma;
     }
 }

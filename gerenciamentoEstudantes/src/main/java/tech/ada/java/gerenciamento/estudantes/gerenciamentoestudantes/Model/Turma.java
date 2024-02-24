@@ -9,24 +9,16 @@ import java.util.List;
 @Entity
 @Setter
 @Getter
-@Table(name = "turmas")
+@Table(name = "turma")
 public class Turma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nomeTurma;
-
     private Boolean estaAtiva;
-//    private String listaIdEstudantes;
-//    private String listaIdProfessores;
-
-    private boolean turmaAtiva;
-
-//    private List<Estudante> listaEstudantes;
-//    private List<Professor> listaProfessores;
-
-
+    @OneToMany(mappedBy = "turma")
+    private List<Estudante> estudantes;
 
     public Turma(String nomeTurma, boolean estaAtiva) {
         this.nomeTurma = nomeTurma;

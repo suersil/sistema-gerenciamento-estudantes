@@ -16,6 +16,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.Estud
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 
 
 import java.time.LocalDateTime;
@@ -23,16 +24,19 @@ import java.time.ZoneId;
 
 import java.util.List;
 import java.util.Optional;
-
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 @Validated
-@RestController("estudante")
+@RestController("/estudante")
 public class ControllerEstudante {
     private final RepositorioEstudante repositorioEstudante;
+    private final RepositorioTurma turmaRepositorio;
+
     private final ModelMapper modelMapper;
     
     @Autowired
-    public ControllerEstudante(RepositorioEstudante repositorioEstudante, ModelMapper modelMapper) {
+    public ControllerEstudante(RepositorioEstudante repositorioEstudante, RepositorioTurma turmaRepositorio, ModelMapper modelMapper) {
         this.repositorioEstudante = repositorioEstudante;
+        this.turmaRepositorio = turmaRepositorio;
         this.modelMapper = modelMapper;
     }
     @PostMapping("/estudante")
@@ -131,8 +135,13 @@ public class ControllerEstudante {
                 estudanteItemModificado.setNomeResponsavel(request.nomeResponsavel());
             if (request.contatoResponsavel() != null)
                 estudanteItemModificado.setContatoResponsavel(request.contatoResponsavel());
-            
-            //Depois de atualizar - vamos salvar
+//            if (request.turma_id() != null)
+            Optional<Turma> optionalTurma;
+            if (request.turma_id() != null) {
+                optionalTurma = turmaRepositorio.findById(request.turma_id());
+                if(optionalTurma.isPresent()) { estudanteItemModificado.setTurma(optionalTurma.get()); }
+            }
+
             Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado);
             return ResponseEntity.ok(estudanteSalvo);
         }
