@@ -8,9 +8,9 @@ public class ResourceNotFoundException extends RuntimeException{
 
     private String resourceName;
     private String campoNome;
-    private Long campoValor;
+    private Object campoValor;
 
-    public ResourceNotFoundException(String resourceName, String campoNome, Long campoValor){
+    public ResourceNotFoundException(String resourceName, String campoNome, Object campoValor){
         super(String.format("%s não foi encontrado com: %s= '%s", resourceName, campoNome, campoValor));
         this.resourceName = resourceName;
         this.campoNome = campoNome;

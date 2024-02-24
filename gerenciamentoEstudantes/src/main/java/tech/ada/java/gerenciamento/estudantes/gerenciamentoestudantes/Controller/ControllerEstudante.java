@@ -51,9 +51,14 @@ public class ControllerEstudante {
     /**
      * ALL
      */
-    @GetMapping("/estudante")
+    @GetMapping("/estudantes")
     public ResponseEntity<List<Estudante>> listarTodosEstudantes() {
-        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
+        List<Estudante> obterLista = repositorioEstudante.findAll();
+
+        if(obterLista == null || obterLista.isEmpty()){
+            throw new ResourceNotFoundException("estudantes");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(obterLista);
     }
     
     
@@ -70,7 +75,7 @@ public class ControllerEstudante {
         if (!statusEstudantesFiltrados.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(statusEstudantesFiltrados);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResourceNotFoundException("estudantes", "status", status);
         }
     }
     
@@ -79,6 +84,12 @@ public class ControllerEstudante {
      */
     @GetMapping(value = "/estudante", params = {"id"})
     public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@RequestParam Long id) {
+
+        Optional<Estudante> estudantePorId = repositorioEstudante.findById(id);
+
+        if(estudantePorId.isEmpty()){
+            throw new ResourceNotFoundException("ID");
+        }
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
     }
     
