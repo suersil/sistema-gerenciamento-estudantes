@@ -17,7 +17,7 @@ public class EstudanteCadastroDTO {
     private String dataNascimento;
     @Getter
     private String contatoResponsavel;
-    private boolean estaAtivo;
+    private Boolean estaAtivo;
     
     public EstudanteCadastroDTO(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel, Boolean estaAtivo) {
         this.nomeAluno = Objects.requireNonNull(nomeAluno, "Informe o nome do aluno");

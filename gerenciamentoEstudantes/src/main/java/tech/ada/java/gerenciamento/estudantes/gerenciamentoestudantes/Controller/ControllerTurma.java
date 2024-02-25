@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AlterarTurmaRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.TurmaRequest;
@@ -28,15 +30,22 @@ public class ControllerTurma {
     }
 
     @PostMapping("/turma")
-    public ResponseEntity<Turma> cadastrarTurma(@RequestBody @Valid TurmaRequest request) {
+    public ResponseEntity<Turma> cadastrarTurma(@RequestBody @Valid TurmaRequest request) throws BadRequest {
         Turma turmaConvertida = modelMapper.map(request, Turma.class);
         Turma novaTurma = turmaRepositorio.save(turmaConvertida);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaTurma);
     }
 
+
     @GetMapping("/turmas")
-    public List<Turma> buscarTurmas(){
-        return turmaRepositorio.findAll();
+    public ResponseEntity<List<Turma>> buscarTurmas(){
+        List<Turma> listaTurma = turmaRepositorio.findAll();
+
+        if(listaTurma.isEmpty()){
+            throw new ResourceNotFoundException("lista de turmas");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(listaTurma);
+
     }
     @GetMapping("/turma/{id}")
     public ResponseEntity<Turma> buscarTurmaEspecifica(@PathVariable Long id) throws Exception{
@@ -44,7 +53,7 @@ public class ControllerTurma {
         if(optionalTurma.isPresent()) {
             return ResponseEntity.ok(optionalTurma.get());
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Turma", "ID", id);
         }
     }
     @PatchMapping("/turma/{id}")
@@ -52,15 +61,20 @@ public class ControllerTurma {
             @PathVariable Long id,
             @RequestBody AlterarTurmaRequest request) throws Exception {
         Optional<Turma> optionalTurma = turmaRepositorio.findById(id);
+
         if(optionalTurma.isPresent()) {
+
             Turma turmaModificada = optionalTurma.get();
+
             if(request.turmaAtiva() != null) turmaModificada.setEstaAtiva(request.turmaAtiva());
             if(request.nomeTurma() != null) turmaModificada.setNomeTurma(request.nomeTurma());
             Turma turmaSalva =  turmaRepositorio.save(turmaModificada);
             return ResponseEntity.ok(turmaSalva);
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Turma", "ID", id);
         }
+
+
     }
 
     @PutMapping("/turma/{id}")
@@ -76,7 +90,7 @@ public class ControllerTurma {
             Turma turmaSalva = turmaRepositorio.save(turmaModificada);
             return ResponseEntity.ok(turmaSalva);
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Turma", "ID", id);
         }
     }
 
@@ -93,7 +107,7 @@ public class ControllerTurma {
         if(!statusTurmaFiltrada.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(statusTurmaFiltrada);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResourceNotFoundException("lista de turmas");
         }
     }
 }
