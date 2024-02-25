@@ -1,5 +1,6 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class ControllerProfessor {
     }
 
     @PostMapping("/professor")
-    public ResponseEntity<Professor> cadastrarProfessor(@RequestBody ProfessorDTO professorRequest) {
+    public ResponseEntity<Professor> cadastrarProfessor(@RequestBody @Valid ProfessorDTO professorRequest) {
 
         //converter a request que chegou no body para uma entidade Professor
         Professor professorConvertido = modelMapper.map(professorRequest, Professor.class);
