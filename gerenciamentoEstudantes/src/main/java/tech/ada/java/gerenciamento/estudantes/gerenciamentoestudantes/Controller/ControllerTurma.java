@@ -34,7 +34,7 @@ public class ControllerTurma {
         return ResponseEntity.status(HttpStatus.CREATED).body(novaTurma);
     }
 
-    @GetMapping("/turma")
+    @GetMapping("/turmas")
     public List<Turma> buscarTurmas(){
         return turmaRepositorio.findAll();
     }
@@ -80,7 +80,7 @@ public class ControllerTurma {
         }
     }
 
-    @GetMapping(value = "/turma", params = "estaAtiva")
+    @GetMapping(value = "/turmas", params = "estaAtiva")
     public ResponseEntity<List<Turma>> filtrarStatusTurma(@RequestParam Boolean estaAtiva){
         List<Turma> statusTurmaFiltrada;
 
