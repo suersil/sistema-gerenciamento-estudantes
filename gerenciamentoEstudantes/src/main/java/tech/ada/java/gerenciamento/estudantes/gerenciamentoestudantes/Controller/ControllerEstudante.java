@@ -45,7 +45,7 @@ public class ControllerEstudante {
         
         Estudante estudante = modelMapper.map(request, Estudante.class);
 
-        estudante.setEstaAtivo(true);
+        estudante.setEstaAtivo(request.estaAtivo());
         Estudante novoEstudante = repositorioEstudante.save(estudante);
         novoEstudante.setDataAtualizacao(null);  //Devolvendo Null ao criar cadastro
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante);
@@ -57,9 +57,7 @@ public class ControllerEstudante {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
     }
 
-    /**
-     * Método para filtrar um estudante pelo STATUS
-     */
+    /*** Método para filtrar um estudante pelo STATUS*/
     @GetMapping(value = "/estudante", params = "status")
     public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
         List<Estudante> statusEstudantesFiltrados;
@@ -103,6 +101,7 @@ public class ControllerEstudante {
         // Se existir vamos fazer o get(by ID)
         Estudante estudanteExistente = optionalEstudante.get();
 
+        estudanteExistente.setEstaAtivo(atualizarEstudante.estaAtivo());
         estudanteExistente.setNomeAluno(atualizarEstudante.nomeAluno());
         estudanteExistente.setDataNascimento(atualizarEstudante.dataNascimento());
         estudanteExistente.setNomeResponsavel(atualizarEstudante.nomeResponsavel());
@@ -119,7 +118,7 @@ public class ControllerEstudante {
     public ResponseEntity<Estudante> atualizarEstudante(
             @PathVariable Long id,
             @RequestBody EstudanteRequest request) throws Exception {
-        // Buscar pelo metodo findById que retorna um Optional<TodoItem>
+        // Buscar pelo metodo findById que retorna um Optional<Estudante>
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
         
         // Verificamos se existe valor dentro do Optional
@@ -139,7 +138,7 @@ public class ControllerEstudante {
                 optionalTurma = turmaRepositorio.findById(request.turma_id());
                 if(optionalTurma.isPresent()) { estudanteItemModificado.setTurma(optionalTurma.get()); }
             }
-
+            //Depois de atualizar - Salvando
             Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado);
             return ResponseEntity.ok(estudanteSalvo);
         }
