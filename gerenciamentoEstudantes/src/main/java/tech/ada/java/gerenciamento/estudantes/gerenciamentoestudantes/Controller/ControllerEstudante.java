@@ -1,6 +1,7 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.*;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 
@@ -54,6 +55,8 @@ public class ControllerEstudante {
     /*** Get ALL */
     @GetMapping("/estudante")
     public ResponseEntity<List<Estudante>> listarTodosEstudantes() {
+
+
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
     }
 
@@ -77,7 +80,14 @@ public class ControllerEstudante {
 
     /*** Método para filtrar um estudante pelo ID.*/
     @GetMapping(value = "/estudante/{id}")
-    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@PathVariable Long id) throws Exception{
+    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@PathVariable Long id){
+
+        Optional<Estudante> estudantePorId = repositorioEstudante.findById(id);
+
+        if(estudantePorId.isEmpty()){
+            throw new ResourceNotFoundException("ID");
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
     }
     
