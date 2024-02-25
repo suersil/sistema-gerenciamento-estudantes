@@ -52,7 +52,7 @@ public class EstudanteCadastroDTO {
     public boolean estaAtivo() {
         return estaAtivo;
     }
-    public void setEstaAtivo(Boolean estaAtivo) {
+    public void setEstaAtivo(boolean estaAtivo) {
         this.estaAtivo = estaAtivo;
     }
 }
