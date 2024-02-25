@@ -1,58 +1,33 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Objects;
 
+@Setter
+@Getter
+
 public class EstudanteCadastroDTO {
+    @Getter
     private String nomeAluno;
+    @Getter
     private String nomeResponsavel;
+    @Getter
     private String dataNascimento;
+    @Getter
     private String contatoResponsavel;
     private boolean estaAtivo;
     
-    public EstudanteCadastroDTO(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel, boolean estaAtivo) {
+    public EstudanteCadastroDTO(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel, Boolean estaAtivo) {
         this.nomeAluno = Objects.requireNonNull(nomeAluno, "Informe o nome do aluno");
         this.nomeResponsavel = Objects.requireNonNull(nomeResponsavel, "Informe o nome do responsável");
         this.dataNascimento = Objects.requireNonNull(dataNascimento, "Informe a data de nascimento");
         this.contatoResponsavel = Objects.requireNonNull(contatoResponsavel, "Informe o contato do responsável");
         this.estaAtivo = estaAtivo;
     }
-    
-    public String getNomeAluno() {
-        return nomeAluno;
-    }
-    
-    public void setNomeAluno(String nomeAluno) {
-        this.nomeAluno = nomeAluno;
-    }
-    
-    public String getNomeResponsavel() {
-        return nomeResponsavel;
-    }
-    
-    public void setNomeResponsavel(String nomeResponsavel) {
-        this.nomeResponsavel = nomeResponsavel;
-    }
-    
-    public String getDataNascimento() {
-        return dataNascimento;
-    }
-    
-    public void setDataNascimento(String dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-    
-    public String getContatoResponsavel() {
-        return contatoResponsavel;
-    }
-    
-    public void setContatoResponsavel(String contatoResponsavel) {
-        this.contatoResponsavel = contatoResponsavel;
-    }
 
     public boolean estaAtivo() {
         return estaAtivo;
-    }
-    public void setEstaAtivo(boolean estaAtivo) {
-        this.estaAtivo = estaAtivo;
     }
 }

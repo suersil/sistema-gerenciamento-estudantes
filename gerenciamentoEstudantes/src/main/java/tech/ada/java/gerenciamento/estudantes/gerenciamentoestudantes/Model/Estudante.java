@@ -21,7 +21,7 @@ public class Estudante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Boolean estaAtivo;
+    private boolean estaAtivo;
     @Column(name="nome_completo", nullable = false)
     private String nomeAluno;
     private String dataNascimento;
@@ -41,7 +41,7 @@ public class Estudante {
     }
 
     //Construtor - Editando dados cadastrados // PUT
-    public Estudante(Boolean estaAtivo, String nomeAluno, String dataNascimento, String nomeResponsavel,
+    public Estudante(boolean estaAtivo, String nomeAluno, String dataNascimento, String nomeResponsavel,
                      String contatoResponsavel, LocalDateTime dataDeCadastro, Turma turma) {
         this.estaAtivo = estaAtivo;
         this.nomeAluno = nomeAluno;
