@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarProfessorRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
@@ -33,7 +35,7 @@ public class ControllerProfessor {
     }
 
     @PostMapping("/professor")
-    public ResponseEntity<Professor> cadastrarProfessor(@RequestBody @Valid ProfessorDTO professorRequest) {
+    public ResponseEntity<Professor> cadastrarProfessor(@RequestBody @Valid ProfessorDTO professorRequest) throws BadRequest {
 
         //converter a request que chegou no body para uma entidade Professor
         Professor professorConvertido = modelMapper.map(professorRequest, Professor.class);
@@ -44,34 +46,36 @@ public class ControllerProfessor {
     @GetMapping("/professor")
     public ResponseEntity<List<Professor>> listarTodos() {
         List<Professor> listarProfessores = repositorioProfessor.findAll();
+        if(listarProfessores.isEmpty()){
+            throw new ResourceNotFoundException("lista de professores");
+        }
         return ResponseEntity.status(HttpStatus.OK).body(listarProfessores);
     }
 
     @PutMapping("/professor/{id}")
-    public ResponseEntity<Professor> editarProfessor(
+    public ResponseEntity<Professor> editarTudoProfessor(
             @PathVariable("id") Long id,
             @RequestBody AtualizarProfessorRequest atualizarProfessorRequest) throws Exception {
         Optional<Professor> optionalProfessor = repositorioProfessor.findById(id);
 
-        if (optionalProfessor.isPresent()) {
-            Professor professorExistente = optionalProfessor.get();
-
-            professorExistente.setNomeProfessor(atualizarProfessorRequest.nomeProfessor());
-            professorExistente.setEmail(atualizarProfessorRequest.email());
-            professorExistente.setDisciplinaLecionada(atualizarProfessorRequest.disciplinaLecionada());
-            professorExistente.setEstaAtivo(atualizarProfessorRequest.estaAtivo());
-
-            Professor professorSalvo = repositorioProfessor.save(professorExistente);
-
-            return ResponseEntity.ok(professorSalvo);
+        if(optionalProfessor.isEmpty()){
+            throw new ResourceNotFoundException("Professor", "ID", id);
         }
-        else {
-            return ResponseEntity.notFound().build();
-        }
+
+        Professor professorExistente = optionalProfessor.get();
+
+        professorExistente.setNomeProfessor(atualizarProfessorRequest.nomeProfessor());
+        professorExistente.setEmail(atualizarProfessorRequest.email());
+        professorExistente.setDisciplinaLecionada(atualizarProfessorRequest.disciplinaLecionada());
+        professorExistente.setEstaAtivo(atualizarProfessorRequest.estaAtivo());
+
+        Professor professorSalvo = repositorioProfessor.save(professorExistente);
+
+        return ResponseEntity.ok(professorSalvo);
     }
 
     @PatchMapping("/professor/{id}")
-    public ResponseEntity<Professor> alterarProfessor(
+    public ResponseEntity<Professor> atualizarProfessor(
             @PathVariable("id") Long id,
             @RequestBody ProfessorRequest professorRequest) throws Exception {
         Optional<Professor> optionalProfessor = repositorioProfessor.findById(id);
@@ -85,13 +89,17 @@ public class ControllerProfessor {
             Optional<Turma> optionalTurma;
             if (professorRequest.turma_id() != null) {
                 optionalTurma = turmaRepositorio.findById(professorRequest.turma_id());
-                if(optionalTurma.isPresent()) {professorModificado.AdicionarTurma(optionalTurma.get());}
+                if(optionalTurma.isPresent()) {
+                    professorModificado.AdicionarTurma(optionalTurma.get());
+                } else{
+                    throw new ResourceNotFoundException("turma registrada");
+                }
             }
             Professor professorSalvo = repositorioProfessor.save(professorModificado);
             return ResponseEntity.ok(professorSalvo);
         }
         else {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("professor encontrado");
         }
     }
 
@@ -105,7 +113,7 @@ public class ControllerProfessor {
             }
             return ResponseEntity.status(HttpStatus.OK).body(nomesDosProfessores);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResourceNotFoundException("nome do professor");
         }
     }
 
