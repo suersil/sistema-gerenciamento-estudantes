@@ -33,7 +33,7 @@ public class ControllerEstudante {
     private final RepositorioTurma turmaRepositorio;
 
     private final ModelMapper modelMapper;
-    
+
     @Autowired
     public ControllerEstudante(RepositorioEstudante repositorioEstudante, RepositorioTurma turmaRepositorio, ModelMapper modelMapper) {
         this.repositorioEstudante = repositorioEstudante;
@@ -43,7 +43,7 @@ public class ControllerEstudante {
     @PostMapping("/estudante")
     public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request)
     throws Exception{
-        
+
         Estudante estudante = modelMapper.map(request, Estudante.class);
 
         estudante.setEstaAtivo(request.estaAtivo());
@@ -51,11 +51,10 @@ public class ControllerEstudante {
         novoEstudante.setDataAtualizacao(null);  //Devolvendo Null ao criar cadastro
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante);
     }
-    
+
     /*** Get ALL */
     @GetMapping("/estudante")
     public ResponseEntity<List<Estudante>> listarTodosEstudantes() {
-
 
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
     }
@@ -64,13 +63,13 @@ public class ControllerEstudante {
     @GetMapping(value = "/estudante", params = "status")
     public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
         List<Estudante> statusEstudantesFiltrados;
-        
+
         if (status) {
             statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(true);
         } else {
             statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(false);
         }
-        
+
         if (!statusEstudantesFiltrados.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(statusEstudantesFiltrados);
         } else {
@@ -81,16 +80,9 @@ public class ControllerEstudante {
     /*** Método para filtrar um estudante pelo ID.*/
     @GetMapping(value = "/estudante/{id}")
     public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@PathVariable Long id){
-
-        Optional<Estudante> estudantePorId = repositorioEstudante.findById(id);
-
-        if(estudantePorId.isEmpty()){
-            throw new ResourceNotFoundException("ID");
-        }
-
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
     }
-    
+
     /*** Método para filtrar um estudante pelo NOME.*/
     @GetMapping(value = "/estudante", params = {"nomeAluno"})
     public ResponseEntity<List<Estudante>> filtrarEstudanteNome(@RequestParam String nomeAluno) {
@@ -119,7 +111,7 @@ public class ControllerEstudante {
         estudanteExistente.setDataDeCadastro(estudanteExistente.getDataDeCadastro());
 
         Estudante estudanteSalvo = repositorioEstudante.save(estudanteExistente);
-        
+
         return ResponseEntity.ok(estudanteSalvo);
     }
 
@@ -130,7 +122,7 @@ public class ControllerEstudante {
             @RequestBody EstudanteRequest request) throws Exception {
         // Buscar pelo metodo findById que retorna um Optional<Estudante>
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
-        
+
         // Verificamos se existe valor dentro do Optional
         if (optionalEstudante.isPresent()) {
             // Se existir - fazer o get()
@@ -147,6 +139,9 @@ public class ControllerEstudante {
             if (request.turma_id() != null) {
                 optionalTurma = turmaRepositorio.findById(request.turma_id());
                 if(optionalTurma.isPresent()) { estudanteItemModificado.setTurma(optionalTurma.get()); }
+                else{
+                    throw new ResourceNotFoundException("turma nao encontrada");
+                }
             }
             //Depois de atualizar - Salvando
             Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado);
