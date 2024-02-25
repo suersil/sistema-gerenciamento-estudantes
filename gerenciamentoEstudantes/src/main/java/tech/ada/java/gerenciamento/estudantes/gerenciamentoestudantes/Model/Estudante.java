@@ -2,6 +2,7 @@ package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -23,10 +24,19 @@ public class Estudante {
     private Long id;
     private boolean estaAtivo;
     @Column(name="nome_completo", nullable = false)
+
+    @NotBlank(message = "{nomeAluno.not.blank}")
     private String nomeAluno;
+
+    @NotBlank(message = "{dataNascimento.not.blank}")
     private String dataNascimento;
+
+    @NotBlank(message = "{nomeResponsavel.not.blank}")
     private String nomeResponsavel;
+
+    @NotBlank(message = "{contatoResponsavel.not.blank}")
     private String contatoResponsavel;
+
     @CreationTimestamp
     private LocalDateTime dataDeCadastro;
     @UpdateTimestamp
