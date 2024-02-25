@@ -125,7 +125,8 @@ public class ControllerEstudante {
         if (optionalEstudante.isPresent()) {
             // Se existir - fazer o get()
             Estudante estudanteItemModificado = optionalEstudante.get();
-            // verificamos se um das tres variaveis que esperamos foi passada para ser atualizada
+
+            // verificamos se as variaveis que esperamos foram passadas para serem atualizadas
             if (request.estaAtivo()) estudanteItemModificado.setEstaAtivo(request.estaAtivo());
             if (request.nomeAluno() != null) estudanteItemModificado.setNomeAluno(request.nomeAluno());
             if (request.nomeResponsavel() != null)
