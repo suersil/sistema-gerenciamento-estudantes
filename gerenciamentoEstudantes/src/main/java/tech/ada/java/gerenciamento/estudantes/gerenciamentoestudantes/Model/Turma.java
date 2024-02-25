@@ -1,5 +1,6 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public class Turma {
             joinColumns = @JoinColumn(name = "turma_id"),
             inverseJoinColumns = @JoinColumn(name = "professor_id")
     )
+    @JsonIgnoreProperties({"listaTurmas"})
     private List<Professor> professores = new ArrayList<>();
     
     public Turma(String nomeTurma, boolean estaAtiva) {
