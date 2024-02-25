@@ -7,9 +7,9 @@ public class EstudanteCadastroDTO {
     private String nomeResponsavel;
     private String dataNascimento;
     private String contatoResponsavel;
-    private boolean estaAtivo;
+    private Boolean estaAtivo;
     
-    public EstudanteCadastroDTO(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel, boolean estaAtivo) {
+    public EstudanteCadastroDTO(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel, Boolean estaAtivo) {
         this.nomeAluno = Objects.requireNonNull(nomeAluno, "Informe o nome do aluno");
         this.nomeResponsavel = Objects.requireNonNull(nomeResponsavel, "Informe o nome do responsável");
         this.dataNascimento = Objects.requireNonNull(dataNascimento, "Informe a data de nascimento");
@@ -52,7 +52,7 @@ public class EstudanteCadastroDTO {
     public boolean estaAtivo() {
         return estaAtivo;
     }
-    public void setEstaAtivo(boolean estaAtivo) {
+    public void setEstaAtivo(Boolean estaAtivo) {
         this.estaAtivo = estaAtivo;
     }
 }

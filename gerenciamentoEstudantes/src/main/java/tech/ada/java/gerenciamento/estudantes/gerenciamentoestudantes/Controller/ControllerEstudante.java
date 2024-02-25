@@ -55,16 +55,20 @@ public class ControllerEstudante {
     /*** Get ALL */
     @GetMapping("/estudante")
     public ResponseEntity<List<Estudante>> listarTodosEstudantes() {
+        List<Estudante> listaEstudantes = repositorioEstudante.findAll();
 
+        if(listaEstudantes.isEmpty()){
+            throw new ResourceNotFoundException("lista de estudantes");
+        }
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
     }
 
     /*** Método para filtrar um estudante pelo STATUS*/
-    @GetMapping(value = "/estudante", params = "status")
-    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
+    @GetMapping(value = "/estudante", params = "estaAtivo")
+    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean estaAtivo) {
         List<Estudante> statusEstudantesFiltrados;
 
-        if (status) {
+        if (estaAtivo) {
             statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(true);
         } else {
             statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(false);
@@ -73,19 +77,32 @@ public class ControllerEstudante {
         if (!statusEstudantesFiltrados.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(statusEstudantesFiltrados);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResourceNotFoundException("lista de estudantes");
         }
     }
 
     /*** Método para filtrar um estudante pelo ID.*/
     @GetMapping(value = "/estudante/{id}")
     public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@PathVariable Long id){
+
+        Optional<Estudante> estudantePorID = repositorioEstudante.findById(id);
+
+        if(estudantePorID.isEmpty()){
+            throw new ResourceNotFoundException("Estudante", "ID", id);
+        }
+
+
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
     }
 
     /*** Método para filtrar um estudante pelo NOME.*/
     @GetMapping(value = "/estudante", params = {"nomeAluno"})
     public ResponseEntity<List<Estudante>> filtrarEstudanteNome(@RequestParam String nomeAluno) {
+        List<Estudante> estudantePorNome = repositorioEstudante.findByNomeAlunoQuery(nomeAluno);
+
+        if(estudantePorNome.isEmpty()){
+            throw new ResourceNotFoundException("estudante", "nome ", nomeAluno);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAlunoQuery(nomeAluno));
     }
 
@@ -97,7 +114,7 @@ public class ControllerEstudante {
 
         //Primeiro checar cadastro existente
         if (optionalEstudante.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Estudante", "ID", id);
         }
 
         // Se existir vamos fazer o get(by ID)
@@ -148,6 +165,6 @@ public class ControllerEstudante {
             return ResponseEntity.ok(estudanteSalvo);
         }
         //Retornar o codigo 404 - se nao encontrado
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("Estudante", "ID", id);
     }
 }
