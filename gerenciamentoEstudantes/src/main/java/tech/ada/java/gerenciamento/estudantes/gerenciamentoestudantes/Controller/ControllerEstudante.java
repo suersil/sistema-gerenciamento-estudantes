@@ -158,7 +158,7 @@ public class ControllerEstudante {
                 optionalTurma = turmaRepositorio.findById(request.turma_id());
                 if(optionalTurma.isPresent()) { estudanteItemModificado.setTurma(optionalTurma.get()); }
                 else{
-                    throw new ResourceNotFoundException("turma nao encontrada");
+                    throw new ResourceNotFoundException("turma não encontrada");
                 }
             }
             //Depois de atualizar - Salvando
