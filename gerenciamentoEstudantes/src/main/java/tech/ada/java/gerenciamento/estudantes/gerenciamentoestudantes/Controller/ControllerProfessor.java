@@ -27,7 +27,7 @@ public class ControllerProfessor {
     private final ModelMapper modelMapper;
 
     @Autowired
-    //injetando a dependencia via construtor com padrão inversao de dependencia
+   
     public ControllerProfessor(RepositorioProfessor repositorioProfessor, ModelMapper modelMapper, RepositorioTurma turmaRepositorio) {
         this.repositorioProfessor = repositorioProfessor;
         this.turmaRepositorio = turmaRepositorio;
@@ -37,13 +37,13 @@ public class ControllerProfessor {
     @PostMapping("/professor")
     public ResponseEntity<Professor> cadastrarProfessor(@RequestBody @Valid ProfessorDTO professorRequest) throws BadRequest {
 
-        //converter a request que chegou no body para uma entidade Professor
+       
         Professor professorConvertido = modelMapper.map(professorRequest, Professor.class);
         Professor novoProfessor = repositorioProfessor.save(professorConvertido);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoProfessor);
     }
 
-    @GetMapping("/professor")
+    @GetMapping("/professores")
     public ResponseEntity<List<Professor>> listarTodos() {
         List<Professor> listarProfessores = repositorioProfessor.findAll();
         if(listarProfessores.isEmpty()){

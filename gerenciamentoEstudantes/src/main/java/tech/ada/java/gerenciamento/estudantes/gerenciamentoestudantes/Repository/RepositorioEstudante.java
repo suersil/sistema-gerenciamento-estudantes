@@ -13,4 +13,22 @@ public interface RepositorioEstudante extends JpaRepository <Estudante, Long> {
 
     @Query("SELECT e FROM Estudante e WHERE e.nomeAluno LIKE %?1%") //Like = Nome parcial, parecido, apenas primeiro nome ou sobrenome.
     List<Estudante> findByNomeAlunoQuery(String nomeAluno);
+    
+    default boolean existsByEstudante(Estudante estudante) {
+        List<Estudante> estudantes = findByNomeAlunoContainingAndNomeResponsavelContainingAndDataNascimentoContainingAndContatoResponsavelContaining(
+                estudante.getNomeAluno(),
+                estudante.getNomeResponsavel(),
+                estudante.getDataNascimento(),
+                estudante.getContatoResponsavel()
+        );
+        return !estudantes.isEmpty();
+    }
+    
+    List<Estudante> findByNomeAlunoContainingAndNomeResponsavelContainingAndDataNascimentoContainingAndContatoResponsavelContaining(
+            String nomeAluno,
+            String nomeResponsavel,
+            String dataNascimento,
+            String contatoResponsavel
+    );
 }
+

@@ -46,15 +46,19 @@ public class ControllerEstudante {
     throws BadRequest {
 
         Estudante estudante = modelMapper.map(request, Estudante.class);
+        if (repositorioEstudante.existsByEstudante(estudante)) {
+            throw new Exception("Já existe um estudante com os mesmos detalhes.");
+        }
 
         estudante.setEstaAtivo(request.estaAtivo());
         Estudante novoEstudante = repositorioEstudante.save(estudante);
-        novoEstudante.setDataAtualizacao(null);  //Devolvendo Null ao criar cadastro
+        novoEstudante.setDataAtualizacao(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante);
     }
 
-    /*** Get ALL */
-    @GetMapping("/estudante")
+    
+    @GetMapping("/estudantes")
+
     public ResponseEntity<List<Estudante>> listarTodosEstudantes() {
         List<Estudante> listaEstudantes = repositorioEstudante.findAll();
 
@@ -64,9 +68,10 @@ public class ControllerEstudante {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
     }
 
-    /*** Método para filtrar um estudante pelo STATUS*/
-    @GetMapping(value = "/estudante", params = "estaAtivo")
-    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean estaAtivo) {
+
+    
+    @GetMapping(value = "/estudantes", params = "status")
+    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
         List<Estudante> statusEstudantesFiltrados;
 
         if (estaAtivo) {
@@ -82,7 +87,7 @@ public class ControllerEstudante {
         }
     }
 
-    /*** Método para filtrar um estudante pelo ID.*/
+    
     @GetMapping(value = "/estudante/{id}")
     public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@PathVariable Long id){
 
@@ -96,7 +101,7 @@ public class ControllerEstudante {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
     }
 
-    /*** Método para filtrar um estudante pelo NOME.*/
+
     @GetMapping(value = "/estudante", params = {"nomeAluno"})
     public ResponseEntity<List<Estudante>> filtrarEstudanteNome(@RequestParam String nomeAluno) {
         List<Estudante> estudantePorNome = repositorioEstudante.findByNomeAlunoQuery(nomeAluno);
@@ -107,18 +112,17 @@ public class ControllerEstudante {
         return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAlunoQuery(nomeAluno));
     }
 
-    /*** Método para Atualizar TUDO de um estudante.*/
+    
     @PutMapping("/estudante/{id}")
     public ResponseEntity<Estudante> editarTudoEstudante
     (@PathVariable("id") Long id, @RequestBody AtualizarEstudanteRequest atualizarEstudante) throws Exception {
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
-
-        //Primeiro checar cadastro existente
+        
         if (optionalEstudante.isEmpty()) {
             throw new ResourceNotFoundException("Estudante", "ID", id);
         }
 
-        // Se existir vamos fazer o get(by ID)
+        
         Estudante estudanteExistente = optionalEstudante.get();
 
         estudanteExistente.setEstaAtivo(atualizarEstudante.estaAtivo());
@@ -133,40 +137,37 @@ public class ControllerEstudante {
         return ResponseEntity.ok(estudanteSalvo);
     }
 
-    /*** Método para Atualizar STATUS e outras info. de um estudante.*/
-    @PatchMapping("/estudante/{id}")
+    
+   @PatchMapping("/estudante/{id}")
     public ResponseEntity<Estudante> atualizarEstudante(
             @PathVariable Long id,
             @RequestBody EstudanteRequest request) throws Exception {
-        // Buscar pelo metodo findById que retorna um Optional<Estudante>
+
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
 
-        // Verificamos se existe valor dentro do Optional
         if (optionalEstudante.isPresent()) {
-            // Se existir - fazer o get()
+
             Estudante estudanteItemModificado = optionalEstudante.get();
 
-            // verificamos se as variaveis que esperamos foram passadas para serem atualizadas
-            if (request.estaAtivo()) estudanteItemModificado.setEstaAtivo(request.estaAtivo());
+            if (request.estaAtivo() != null) estudanteItemModificado.setEstaAtivo(request.estaAtivo());
             if (request.nomeAluno() != null) estudanteItemModificado.setNomeAluno(request.nomeAluno());
-            if (request.nomeResponsavel() != null)
-                estudanteItemModificado.setNomeResponsavel(request.nomeResponsavel());
-            if (request.contatoResponsavel() != null)
-                estudanteItemModificado.setContatoResponsavel(request.contatoResponsavel());
-//            if (request.turma_id() != null)
+            if (request.nomeResponsavel() != null) estudanteItemModificado.setNomeResponsavel(request.nomeResponsavel());
+            if (request.contatoResponsavel() != null) estudanteItemModificado.setContatoResponsavel(request.contatoResponsavel());
+
             Optional<Turma> optionalTurma;
             if (request.turma_id() != null) {
                 optionalTurma = turmaRepositorio.findById(request.turma_id());
-                if(optionalTurma.isPresent()) { estudanteItemModificado.setTurma(optionalTurma.get()); }
-                else{
+                if (optionalTurma.isPresent()) {
+                    estudanteItemModificado.setTurma(optionalTurma.get());
+                } else {
                     throw new ResourceNotFoundException("turma não encontrada");
                 }
             }
-            //Depois de atualizar - Salvando
+
             Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado);
             return ResponseEntity.ok(estudanteSalvo);
         }
-        //Retornar o codigo 404 - se nao encontrado
+
+        // Retornar o código 404 se não encontrado
         throw new ResourceNotFoundException("Estudante", "ID", id);
     }
-}

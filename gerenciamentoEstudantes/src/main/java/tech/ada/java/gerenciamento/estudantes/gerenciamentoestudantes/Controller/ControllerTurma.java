@@ -36,7 +36,8 @@ public class ControllerTurma {
         return ResponseEntity.status(HttpStatus.CREATED).body(novaTurma);
     }
 
-    @GetMapping("/turma")
+
+    @GetMapping("/turmas")
     public ResponseEntity<List<Turma>> buscarTurmas(){
         List<Turma> listaTurma = turmaRepositorio.findAll();
 
@@ -44,6 +45,7 @@ public class ControllerTurma {
             throw new ResourceNotFoundException("lista de turmas");
         }
         return ResponseEntity.status(HttpStatus.OK).body(listaTurma);
+
     }
     @GetMapping("/turma/{id}")
     public ResponseEntity<Turma> buscarTurmaEspecifica(@PathVariable Long id) throws Exception{
@@ -92,7 +94,7 @@ public class ControllerTurma {
         }
     }
 
-    @GetMapping(value = "/turma", params = "estaAtiva")
+    @GetMapping(value = "/turmas", params = "estaAtiva")
     public ResponseEntity<List<Turma>> filtrarStatusTurma(@RequestParam Boolean estaAtiva){
         List<Turma> statusTurmaFiltrada;
 
