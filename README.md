@@ -1,5 +1,11 @@
 ﻿![Imagem de capa](/gerenciamentoEstudantes/assets/capa2.jpg)
 
+![GitHub repo size](https://img.shields.io/github/repo-size/suersil/sistema-gerenciamento-estudantes?style=for-the-badge)
+![GitHub language count](https://img.shields.io/github/languages/count/suersil/sistema-gerenciamento-estudantes?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/suersil/sistema-gerenciamento-estudantes?style=for-the-badge)
+![Bitbucket open issues](https://img.shields.io/bitbucket/issues/suersil/sistema-gerenciamento-estudantes?style=for-the-badge)
+![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/suersil/sistema-gerenciamento-estudantes?style=for-the-badge)
+
 # Sistema de Gerenciamento de Estudantes
 
 
