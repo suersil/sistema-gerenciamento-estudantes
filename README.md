@@ -107,7 +107,6 @@ classDiagram
 - [Métodos Implementados](#métods)
 - [Documentação da API](#documentação-da-api)
 - [Métodos de busca e listagem](#métodos-de-busca-e-listagem)
-- [Demonstração](#demonstração)
 - [Autoras](#autoras)
 
 
