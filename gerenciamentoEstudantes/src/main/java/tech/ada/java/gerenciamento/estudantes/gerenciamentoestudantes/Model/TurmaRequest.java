@@ -13,6 +13,6 @@ public class TurmaRequest {
     private Boolean estaAtiva;
 
     public Turma toEntity() {
-        return new Turma(nomeTurma, estaAtiva);
+        return new Turma(nomeTurma);
     }
 }

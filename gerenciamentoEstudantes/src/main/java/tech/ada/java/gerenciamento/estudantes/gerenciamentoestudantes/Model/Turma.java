@@ -33,12 +33,11 @@ public class Turma {
     @JsonIgnoreProperties({"listaTurmas"})
     private List<Professor> professores = new ArrayList<>();
     
-    public Turma(String nomeTurma, boolean estaAtiva) {
+    public Turma(String nomeTurma) {
         this.nomeTurma = nomeTurma;
-        this.estaAtiva = estaAtiva;
+        this.estaAtiva = true;
     }
 
     public Turma() {
-        this.estaAtiva = false;
     }
 }

@@ -27,7 +27,7 @@ public class EstudanteCadastroDTO {
         this.estaAtivo = estaAtivo;
     }
 
-    public boolean estaAtivo() {
+    public Boolean estaAtivo() {
         return estaAtivo;
     }
 }

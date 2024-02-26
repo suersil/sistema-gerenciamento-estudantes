@@ -51,7 +51,7 @@ public class Estudante {
     }
 
     //Construtor - Editando dados cadastrados // PUT
-    public Estudante(boolean estaAtivo, String nomeAluno, String dataNascimento, String nomeResponsavel,
+    public Estudante(Boolean estaAtivo, String nomeAluno, String dataNascimento, String nomeResponsavel,
                      String contatoResponsavel, LocalDateTime dataDeCadastro, Turma turma) {
         this.estaAtivo = estaAtivo;
         this.nomeAluno = nomeAluno;
