@@ -5,7 +5,7 @@
 
 Este projeto trata-se de uma API para um sistema de gerenciamento de estudantes, contendo as funcionalidades básicas
 para cadastrar e matricular alunos em uma turma, cadastrar e atribuir professores a uma turma. Também é possível
-obteras listas de turmas, estudantes e professores e alterar os dados desses objetos.
+obter as listas de turmas, estudantes e professores, e alterar os dados desses objetos.
 
 ## Diagrama de Classe
 
@@ -123,7 +123,7 @@ classDiagram
 ## Pré-requisitos
 
 Java instalado (versão 17 ou superior) e conexão com o banco de dados H2 ou Postgres. 
-Para fazer utilizar a API será necessário colocar o USUÁRIO e SENHA tanto no banco de dados 
+Para utilizar a API será necessário colocar o USUÁRIO e SENHA, tanto no banco de dados 
 quanto na plataforma usada para fazer as requisições HTTPs.
 
 ## Métodos Implementados
