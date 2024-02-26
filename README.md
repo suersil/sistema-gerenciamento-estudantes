@@ -7,7 +7,7 @@ Este projeto trata-se de uma API para um sistema de gerenciamento de estudantes,
 para cadastrar e matricular alunos em uma turma, cadastrar e atribuir professores a uma turma. Também é possível
 obteras listas de turmas, estudantes e professores e alterar os dados desses objetos.
 
-# Diagrama de Classe
+## Diagrama de Classe
 
 ```mermaid
 classDiagram
