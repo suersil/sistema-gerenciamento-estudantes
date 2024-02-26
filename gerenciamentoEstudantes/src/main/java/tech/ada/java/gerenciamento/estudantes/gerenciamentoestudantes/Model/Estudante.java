@@ -22,7 +22,7 @@ public class Estudante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private boolean estaAtivo;
+    private Boolean estaAtivo;
     @Column(name="nome_completo", nullable = false)
 
     @NotBlank(message = "{nomeAluno.not.blank}")

@@ -149,7 +149,6 @@ public class ControllerEstudante {
             
             Estudante estudanteItemModificado = optionalEstudante.get();
             
-            if (request.estaAtivo() ) estudanteItemModificado.setEstaAtivo(request.estaAtivo());
             if (request.nomeAluno() != null) estudanteItemModificado.setNomeAluno(request.nomeAluno());
             if (request.nomeResponsavel() != null)
                 estudanteItemModificado.setNomeResponsavel(request.nomeResponsavel());
