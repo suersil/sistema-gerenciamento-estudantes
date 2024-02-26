@@ -103,19 +103,11 @@ public class ControllerProfessor {
         }
     }
 
-    @GetMapping(value = "/professor", params = {"nomeProfessor"})
-    public ResponseEntity<List<String>> filtrarProfessorPorNome(@RequestParam String nomeProfessor) {
-        List<Professor> professoresEncontrados = repositorioProfessor.findProfessorsByNomeProfessor(nomeProfessor);
-        if (!professoresEncontrados.isEmpty()) {
-            List<String> nomesDosProfessores = new ArrayList<>();
-            for (Professor professor : professoresEncontrados) {
-                nomesDosProfessores.add(professor.getNomeProfessor());
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(nomesDosProfessores);
-        } else {
-            throw new ResourceNotFoundException("nome do professor");
-        }
-    }
+    /** Método para filtrar um professor pelo NOME.*/
+     @GetMapping(value = "/professor", params = {"nomeProfessor"})
+        public ResponseEntity<List<Professor>> filtrarProfessorPorNome(@RequestParam String nomeProfessor) {
+        return ResponseEntity.status(HttpStatus.OK).body(repositorioProfessor.findProfessorsByNomeProfessor(nomeProfessor));
+     }
 
 
 
