@@ -117,8 +117,8 @@ classDiagram
 - Java
 - Spring Boot
 - PostgreSQL
-- Authentication
 - H2
+- Authentication
 
 ## Pré-requisitos
 
@@ -148,7 +148,7 @@ quanto na plataforma usada para fazer as requisições HTTPs.
 - [X]  `PUT` **`/professor/:id`**
 - [X]  `GET` **`/professor`**
 - [X]  `GET` **`/professor?nomeProfessor`**
-- [X]  `PATCH` **`/cliente/:id`**
+- [X]  `PATCH` **`/professor/:id`**
 
 </details>
 
@@ -414,7 +414,8 @@ ou turmas cadastradas no banco de dados.
 
 
 - [@MelissaNP](https://github.com/MelissaNP)
-- [@suersil](https://github.com/suersil/sistema-gerenciamento-estudantes)
-- [@yelalopez](https://github.com/yelalopez/sistema-gerenciamento-estudantes)
 - [@nataliadiotto](https://github.com/nataliadiotto)
 - [@pri-kleine](https://github.com/pri-kleine)
+- [@suersil](https://github.com/suersil/sistema-gerenciamento-estudantes)
+- [@yelalopez](https://github.com/yelalopez/sistema-gerenciamento-estudantes)
+
