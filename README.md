@@ -117,7 +117,7 @@ classDiagram
 - Java
 - Spring Boot
 - PostgreSQL
-- Autenthication
+- Authentication
 - H2
 
 ## Pré-requisitos
