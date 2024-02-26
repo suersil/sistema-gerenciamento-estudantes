@@ -349,7 +349,8 @@ PATCH /professor/id
   
 ```
 Retorna um estudante, professor ou turma específica que é encontrada no banco de dados pela busca por id. Quando não
-encontrado, obtemos a resposta "null"
+encontrado, obtemos a resposta "null".
+
 *Exemplo para GET /turma/1*
 ```json
 {
