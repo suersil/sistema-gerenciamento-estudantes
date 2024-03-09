@@ -101,8 +101,7 @@ class ControllerEstudanteTest {
                 .andExpect(status().isCreated());
     }
 
-    @Test
-    public void deveFiltrarStatusTurmaAtivo() {
+     {
         when(repositorioEstudante.findEstudantesByEstaAtivo(true)).thenReturn(List.of(estudante));
 
         ResponseEntity<List<Estudante>> response = controllerEstudante.filtrarStatusTurma(true);
