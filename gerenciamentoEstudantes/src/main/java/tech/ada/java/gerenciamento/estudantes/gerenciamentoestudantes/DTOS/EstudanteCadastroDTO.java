@@ -27,6 +27,13 @@ public class EstudanteCadastroDTO {
         this.estaAtivo = estaAtivo;
     }
 
+    public EstudanteCadastroDTO(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {
+        this.nomeAluno = nomeAluno;
+        this.nomeResponsavel = nomeResponsavel;
+        this.dataNascimento = dataNascimento;
+        this.contatoResponsavel = contatoResponsavel;
+    }
+
     public Boolean estaAtivo() {
         return estaAtivo;
     }
