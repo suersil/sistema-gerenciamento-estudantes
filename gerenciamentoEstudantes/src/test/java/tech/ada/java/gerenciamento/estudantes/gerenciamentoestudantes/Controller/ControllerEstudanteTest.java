@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarEstudanteRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
@@ -24,9 +26,11 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @ExtendWith(MockitoExtension.class)
 class ControllerEstudanteTest {
@@ -98,22 +102,62 @@ class ControllerEstudanteTest {
     }
 
     @Test
-    void filtrarStatusTurma() {
+    public void deveFiltrarStatusTurmaAtivo() {
+        when(repositorioEstudante.findEstudantesByEstaAtivo(true)).thenReturn(List.of(estudante));
+
+        ResponseEntity<List<Estudante>> response = controllerEstudante.filtrarStatusTurma(true);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
     }
 
     @Test
-    void filtrarEstudanteId() {
+    public void deveFiltrarStatusTurmaInativo() {
+        when(repositorioEstudante.findEstudantesByEstaAtivo(false)).thenReturn(List.of(estudante));
+
+        ResponseEntity<List<Estudante>> response = controllerEstudante.filtrarStatusTurma(false);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
     }
 
     @Test
-    void filtrarEstudanteNome() {
+    public void deveFiltrarEstudanteId() {
+        when(repositorioEstudante.findById(1L)).thenReturn(Optional.of(estudante));
+
+        ResponseEntity<Optional<Estudante>> response = controllerEstudante.filtrarEstudanteId(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(estudante, response.getBody().get());
     }
 
     @Test
-    void editarTudoEstudante() {
+    public void deveFiltrarEstudanteNome() {
+        String nome = "testeNome";
+        when(repositorioEstudante.findByNomeAlunoQuery(nome)).thenReturn(List.of(estudante));
+
+        ResponseEntity<List<Estudante>> response = controllerEstudante.filtrarEstudanteNome(nome);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(estudante, response.getBody().get(0));
     }
 
+    //PUT
     @Test
-    void atualizarEstudante() {
+    public void deveEditarTudoEstudante() {
+        Long id = 1L;
+        when(repositorioEstudante.findById(id)).thenReturn(Optional.of(estudante));
+
+        AtualizarEstudanteRequest atualizarRequest = new AtualizarEstudanteRequest(true, "NovoNomeTeste", "NovaDataTeste", "NovoNomeResponsavelTeste", "NovoContatoResponsavelTeste");
+        try {
+            controllerEstudante.editarTudoEstudante(id, atualizarRequest);
+        }  catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
+
