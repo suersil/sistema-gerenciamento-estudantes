@@ -73,39 +73,29 @@ class ControllerEstudanteTest {
     }
     @Test
     void listarEstudantesComSucesso(){
-//        when(repositorioEstudante.findAll()).thenReturn(List.of(estudante));
-//        ResponseEntity<List<Estudante>> response = controllerEstudante.listarTodosEstudantes();
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertNotNull(response.getBody());
-//        assertEquals(ResponseEntity.class, response.getClass());
+        when(repositorioEstudante.findAll()).thenReturn(List.of(estudante));
+        ResponseEntity<List<Estudante>> response = controllerEstudante.listarTodosEstudantes();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(ResponseEntity.class, response.getClass());
     }
 
     @Test
     public void deveCadastrarEstudanteComSucesso() throws Exception {
-        when(repositorioEstudante.save(Mockito.any())).
-                thenReturn(estudante);
-        when(modelMapper.map(Mockito.any(), Mockito.any())).
-                thenReturn(estudante);
+        when(repositorioEstudante.save(Mockito.any())).thenReturn(estudante);
+        when(modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(estudante);
 
         ResponseEntity<Estudante> response = controllerEstudante.cadastrarEstudante(estudanteCadastroDTO);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(ResponseEntity.class, response.getClass());
-        assertEquals(estudante,response.getBody());
+        assertEquals(estudante, response.getBody());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/estudante")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(asJsonString(estudante)))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(asJsonString(estudanteCadastroDTO)))
                 .andExpect(status().isCreated());
-        verify(controllerEstudante, times(1)).cadastrarEstudante(Mockito.any());
-}
-//    @Test
-//    void cadastrarEstudante() {
-//    }
-
-//    @Test
-//    void listarTodosEstudantes() {
-//    }
+    }
 
     @Test
     void filtrarStatusTurma() {
