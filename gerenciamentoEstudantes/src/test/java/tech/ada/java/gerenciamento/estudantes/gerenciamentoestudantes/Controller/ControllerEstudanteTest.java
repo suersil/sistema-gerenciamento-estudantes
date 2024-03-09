@@ -1,6 +1,8 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +22,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turm
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.config.LocalDateTimeAdapter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -65,12 +68,13 @@ class ControllerEstudanteTest {
 
 
     public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        GsonBuilder gsonBuilder = new GsonBuilder();
+
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+        Gson gson = gsonBuilder.create();
+        return gson.toJson(obj);
     }
+
     @Test
     void listarEstudantesComSucesso(){
 //        when(repositorioEstudante.findAll()).thenReturn(List.of(estudante));

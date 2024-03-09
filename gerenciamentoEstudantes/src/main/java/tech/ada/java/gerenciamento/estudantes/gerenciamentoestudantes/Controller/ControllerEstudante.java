@@ -28,7 +28,8 @@ import java.util.List;
 import java.util.Optional;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 @Validated
-@RestController("/estudante")
+@RestController
+@RequestMapping("/estudante")
 public class ControllerEstudante {
     private final RepositorioEstudante repositorioEstudante;
     private final RepositorioTurma turmaRepositorio;
@@ -47,7 +48,7 @@ public class ControllerEstudante {
             throws Exception {
         
         Estudante estudante = modelMapper.map(request, Estudante.class);
-        if (repositorioEstudante.existsByEstudante(estudante)) {
+        if (repositorioEstudante.existsByEstudante(estudante)){
             throw new Exception("Já existe um estudante com os mesmos detalhes.");
         }
         
