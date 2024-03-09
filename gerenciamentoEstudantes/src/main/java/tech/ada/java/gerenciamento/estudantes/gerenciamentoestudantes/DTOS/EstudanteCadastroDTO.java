@@ -1,5 +1,7 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,8 +20,13 @@ public class EstudanteCadastroDTO {
     @Getter
     private String contatoResponsavel;
     private Boolean estaAtivo;
-    
-    public EstudanteCadastroDTO(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel, Boolean estaAtivo) {
+
+    @JsonCreator
+    public EstudanteCadastroDTO(@JsonProperty("nomeAluno") String nomeAluno,
+                                @JsonProperty("nomeResponsavel") String nomeResponsavel,
+                                @JsonProperty("dataNascimento") String dataNascimento,
+                                @JsonProperty("contatoResponsavel") String contatoResponsavel,
+                                @JsonProperty("estaAtivo") Boolean estaAtivo) {
         this.nomeAluno = Objects.requireNonNull(nomeAluno, "Informe o nome do aluno");
         this.nomeResponsavel = Objects.requireNonNull(nomeResponsavel, "Informe o nome do responsável");
         this.dataNascimento = Objects.requireNonNull(dataNascimento, "Informe a data de nascimento");
@@ -27,7 +34,18 @@ public class EstudanteCadastroDTO {
         this.estaAtivo = estaAtivo;
     }
 
+    public EstudanteCadastroDTO(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {
+        this.nomeAluno = nomeAluno;
+        this.nomeResponsavel = nomeResponsavel;
+        this.dataNascimento = dataNascimento;
+        this.contatoResponsavel = contatoResponsavel;
+    }
+
     public Boolean estaAtivo() {
         return estaAtivo;
     }
+
+
+
 }
+
