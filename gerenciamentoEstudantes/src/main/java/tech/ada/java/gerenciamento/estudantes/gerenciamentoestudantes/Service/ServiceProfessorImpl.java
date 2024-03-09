@@ -36,17 +36,17 @@ public class ServiceProfessorImpl implements ServiceProfessor{
     public Professor cadastrarProfessor(ProfessorDTO professorDTO) {
         Professor professorConvertido = modelMapper.map(professorDTO, Professor.class);
         Professor novoProfessor = repositorioProfessor.save(professorConvertido);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoProfessor).getBody();
+        return novoProfessor;
     }
 
     @Override
     public List<Professor> listarTodos() {
-        List<Professor> listarProfessores = repositorioProfessor.findAll();
-        if(listarProfessores.isEmpty()){
+        List<Professor> listaProfessores = repositorioProfessor.findAll();
+        if(listaProfessores.isEmpty()){
             throw new ResourceNotFoundException("lista de professores");
         }
 
-        return repositorioProfessor.findAll();
+        return listaProfessores;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ServiceProfessorImpl implements ServiceProfessor{
                 }
             }
             Professor professorSalvo = repositorioProfessor.save(professorModificado);
-            return ResponseEntity.ok(professorSalvo).getBody();
+            return professorSalvo;
         }
         else {
             throw new ResourceNotFoundException("professor encontrado");
@@ -93,7 +93,7 @@ public class ServiceProfessorImpl implements ServiceProfessor{
 
         Professor professorSalvo = repositorioProfessor.save(professorExistente);
 
-        return ResponseEntity.ok(professorSalvo).getBody();
+        return professorSalvo;
     }
 
     @Override
