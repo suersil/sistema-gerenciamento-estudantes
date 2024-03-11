@@ -13,6 +13,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Alte
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceTurma;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,94 +21,53 @@ import java.util.Optional;
 @RestController("/turma")
 public class ControllerTurma {
 
-    private final RepositorioTurma turmaRepositorio;
-    private final ModelMapper modelMapper;
+    private final ServiceTurma serviceTurma;
 
     @Autowired
-    public ControllerTurma(RepositorioTurma turmaRepositorio, ModelMapper modelMapper) {
-        this.turmaRepositorio = turmaRepositorio;
-        this.modelMapper = modelMapper;
+    public ControllerTurma(ServiceTurma serviceTurma) {
+        this.serviceTurma = serviceTurma;
     }
+
 
     @PostMapping("/turma")
-    public ResponseEntity<Turma> cadastrarTurma(@RequestBody @Valid TurmaDTO request) throws BadRequest {
-        Turma turmaConvertida = modelMapper.map(request, Turma.class);
-        Turma novaTurma = turmaRepositorio.save(turmaConvertida);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaTurma);
+    public ResponseEntity<Turma> cadastrarTurma(@RequestBody @Valid TurmaDTO turmaRequest) throws BadRequest {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(serviceTurma.cadastrarTurma(turmaRequest));
     }
-
 
     @GetMapping("/turmas")
     public ResponseEntity<List<Turma>> buscarTurmas(){
-        List<Turma> listaTurma = turmaRepositorio.findAll();
-
-        if(listaTurma.isEmpty()){
-            throw new ResourceNotFoundException("lista de turmas");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(listaTurma);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(serviceTurma.buscarTurmas());
 
     }
+
     @GetMapping("/turma/{id}")
     public ResponseEntity<Turma> buscarTurmaEspecifica(@PathVariable Long id) throws Exception{
-        Optional<Turma> optionalTurma = turmaRepositorio.findById(id);
-        if(optionalTurma.isPresent()) {
-            return ResponseEntity.ok(optionalTurma.get());
-        } else {
-            throw new ResourceNotFoundException("Turma", "ID", id);
-        }
+        return ResponseEntity.ok(serviceTurma.buscarTurmaEspecifica(id));
     }
+
     @PatchMapping("/turma/{id}")
     public ResponseEntity<Turma> alterarTurma(
             @PathVariable Long id,
-            @RequestBody AlterarTurmaRequest request) throws Exception {
-        Optional<Turma> optionalTurma = turmaRepositorio.findById(id);
+            @RequestBody AlterarTurmaRequest turmaRequest) throws Exception {
 
-        if(optionalTurma.isPresent()) {
-
-            Turma turmaModificada = optionalTurma.get();
-
-            if(request.estaAtiva()!= null) turmaModificada.setEstaAtiva(request.estaAtiva());
-            if(request.nomeTurma() != null) turmaModificada.setNomeTurma(request.nomeTurma());
-            Turma turmaSalva =  turmaRepositorio.save(turmaModificada);
-            return ResponseEntity.ok(turmaSalva);
-        } else {
-            throw new ResourceNotFoundException("Turma", "ID", id);
-        }
-
-
+            return ResponseEntity.ok(serviceTurma.alterarTurma(id, turmaRequest));
     }
 
     @PutMapping("/turma/{id}")
     public ResponseEntity<Turma> alteraTurmaCompleto(
             @PathVariable Long id,
-            @RequestBody AlterarTurmaRequest request
+            @RequestBody AlterarTurmaRequest turmaRequest
     ) {
-        Optional<Turma> optionalTurma = turmaRepositorio.findById(id);
-        if(optionalTurma.isPresent()) {
-            Turma turmaModificada = optionalTurma.get();
-            turmaModificada.setEstaAtiva(request.estaAtiva());
-            turmaModificada.setNomeTurma(request.nomeTurma());
-            Turma turmaSalva = turmaRepositorio.save(turmaModificada);
-            return ResponseEntity.ok(turmaSalva);
-        } else {
-            throw new ResourceNotFoundException("Turma", "ID", id);
-        }
+
+            return ResponseEntity.ok(serviceTurma.alteraTurmaCompleto(id, turmaRequest));
     }
 
     @GetMapping(value = "/turmas", params = "estaAtiva")
     public ResponseEntity<List<Turma>> filtrarStatusTurma(@RequestParam Boolean estaAtiva){
-        List<Turma> statusTurmaFiltrada;
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(serviceTurma.findTurmaByEstaAtiva(estaAtiva));
 
-        if(estaAtiva){
-            statusTurmaFiltrada = turmaRepositorio.findTurmaByEstaAtiva(true);
-        }else{
-            statusTurmaFiltrada = turmaRepositorio.findTurmaByEstaAtiva(false);
-        }
-
-        if(!statusTurmaFiltrada.isEmpty()){
-            return ResponseEntity.status(HttpStatus.OK).body(statusTurmaFiltrada);
-        } else {
-            throw new ResourceNotFoundException("lista de turmas");
-        }
     }
 }
