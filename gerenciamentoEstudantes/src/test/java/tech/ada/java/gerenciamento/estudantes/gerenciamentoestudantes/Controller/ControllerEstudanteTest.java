@@ -67,7 +67,6 @@ class ControllerEstudanteTest {
         mockMvc = MockMvcBuilders.standaloneSetup(controllerEstudante).build();
     }
 
-
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
