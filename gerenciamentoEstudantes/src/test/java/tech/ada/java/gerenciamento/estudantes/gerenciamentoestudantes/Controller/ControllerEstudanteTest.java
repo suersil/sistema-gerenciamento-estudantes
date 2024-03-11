@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @ExtendWith(MockitoExtension.class)
 class ControllerEstudanteTest {
 
@@ -100,7 +101,8 @@ class ControllerEstudanteTest {
                 .andExpect(status().isCreated());
     }
 
-     {
+    @Test
+    public void deveFiltrarStatusTurmaAtivo() {
         when(repositorioEstudante.findEstudantesByEstaAtivo(true)).thenReturn(List.of(estudante));
 
         ResponseEntity<List<Estudante>> response = controllerEstudante.filtrarStatusTurma(true);
@@ -158,4 +160,3 @@ class ControllerEstudanteTest {
         }
     }
 }
-
