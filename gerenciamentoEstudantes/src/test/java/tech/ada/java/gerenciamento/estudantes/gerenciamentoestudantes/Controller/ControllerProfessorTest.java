@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceProfessor;
 
@@ -114,6 +115,28 @@ class ControllerProfessorTest {
     }
 
     @Test
-    void filtrarProfessorPorNome() {
+    void filtrarProfessorPorNomeComSucesso() throws Exception {
+        when(serviceProfessor.filtrarProfessorPorNome(any())).thenReturn(List.of(professorDTO.paraEntidade()));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/professor")
+                .param("nomeProfessor", "Brunno Nogueira"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()" , equalTo(1)))
+                .andExpect(jsonPath("$.[0].nomeProfessor", equalTo("Brunno Nogueira")));
+
+        verify(serviceProfessor, times(1)).filtrarProfessorPorNome("Brunno Nogueira");
+
+    }
+
+    @Test
+    void filtrarProfessorPorNomeComException() throws Exception {
+        when(serviceProfessor.filtrarProfessorPorNome(any())).thenThrow(new ResourceNotFoundException("professor por nome"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/professor")
+                        .param("nomeProfessor", "Pepito Perez"))
+                        .andExpect(status().isNotFound());
+
+        verify(serviceProfessor, times(1)).filtrarProfessorPorNome(any());
+
     }
 }

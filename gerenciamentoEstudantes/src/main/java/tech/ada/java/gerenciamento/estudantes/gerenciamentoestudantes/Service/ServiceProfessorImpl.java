@@ -98,6 +98,11 @@ public class ServiceProfessorImpl implements ServiceProfessor{
 
     @Override
     public List<Professor> filtrarProfessorPorNome(String nomeProfessor) {
+        List<Professor> listaProfessores = repositorioProfessor.findProfessorsByNomeProfessor(nomeProfessor);
+
+        if(listaProfessores.isEmpty()){
+            throw new ResourceNotFoundException("professor por nome");
+        }
         return repositorioProfessor.findProfessorsByNomeProfessor(nomeProfessor);
     }
 }
