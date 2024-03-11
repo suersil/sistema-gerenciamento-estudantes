@@ -114,6 +114,16 @@ class ControllerProfessorTest {
     }
 
     @Test
-    void filtrarProfessorPorNome() {
+    void filtrarProfessorPorNome() throws Exception {
+        when(serviceProfessor.filtrarProfessorPorNome(any())).thenReturn(List.of(professorDTO.paraEntidade()));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/professor")
+                .param("nomeProfessor", "Brunno Nogueira"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()" , equalTo(1)))
+                .andExpect(jsonPath("$.[0].nomeProfessor", equalTo("Brunno Nogueira")));
+
+        verify(serviceProfessor, times(1)).filtrarProfessorPorNome("Brunno Nogueira");
+
     }
 }
