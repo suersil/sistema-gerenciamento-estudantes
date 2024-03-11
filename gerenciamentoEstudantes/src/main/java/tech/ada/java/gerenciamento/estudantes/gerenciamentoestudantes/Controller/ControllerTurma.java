@@ -11,7 +11,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.Bad
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AlterarTurmaRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.TurmaRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class ControllerTurma {
     }
 
     @PostMapping("/turma")
-    public ResponseEntity<Turma> cadastrarTurma(@RequestBody @Valid TurmaRequest request) throws BadRequest {
+    public ResponseEntity<Turma> cadastrarTurma(@RequestBody @Valid TurmaDTO request) throws BadRequest {
         Turma turmaConvertida = modelMapper.map(request, Turma.class);
         Turma novaTurma = turmaRepositorio.save(turmaConvertida);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaTurma);

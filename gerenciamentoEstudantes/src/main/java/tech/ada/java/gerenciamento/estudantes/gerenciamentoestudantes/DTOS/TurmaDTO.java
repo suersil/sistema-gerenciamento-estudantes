@@ -1,11 +1,12 @@
-package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model;
+package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 
 //DTO
 @Getter
-public class TurmaRequest {
+public class TurmaDTO {
 
     @NotBlank(message = "{nomeTurma.not.blank}")
     private String nomeTurma;

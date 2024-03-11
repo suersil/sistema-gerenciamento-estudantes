@@ -50,6 +50,8 @@ public class Professor {
         this.estaAtivo = estaAtivo;
     }
 
+
+
     public void AdicionarTurma (Turma turma){
         listaTurmas.add(turma);
         turma.getProfessores().add(this);

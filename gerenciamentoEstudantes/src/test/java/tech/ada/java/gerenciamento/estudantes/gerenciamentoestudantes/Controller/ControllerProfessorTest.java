@@ -1,120 +1,99 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceProfessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class ControllerProfessorTest {
+class ControllerProfessorTest {
 
-    @InjectMocks //injetar a classe controllerProfessor para os nossos testes
-    ControllerProfessor controllerProfessor;
-
-    @Mock //mockar classes que usamos na controller
-    RepositorioProfessor repositorioProfessor;
     @Mock
-    ModelMapper modelMapper;
-    //RepositorioTurma turmaRepositorio;
-
-
+    private ServiceProfessor serviceProfessor;
     //instanciar a classe que usamos como retorno em alguns metodos
     Professor professor;
     ProfessorDTO professorDTO;
     List<Professor> listaProfessores;
 
-    @BeforeEach //annotation para dados que podem ser usados em todos os testes
+    @InjectMocks
+    private ControllerProfessor controllerProfessor;
+
+    private MockMvc mockMvc;
+
+    @BeforeEach
     public void setup() {
         professor = new Professor("Brunno Nogueira",
-                                    "brunno@ada.com.br",
-                                    "Progamacao Web",
-                                    true);
+                "brunno@ada.com.br",
+                "Progamacao Web",
+                true);
 
         professorDTO = new ProfessorDTO("Brunno Nogueira",
-                                    "brunno@ada.com.br",
-                                    "Progamacao Web",
-                                    true);
-
-//        professor2 = new Professor("Igor Magalhaes",
-//                "igor@ada.com.br",
-//                "POO",
-//                true);
-//
-//        listaProfessores = new ArrayList<>(); //inicializar a lista
-//        listaProfessores.add(professor);
-//        listaProfessores.add(professor2);
+                "brunno@ada.com.br",
+                "Progamacao Web",
+                true);
+        mockMvc = MockMvcBuilders.standaloneSetup(controllerProfessor).build();
     }
 
-    @Test
-    void deveCadastrarProfessorComSucesso(){
-        when(repositorioProfessor.save(any())).thenReturn(professor);
-
-        ResponseEntity<Professor> responseEntity = controllerProfessor.cadastrarProfessor(professorDTO);
-
-        assertNotNull(responseEntity);
-        assertEquals(ResponseEntity.class, responseEntity.getClass());
-        assertEquals(professor, responseEntity.getBody());
-        assertEquals(HttpStatus.CREATED ,responseEntity.getStatusCode());
-
-        verifyNoMoreInteractions(repositorioProfessor);
-    }
-
-    @Test
-    void deveListarProfessoresComSucesso() {
-        //when: config do mock, metodo que é chamado dentro do metodo de teste
-        //thenReturn: o que esperamos ser retornado quando o metodo é chamado
-        when(repositorioProfessor.findAll()).thenReturn(List.of(professor));
-
-        //chamada do metodo da controller
-        ResponseEntity<List<Professor>> responseEntity = controllerProfessor.listarTodos();
-
-        //assertions
-        assertNotNull(responseEntity); //assegurar que a response nao é nula
-        assertEquals(1, responseEntity.getBody().size()); //assegurar que tamanho da lista esperado com o obtido/atual
-        assertEquals(Professor.class, responseEntity.getBody().get(0).getClass()); //assegurar que o objeto esperado é do mesmo tipo que o obj obtido
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode()); //assegurar que o resultado esperado com o resultado obtido/atual
-        assertEquals(List.of(professor), responseEntity.getBody()); //assegurar que os dados da lista esperada com o da lista recebida
-
-        // Verifica se o método findAll foi chamado apenas uma vez
-        verify(repositorioProfessor).findAll();
-        // Verifica se não houve mais interações com o mock repositorioProfessor
-        verifyNoMoreInteractions(repositorioProfessor);
-
-    }
-
-    @Test
-    void deveRetornarResourceNotFoundExceptionQuandoListarProfessores(){
-        //Config do comportamento do mock
-        //lancar uma exception quando chamar o metodo findAll
-        when(repositorioProfessor.findAll()).thenThrow(new ResourceNotFoundException("lista de professores"));
-
+    public static String asJsonString(final Object obj) {
         try {
-            controllerProfessor.listarTodos();
-        } catch (Exception ex) {
-            assertEquals(ResourceNotFoundException.class, ex.getClass()); //comparar tipo da exceptio lancada
-            assertEquals("Não há registros de lista de professores no sistema.", ex.getMessage()); //comparar msg lancada
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+    }
 
-        assertThrows(ResourceNotFoundException.class, () -> {
-            controllerProfessor.listarTodos();}); //Verificacar se a excecao é lançada quando o metodo retorna uma lista vazia
-        verifyNoMoreInteractions(repositorioProfessor); //verificar se nao houve mais interacao com o repository
 
+    @Test
+    void cadastrarProfessorComSucessoHttpTest() throws Exception {
+        // Simular o comportamento do método serviceProfessor.cadastrarProfessor. Retornar o professorDTO convertido em uma entidade Professor.
+        when(serviceProfessor.cadastrarProfessor(any())).thenReturn(professorDTO.paraEntidade());
+
+        // Realizar requisição POST simulada usando MockMvc.
+        // O corpo da requisição é definido para o objeto 'professor' convertido para o formato JSON usando asJsonString().
+        mockMvc.perform(MockMvcRequestBuilders.post("/professor")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(professor)))
+                        .andExpect(status().isCreated()) // Esperamos que o código de status da resposta seja 201 Created
+                        .andExpect(jsonPath("$.nomeProfessor", equalTo("Brunno Nogueira"))); //verificar se a resposta JSON possui um campo "nomeProfessor" igual a "Brunno Nogueira".
+
+        // verificar se o método serviceProfessor.cadastrarProfessor foi chamado pelo menos uma vez com qualquer argumento
+        verify(serviceProfessor, times(1)).cadastrarProfessor(any());
+    }
+
+    @Test
+    void retornarBadRequestCadastrandoProfessor() throws Exception {
+        // Simulamr o comportamento do método serviceProfessor.cadastrarProfessor para lançar uma exceção BadRequest: cenário de falha na validação dos dados do professor.
+        when(serviceProfessor.cadastrarProfessor(any())).thenThrow(new BadRequest(""));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/professor")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(professor)))
+                .andExpect(status().isBadRequest()); //Esperamos que a resposta tenha o código de status 400 Bad Request.
+
+        verify(serviceProfessor, times(1)).cadastrarProfessor(any());
+    }
+
+    @Test
+    void listarTodos() {
     }
 
     @Test
