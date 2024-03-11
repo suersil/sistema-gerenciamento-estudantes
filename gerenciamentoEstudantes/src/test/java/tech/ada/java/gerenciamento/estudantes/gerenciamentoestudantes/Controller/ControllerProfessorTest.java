@@ -93,8 +93,17 @@ class ControllerProfessorTest {
     }
 
     @Test
-    void listarTodos() {
+    void listarTodosComSucessoHttpTest() throws Exception {
+        when(serviceProfessor.listarTodos()).thenReturn(List.of(professorDTO.paraEntidade()));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/professores"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", equalTo(1)))  // Assert list size
+                .andExpect(jsonPath("$.[0].nomeProfessor", equalTo("Brunno Nogueira")));  // Assert specific field
+
+        verify(serviceProfessor, times(1)).listarTodos();
     }
+
 
     @Test
     void editarTudoProfessor() {

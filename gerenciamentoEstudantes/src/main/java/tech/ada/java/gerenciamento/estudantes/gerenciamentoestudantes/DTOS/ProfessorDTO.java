@@ -9,7 +9,6 @@ import lombok.Getter;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
 
 @Getter
-@AllArgsConstructor
 public class ProfessorDTO {
 
     @NotBlank(message = "{nomeProfessor.not.blank}")
