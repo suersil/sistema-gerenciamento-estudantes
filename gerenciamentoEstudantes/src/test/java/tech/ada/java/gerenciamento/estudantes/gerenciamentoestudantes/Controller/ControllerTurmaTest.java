@@ -15,9 +15,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaDTO;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceTurma;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
@@ -69,11 +72,55 @@ class ControllerTurmaTest {
     }
 
     @Test
-    void buscarTurmas() {
+    void retornarBadRequestCadastrandoTurma() throws Exception {
+        when(serviceTurma.cadastrarTurma(any(TurmaDTO.class))).thenThrow(new BadRequest(""));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/turma")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(turmaDTO)))
+                .andExpect(status().isBadRequest());
+
+        verify(serviceTurma, times(1)).cadastrarTurma(any());
     }
 
     @Test
-    void buscarTurmaEspecifica() {
+    void listarTodasTurmasComSucessoHttpTest() throws Exception {
+        when(serviceTurma.buscarTurmas ()).thenReturn(List.of(turmaDTO.toEntity()));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/turmas"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", equalTo(1)))  // Assert list size
+                .andExpect(jsonPath("$.[0].nomeTurma", equalTo("5oAnoC")));  // Assert specific field
+
+        verify(serviceTurma, times(1)).buscarTurmas();
+    }
+
+    @Test
+    void retornarBadRequestListarTodasTurmas() throws Exception {
+        when(serviceTurma.buscarTurmas()).thenThrow(new BadRequest(""));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/turmas"))
+                .andExpect(status().isBadRequest());
+
+        verify(serviceTurma, times(1)).buscarTurmas();
+    }
+    @Test
+    void buscarTurmaPorIDComSucessoHttpTest() throws Exception {
+        when(serviceTurma.buscarTurmaEspecifica(any())).thenReturn(turmaDTO.toEntity());
+        mockMvc.perform(MockMvcRequestBuilders.get("/turma/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nomeTurma", equalTo("5oAnoC")));
+
+        verify(serviceTurma, times(1)).buscarTurmaEspecifica(1L);
+    }
+
+    @Test
+    void retornarBadRequestBuscarTurmaPorIDComSucessoHttpTest() throws Exception {
+        when(serviceTurma.buscarTurmaEspecifica(any())).thenThrow(new BadRequest(""));
+        mockMvc.perform(MockMvcRequestBuilders.get("/turma/1"))
+                .andExpect(status().isBadRequest());
+
+        verify(serviceTurma, times(1)).buscarTurmaEspecifica(1L);
     }
 
     @Test
@@ -85,6 +132,15 @@ class ControllerTurmaTest {
     }
 
     @Test
-    void filtrarStatusTurma() {
+    void filtrarStatusTurma() throws Exception {
+        when(serviceTurma.findTurmaByEstaAtiva (any())).thenReturn(List.of(turmaDTO.toEntity()));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/turmas")
+                        .param("estaAtiva", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()" , equalTo(1)))
+                .andExpect(jsonPath("$.[0].estaAtiva", equalTo(true)));
+
+        verify(serviceTurma, times(1)).findTurmaByEstaAtiva (true);
     }
 }
