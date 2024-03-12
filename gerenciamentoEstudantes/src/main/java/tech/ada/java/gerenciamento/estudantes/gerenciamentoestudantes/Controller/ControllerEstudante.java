@@ -1,52 +1,41 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.*;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
-
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceEstudante;
 import java.util.List;
 import java.util.Optional;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 @Validated
 @RestController("/estudante")
 public class ControllerEstudante {
-    private final RepositorioEstudante repositorioEstudante;
-    private final RepositorioTurma turmaRepositorio;
+
+    private final ServiceEstudante serviceEstudante;
     
-    private final ModelMapper modelMapper;
     
     @Autowired
-    public ControllerEstudante(RepositorioEstudante repositorioEstudante, RepositorioTurma turmaRepositorio, ModelMapper modelMapper) {
-        this.repositorioEstudante = repositorioEstudante;
-        this.turmaRepositorio = turmaRepositorio;
-        this.modelMapper = modelMapper;
+    public ControllerEstudante(ServiceEstudante serviceEstudante) {
+        this.serviceEstudante = serviceEstudante;
+        
     }
     
     @PostMapping("/estudante")
-    public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request)
-            throws Exception {
+    public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request) {
         
-        Estudante estudante = modelMapper.map(request, Estudante.class);
+        return serviceEstudante.cadastrarEstudante(request);
+    
+        
+       /*  Estudante estudante = modelMapper.map(request, Estudante.class);
         if (repositorioEstudante.existsByEstudante(estudante)) {
             throw new Exception("Já existe um estudante com os mesmos detalhes.");
         }
@@ -54,69 +43,41 @@ public class ControllerEstudante {
         estudante.setEstaAtivo(request.estaAtivo());
         Estudante novoEstudante = repositorioEstudante.save(estudante);
         novoEstudante.setDataAtualizacao(null);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante); */
     }
     
     
-    @GetMapping("/estudantes")
-    
+    @GetMapping("/estudantes")    
     public ResponseEntity<List<Estudante>> listarTodosEstudantes() {
-        List<Estudante> listaEstudantes = repositorioEstudante.findAll();
-        
-        if (listaEstudantes.isEmpty()) {
-            throw new ResourceNotFoundException("lista de estudantes");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
+       
+        return serviceEstudante.listarTodosEstudantes();
     }
     
     
     @GetMapping(value = "/estudantes", params = "status")
     public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
-        List<Estudante> statusEstudantesFiltrados;
         
-        if (status) {
-            statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(true);
-        } else {
-            statusEstudantesFiltrados = repositorioEstudante.findEstudantesByEstaAtivo(false);
-        }
-        
-        if (!statusEstudantesFiltrados.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(statusEstudantesFiltrados);
-        } else {
-            throw new ResourceNotFoundException("lista de estudantes");
-        }
+        return serviceEstudante.filtrarStatusEstudante(status);
     }
     
     
     @GetMapping(value = "/estudante/{id}")
     public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@PathVariable Long id) {
-        
-        Optional<Estudante> estudantePorID = repositorioEstudante.findById(id);
-        
-        if (estudantePorID.isEmpty()) {
-            throw new ResourceNotFoundException("Estudante", "ID", id);
-        }
-        
-        
-        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findById(id));
+        return serviceEstudante.filtrarEstudanteId(id);
     }
     
     
     @GetMapping(value = "/estudante", params = {"nomeAluno"})
     public ResponseEntity<List<Estudante>> filtrarEstudanteNome(@RequestParam String nomeAluno) {
-        List<Estudante> estudantePorNome = repositorioEstudante.findByNomeAlunoQuery(nomeAluno);
         
-        if (estudantePorNome.isEmpty()) {
-            throw new ResourceNotFoundException("estudante", "nome ", nomeAluno);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAlunoQuery(nomeAluno));
+        return serviceEstudante.filtrarEstudanteNome(nomeAluno);
     }
     
     
     @PutMapping("/estudante/{id}")
     public ResponseEntity<Estudante> editarTudoEstudante
-            (@PathVariable("id") Long id, @RequestBody AtualizarEstudanteRequest atualizarEstudante) throws Exception {
-        Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
+            (@PathVariable("id") Long id, @RequestBody EstudanteCadastroDTO atualizarEstudante) throws Exception {
+      /*   Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
         
         if (optionalEstudante.isEmpty()) {
             throw new ResourceNotFoundException("Estudante", "ID", id);
@@ -132,9 +93,9 @@ public class ControllerEstudante {
         estudanteExistente.setContatoResponsavel(atualizarEstudante.contatoResponsavel());
         estudanteExistente.setDataDeCadastro(estudanteExistente.getDataDeCadastro());
         
-        Estudante estudanteSalvo = repositorioEstudante.save(estudanteExistente);
+        Estudante estudanteSalvo = repositorioEstudante.save(estudanteExistente); */
         
-        return ResponseEntity.ok(estudanteSalvo);
+        return serviceEstudante.editarTudoEstudante(id, atualizarEstudante);
     }
     
     
@@ -143,7 +104,7 @@ public class ControllerEstudante {
             @PathVariable Long id,
             @RequestBody EstudanteRequest request) throws Exception {
         
-        Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
+      /*   Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
         
         if (optionalEstudante.isPresent()) {
             
@@ -165,11 +126,8 @@ public class ControllerEstudante {
                 }
             }
             
-            Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado);
-            return ResponseEntity.ok(estudanteSalvo);
+            Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado); */
+            return serviceEstudante.atualizarEstudante(id, request);
         }
-        
-        // Retornar o código 404 se não encontrado
-        throw new ResourceNotFoundException("Estudante", "ID", id);
-    }
+   
 }

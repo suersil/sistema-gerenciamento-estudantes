@@ -48,6 +48,7 @@ public class Estudante {
     
     public Estudante(Boolean estaAtivo) {
         this.estaAtivo = true;
+        System.out.println("usou este esta ativo");
     }
 
     //Construtor - Editando dados cadastrados // PUT
@@ -60,5 +61,6 @@ public class Estudante {
         this.contatoResponsavel = contatoResponsavel;
         this.dataDeCadastro = LocalDateTime.now(ZoneId.of("UTC"));
         this.turma = turma;
+        System.out.println("usou este este aqui");
     }
 }

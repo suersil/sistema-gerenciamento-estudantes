@@ -64,7 +64,7 @@ class ControllerEstudanteTest {
         estudanteCadastroDTO = new EstudanteCadastroDTO("Joao",
                 "Alguem",
                 "02.12.20",
-                "123456789", true);
+                "123456789");
         mockMvc = MockMvcBuilders.standaloneSetup(controllerEstudante).build();
     }
 
