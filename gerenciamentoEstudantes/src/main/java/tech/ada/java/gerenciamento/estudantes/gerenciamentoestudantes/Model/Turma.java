@@ -40,4 +40,7 @@ public class Turma {
 
     public Turma() {
     }
+
+    public Turma(String nomeTurma, Boolean estaAtiva) {
+    }
 }

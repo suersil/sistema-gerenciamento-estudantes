@@ -68,8 +68,8 @@ public class ServiceTurmaImpl implements ServiceTurma{
 
         Turma turmaModificada = optionalTurma.get();
 
-        if(turmaModificada.getEstaAtiva() != null) turmaModificada.setEstaAtiva(alterarTurmaRequest.estaAtiva());
-        if(turmaModificada.getNomeTurma() != null) turmaModificada.setNomeTurma(alterarTurmaRequest.nomeTurma());
+        if(alterarTurmaRequest.estaAtiva()!= null) turmaModificada.setEstaAtiva(alterarTurmaRequest.estaAtiva());
+        if(alterarTurmaRequest.nomeTurma() != null) turmaModificada.setNomeTurma(alterarTurmaRequest.nomeTurma());
         Turma turmaSalva =  repositorioTurma.save(turmaModificada);
 
         return turmaSalva;
