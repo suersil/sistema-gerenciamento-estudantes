@@ -63,7 +63,7 @@ class ControllerTurmaTest {
                .contentType(MediaType.APPLICATION_JSON)
                .content(asJsonString(turmaDTO)))
                .andExpect(status().isCreated())
-               .andExpect(jsonPath("$.nomeTurma", equalTo("5oAnoC")));
+               .andExpect(jsonPath("$.nomeTurma").value("5oAnoC"));
 
         verify(serviceTurma, times(1)).cadastrarTurma(any());
     }
