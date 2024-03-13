@@ -16,10 +16,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceTurma;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -132,7 +134,7 @@ class ControllerTurmaTest {
     }
 
     @Test
-    void filtrarStatusTurma() throws Exception {
+    void filtrarStatusTurmaComSucessoHttpTest() throws Exception {
         when(serviceTurma.findTurmaByEstaAtiva (any())).thenReturn(List.of(turmaDTO.toEntity()));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/turmas")
@@ -142,5 +144,13 @@ class ControllerTurmaTest {
                 .andExpect(jsonPath("$.[0].estaAtiva", equalTo(true)));
 
         verify(serviceTurma, times(1)).findTurmaByEstaAtiva (true);
+    }
+
+    @Test
+    void retornarNotFoundFiltrarStatusTurma() throws Exception {
+        when(serviceTurma.findTurmaByEstaAtiva(any())).thenThrow(new ResourceNotFoundException("lista de turmas"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/turmas")
+                        .param("estaAtiva", String.valueOf(true)))
+                .andExpect(status().isNotFound());
     }
 }
