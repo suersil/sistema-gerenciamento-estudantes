@@ -111,8 +111,30 @@ class ControllerProfessorTest {
     }
 
     @Test
-    void atualizarProfessor() {
+    void atualizarProfessorComSucesso() throws Exception {
+        when(serviceProfessor.atualizarProfessor(anyLong(), any())).thenReturn(professorDTO.paraEntidade());
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/professor/{id}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(professorDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nomeProfessor", equalTo("Brunno Nogueira")));
+
+        verify(serviceProfessor, times(1)).atualizarProfessor(anyLong(), any());
     }
+
+    @Test
+    void atualizarProfessorComException() throws Exception {
+        when(serviceProfessor.atualizarProfessor(anyLong(), any())).thenThrow(new ResourceNotFoundException("Professor", "ID", 1L));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/professor/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(professorDTO)))
+                .andExpect(status().isNotFound());
+
+        verify(serviceProfessor, times(1)).atualizarProfessor(anyLong(), any());
+    }
+
 
     @Test
     void filtrarProfessorPorNomeComSucesso() throws Exception {
