@@ -41,11 +41,7 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
     @Override
     public ResponseEntity<Estudante> cadastrarEstudante(EstudanteCadastroDTO request) {
         Estudante estudante = modelMapper.map(request, Estudante.class);
-      /*   estudante.setNomeAluno(request.getNomeAluno());
-        estudante.setNomeResponsavel(request.getNomeResponsavel());
-        estudante.setDataNascimento(request.getDataNascimento());
-        estudante.setContatoResponsavel(request.getContatoResponsavel());
-        estudante.setEstaAtivo(true); */
+      
 
         var novoEstudante = repositorioEstudante.save(estudante);
 

@@ -32,24 +32,9 @@ public class EstudanteCadastroDTO {
         this.dataNascimento = Objects.requireNonNull(dataNascimento, "Informe a data de nascimento");
         this.contatoResponsavel = Objects.requireNonNull(contatoResponsavel, "Informe o contato do responsável");
         this.estaAtivo = true;
-        System.out.println("Usou 3");
+    
     }
-
-  /*   public EstudanteCadastroDTO(String nomeAluno, String nomeResponsavel, String dataNascimento, String contatoResponsavel) {
-        System.out.println("Usou 1");
-        this.nomeAluno = nomeAluno;
-        this.nomeResponsavel = nomeResponsavel;
-        this.dataNascimento = dataNascimento;
-        this.contatoResponsavel = contatoResponsavel;
-    }
-
-    public Boolean estaAtivo() {
-        System.out.println("Usou2");
-        return estaAtivo;
-    } */
-
-   
-
+ 
 
 }
 
