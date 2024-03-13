@@ -116,5 +116,17 @@ class ServiceProfessorTest {
 
     @Test
     void filtrarProfessorPorNome() {
+        when(repositorioProfessor.findProfessorsByNomeProfessor(anyString())).thenReturn(List.of(professor));
+        List<Professor> professoresFiltrados = serviceProfessor.filtrarProfessorPorNome("Brunno Nogueira");
 
-}}
+        assertNotNull(professoresFiltrados);
+        assertEquals(1, professoresFiltrados.size());
+
+        assertEquals("Brunno Nogueira", professoresFiltrados.get(0).getNomeProfessor());
+
+        verify(repositorioProfessor, times(1)).findProfessorsByNomeProfessor("Brunno Nogueira");
+
+        verifyNoMoreInteractions(repositorioProfessor);
+    }
+
+}

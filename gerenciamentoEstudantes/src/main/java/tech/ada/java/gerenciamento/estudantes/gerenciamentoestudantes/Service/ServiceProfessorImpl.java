@@ -103,6 +103,6 @@ public class ServiceProfessorImpl implements ServiceProfessor{
         if(listaProfessores.isEmpty()){
             throw new ResourceNotFoundException("professor por nome");
         }
-        return repositorioProfessor.findProfessorsByNomeProfessor(nomeProfessor);
+        return listaProfessores;
     }
 }
