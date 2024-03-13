@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AlterarTurmaRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceTurma;
@@ -39,11 +40,15 @@ class ControllerTurmaTest {
     @Mock
     ServiceTurma serviceTurma;
 
+    @Mock
+    AlterarTurmaRequest alterarTurmaRequest;
+
     Turma turma;
     TurmaDTO turmaDTO;
 
     private MockMvc mockMvc;
 
+    Long turmaID = 1L;
     String nomeTurma= "5oAnoC";
     Boolean estaAtiva = true;
     @BeforeEach
@@ -126,11 +131,22 @@ class ControllerTurmaTest {
     }
 
     @Test
-    void alterarTurma() {
+    void alterarTurmaComSucessoHttpTest() throws Exception {
+        when(serviceTurma.alterarTurma(any(Long.class), any(AlterarTurmaRequest.class))).thenReturn(turmaDTO.toEntity());
+        mockMvc.perform(MockMvcRequestBuilders.patch("/turma/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(new AlterarTurmaRequest(estaAtiva, nomeTurma))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nomeTurma", equalTo(nomeTurma)))
+                .andExpect(jsonPath("$.estaAtiva").value(estaAtiva));
+
+        verify(serviceTurma, times(1)).alterarTurma (1L, new AlterarTurmaRequest(estaAtiva, nomeTurma));
+
     }
 
     @Test
     void alteraTurmaCompleto() {
+
     }
 
     @Test
