@@ -118,7 +118,7 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void atualizarProfessor() throws Exception {
+    void atualizarProfessorComSuceso() throws Exception {
         when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.of(professor));
         when(repositorioProfessor.save(any())).thenReturn(professor);
 
@@ -137,9 +137,21 @@ class ServiceProfessorTest {
         verifyNoMoreInteractions(repositorioProfessor);
     }
 
+    @Test
+    void atualizarProfessorComException() {
+        when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceProfessor.atualizarProfessor(1L, professorRequest);
+        });
+
+        verify(repositorioProfessor, times(1)).findById(1L);
+        verifyNoMoreInteractions(repositorioProfessor);
+    }
+
 
     @Test
-    void filtrarProfessorPorNome() {
+    void filtrarProfessorPorNomeComSuceso() {
         when(repositorioProfessor.findProfessorsByNomeProfessor(anyString())).thenReturn(List.of(professor));
         List<Professor> professoresFiltrados = serviceProfessor.filtrarProfessorPorNome("Brunno Nogueira");
 
@@ -152,5 +164,18 @@ class ServiceProfessorTest {
 
         verifyNoMoreInteractions(repositorioProfessor);
     }
+
+    @Test
+    void filtrarProfessorPorNomeComException() {
+        when(repositorioProfessor.findProfessorsByNomeProfessor(anyString())).thenThrow(new ResourceNotFoundException("professor por nome"));
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceProfessor.filtrarProfessorPorNome("Pepito Perez");
+        });
+
+        verify(repositorioProfessor, times(1)).findProfessorsByNomeProfessor("Pepito Perez");
+        verifyNoMoreInteractions(repositorioProfessor);
+    }
+
 
 }
