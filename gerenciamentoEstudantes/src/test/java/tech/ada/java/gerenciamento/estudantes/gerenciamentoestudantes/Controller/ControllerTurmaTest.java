@@ -141,12 +141,37 @@ class ControllerTurmaTest {
                 .andExpect(jsonPath("$.estaAtiva").value(estaAtiva));
 
         verify(serviceTurma, times(1)).alterarTurma (1L, new AlterarTurmaRequest(estaAtiva, nomeTurma));
-
+    }
+    //em implementação
+    @Test
+    void retornarNotFoundAlterarTurma() throws Exception {
+//        when(serviceTurma.alterarTurma(any(Long.class), any(AlterarTurmaRequest.class))).thenThrow(new ResourceNotFoundException("Turma", "ID", 1L));
+//        mockMvc.perform(MockMvcRequestBuilders.patch("/turma/1")
+////                        .param("estaAtiva", String.valueOf(false))
+//                        .param("nomeTurma", "3oAnoC"))
+//                .andExpect(status().isNotFound());
     }
 
+    //em implementação
     @Test
-    void alteraTurmaCompleto() {
+    void alteraTurmaCompleto() throws Exception{
+        when(serviceTurma.alteraTurmaCompleto(any(Long.class), any(AlterarTurmaRequest.class))).thenReturn(turmaDTO.toEntity());
+        mockMvc.perform(MockMvcRequestBuilders.put("/turma/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(new AlterarTurmaRequest(estaAtiva, nomeTurma))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nomeTurma", equalTo(nomeTurma)))
+                .andExpect(jsonPath("$.estaAtiva").value(estaAtiva));
 
+        verify(serviceTurma, times(1)).alteraTurmaCompleto (1L, new AlterarTurmaRequest(estaAtiva, nomeTurma));
+    }
+    //em implementação
+    @Test
+    void retornarNotFoundAlterarTurmaCompleto() throws Exception {
+//        when(serviceTurma.alteraTurmaCompleto(any(Long.class), any(AlterarTurmaRequest.class))).thenThrow(new ResourceNotFoundException("lista de turmas"));
+//        mockMvc.perform(MockMvcRequestBuilders.put("/turma/1")
+//                        .param("estaAtiva", String.valueOf(true)))
+//                .andExpect(status().isNotFound());
     }
 
     @Test
