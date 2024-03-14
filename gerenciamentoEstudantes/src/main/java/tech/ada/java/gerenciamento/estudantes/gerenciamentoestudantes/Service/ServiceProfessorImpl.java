@@ -59,9 +59,9 @@ public class ServiceProfessorImpl implements ServiceProfessor{
             if (professorRequest.email() != null) professorModificado.setEmail(professorRequest.email());
             if (professorRequest.disciplinaLecionada() != null) professorModificado.setDisciplinaLecionada(professorRequest.disciplinaLecionada());
             if (professorRequest.estaAtivo() != null) professorModificado.setEstaAtivo(professorRequest.estaAtivo());
-            Optional<Turma> optionalTurma;
-            if (professorRequest.turma_id() != null) {
-                optionalTurma = turmaRepositorio.findById(professorRequest.turma_id());
+            Long turmaId = professorRequest.turma_id();
+            if (turmaId != null) {
+                Optional<Turma> optionalTurma = turmaRepositorio.findById(turmaId);
                 if(optionalTurma.isPresent()) {
                     professorModificado.AdicionarTurma(optionalTurma.get());
                 } else{
