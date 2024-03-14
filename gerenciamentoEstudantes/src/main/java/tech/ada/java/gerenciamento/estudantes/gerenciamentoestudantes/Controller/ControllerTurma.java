@@ -28,7 +28,6 @@ public class ControllerTurma {
         this.serviceTurma = serviceTurma;
     }
 
-
     @PostMapping("/turma")
     public ResponseEntity<Turma> cadastrarTurma(@RequestBody @Valid TurmaDTO turmaRequest) throws BadRequest {
         return ResponseEntity.status(HttpStatus.CREATED)
