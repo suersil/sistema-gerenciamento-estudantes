@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaDTO;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AlterarTurmaRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 
@@ -17,7 +18,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ServiceTurmaTest {
@@ -32,6 +33,8 @@ class ServiceTurmaTest {
     Turma turma;
     TurmaDTO turmaDTO;
 
+    AlterarTurmaRequest turmaRequest;
+
     String nomeTurma= "5oAnoC";
     Boolean estaAtiva = true;
 
@@ -39,6 +42,7 @@ class ServiceTurmaTest {
     public void setup() {
         turma = new Turma(nomeTurma, estaAtiva);
         turmaDTO = new TurmaDTO(nomeTurma, estaAtiva);
+        turmaRequest = new AlterarTurmaRequest(estaAtiva, nomeTurma);
     }
 
 
@@ -55,9 +59,19 @@ class ServiceTurmaTest {
     }
 
     @Test
-    void alterarTurma() {
+    void alterarTurmaComSucesso() throws Exception{
         when(repositorioTurma.findById(anyLong())).thenReturn(Optional.of(turma));
+        when(repositorioTurma.save(any())).thenReturn(turma);
 
+        Turma turmaAtualizada = serviceTurma.alterarTurma(1L, turmaRequest);
+
+        assertNotNull(turmaAtualizada);
+        assertEquals(estaAtiva, turmaAtualizada.getEstaAtiva());
+        assertEquals(nomeTurma, turmaAtualizada.getNomeTurma());
+
+        verify(repositorioTurma, times(1)).findById(1L);
+        verify(repositorioTurma, times(1)).save(any());
+        verifyNoMoreInteractions(repositorioTurma);
     }
 
     @Test
