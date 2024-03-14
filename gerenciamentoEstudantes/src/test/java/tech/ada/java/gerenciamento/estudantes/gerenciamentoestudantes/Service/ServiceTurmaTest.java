@@ -8,12 +8,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaDTO;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AlterarTurmaRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,17 +26,14 @@ import static org.mockito.Mockito.*;
 class ServiceTurmaTest {
     @InjectMocks
     ServiceTurmaImpl serviceTurma;
-
     @Mock
     RepositorioTurma repositorioTurma;
     @Mock
     ModelMapper modelMapper;
-
     Turma turma;
     TurmaDTO turmaDTO;
     AlterarTurmaRequest turmaRequest;
     List<Turma> listaTurma;
-
     String nomeTurma= "5oAnoC";
     Boolean estaAtiva = true;
 
@@ -48,9 +44,8 @@ class ServiceTurmaTest {
         turmaRequest = new AlterarTurmaRequest(estaAtiva, nomeTurma);
     }
 
-
     @Test
-    void cadastrarTurma() {
+    void deveCadastrarTurmaComSucesso() {
         when(repositorioTurma.save(any())).thenReturn(turmaDTO.toEntity());
         Turma turmaCadastrada = serviceTurma.cadastrarTurma(turmaDTO);
         assertNotNull(turmaCadastrada);
@@ -60,108 +55,115 @@ class ServiceTurmaTest {
     }
 
     @Test
-    void buscarTurmas() {
-        //when: config do mock, metodo que é chamado dentro do metodo de teste
-        //thenReturn: o que esperamos ser retornado quando o metodo é chamado
+    void deveRetornarBadRequestCadastrarTurma() {
+        when(repositorioTurma.save(any())).thenThrow(new BadRequest("Bad Request ao Cadastrar Turmas"));
+        assertThrows(BadRequest.class, () -> {
+            serviceTurma.cadastrarTurma(turmaDTO);
+        });
+        verify(repositorioTurma, times(1)).save(any());
+    }
+
+    @Test
+    void deveBuscarTurmasComSucesso() {
         when(repositorioTurma.findAll()).thenReturn(List.of(turma));
         List<Turma> listaTurmas = serviceTurma.buscarTurmas();
-
-        //assertions
-        assertNotNull(listaTurmas); //assegurar que a lista nao é nula
-        assertEquals("Turma", listaTurmas.get(0).getClass().getSimpleName());// Verifica o tipo do primeiro elemento da lista
-        assertEquals(1, listaTurmas.size()); //assegurar que tamanho da lista esperado com o obtido/atual
-        assertEquals(Turma.class, listaTurmas.get(0).getClass()); //assegurar que o objeto esperado é do mesmo tipo que o obj obtido
-
-        // Verifica se o método findAll foi chamado apenas uma vez
+        assertNotNull(listaTurmas);
+        assertEquals("Turma", listaTurmas.get(0).getClass().getSimpleName());
+        assertEquals(1, listaTurmas.size());
+        assertEquals(Turma.class, listaTurmas.get(0).getClass());
         verify(repositorioTurma).findAll();
-        // Verifica se não houve mais interações com o mock repositorioTurma
         verifyNoMoreInteractions(repositorioTurma);
-
     }
 
     @Test
-    void buscarTurmaEspecifica() {
+    void deveRetornarNotFoundExceptionBuscarTurmas() {
+        when(repositorioTurma.findAll()).thenThrow(new ResourceNotFoundException("lista de turmas"));
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceTurma.buscarTurmas();
+        });
+        verify(repositorioTurma, times(1)).findAll();
+        verifyNoMoreInteractions(repositorioTurma);
     }
 
     @Test
-    void alterarTurmaComSucesso() throws Exception{
+    void deveBuscarTurmaEspecificaComSucesso() {
+    }
+
+    @Test
+    void deveRetornarNotFoundExceptionBuscarTurmaEspecifica() {
+//        when(repositorioTurma.findById(anyLong())).thenReturn(Optional.empty());
+//        assertThrows(ResourceNotFoundException.class, () -> {
+//            serviceTurma.alterarTurma(1L, turmaRequest);
+//        });
+//        verify(repositorioTurma, times(1)).findById(1L);
+//        verifyNoMoreInteractions(repositorioTurma);
+    }
+
+    @Test
+    void deveAlterarTurmaComSucesso() throws Exception{
         when(repositorioTurma.findById(anyLong())).thenReturn(Optional.of(turma));
         when(repositorioTurma.save(any())).thenReturn(turma);
-
         Turma turmaAtualizada = serviceTurma.alterarTurma(1L, turmaRequest);
-
         assertNotNull(turmaAtualizada);
         assertEquals(estaAtiva, turmaAtualizada.getEstaAtiva());
         assertEquals(nomeTurma, turmaAtualizada.getNomeTurma());
-
         verify(repositorioTurma, times(1)).findById(1L);
         verify(repositorioTurma, times(1)).save(any());
         verifyNoMoreInteractions(repositorioTurma);
     }
 
     @Test
-    void alterarTurmaComException() {
+    void deveRetornarNotFoundExceptionAlterarTurma() {
         when(repositorioTurma.findById(anyLong())).thenReturn(Optional.empty());
-
         assertThrows(ResourceNotFoundException.class, () -> {
             serviceTurma.alterarTurma(1L, turmaRequest);
         });
-
         verify(repositorioTurma, times(1)).findById(1L);
         verifyNoMoreInteractions(repositorioTurma);
     }
 
 
     @Test
-    void alteraTurmaCompleto() {
+    void deveAlterarTurmaCompletoComSucesso() {
         when(repositorioTurma.findById(anyLong())).thenReturn(Optional.of(turma));
         when(repositorioTurma.save(any())).thenReturn(turma);
-
         Turma turmaAtualizada = serviceTurma.alteraTurmaCompleto(1L, turmaRequest);
-
         assertNotNull(turmaAtualizada);
         assertEquals(estaAtiva, turmaAtualizada.getEstaAtiva());
         assertEquals(nomeTurma, turmaAtualizada.getNomeTurma());
-
         verify(repositorioTurma, times(1)).findById(1L);
         verify(repositorioTurma, times(1)).save(any());
         verifyNoMoreInteractions(repositorioTurma);
     }
 
     @Test
-    void alteraTurmaCompletoComException() {
+    void deveRetornarNotFoundExceptionAlterarTurmaCompleto() {
         when(repositorioTurma.findById(anyLong())).thenReturn(Optional.empty());
-
         assertThrows(ResourceNotFoundException.class, () -> {
             serviceTurma.alteraTurmaCompleto(1L, turmaRequest);
         });
-
         verify(repositorioTurma, times(1)).findById(1L);
         verifyNoMoreInteractions(repositorioTurma);
     }
 
 
     @Test
-    void findTurmaByEstaAtivaComSucesso() throws Exception{
+    void deveListarTurmaByEstaAtivaComSucesso() throws Exception{
         when(repositorioTurma.findTurmaByEstaAtiva(true)).thenReturn(List.of(turma));
         List<Turma> turmaFiltrada = serviceTurma.findTurmaByEstaAtiva(true);
-
         assertNotNull(turmaFiltrada);
         assertEquals(1, turmaFiltrada.size());
         assertFalse(turmaFiltrada.isEmpty());
-
         verify(repositorioTurma, times(1)).findTurmaByEstaAtiva(true);
         verifyNoMoreInteractions(repositorioTurma);
     }
 
     @Test
-    void findTurmaByEstaAtivaComException(){
+    void deveRetornarNotFoundExceptionListarTurmaByEstaAtiva(){
         when(repositorioTurma.findTurmaByEstaAtiva(true)).thenReturn(Collections.emptyList());
-
         assertThrows(ResourceNotFoundException.class, () ->{
             serviceTurma.findTurmaByEstaAtiva(true);
         });
-
         verify(repositorioTurma, times(1)).findTurmaByEstaAtiva(true);
         verifyNoMoreInteractions(repositorioTurma);
     }
