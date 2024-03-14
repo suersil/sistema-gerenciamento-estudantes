@@ -30,11 +30,11 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
 
     @Autowired
     RepositorioTurma turmaRepositorio;
-
     ModelMapper modelMapper = new ModelMapper();
 
-    public ServiceEstudanteImpl(RepositorioEstudante repositorioEstudante, ModelMapper modelMapper) { 
+    public ServiceEstudanteImpl(RepositorioEstudante repositorioEstudante, RepositorioTurma turmaRepositorio, ModelMapper modelMapper) {
         this.repositorioEstudante = repositorioEstudante;
+        this.turmaRepositorio = turmaRepositorio;
         this.modelMapper = modelMapper;
     }
 

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.Estud
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarEstudanteRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.EstudanteRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,6 +31,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.Se
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,6 +74,7 @@ class ServiceEstudanteTest {
                 "02.12.20",
                 "123456789");
         mockMvc = MockMvcBuilders.standaloneSetup(serviceEstudante).build();
+        MockitoAnnotations.initMocks(this);
     }
 
     public static String asJsonString(final Object obj) {
@@ -157,11 +161,44 @@ class ServiceEstudanteTest {
         Long id = 1L;
         when(repositorioEstudante.findById(id)).thenReturn(Optional.of(estudante));
 
-        EstudanteCadastroDTO  atualizarRequest = new EstudanteCadastroDTO( "NovoNomeTeste", "NovaDataTeste", "NovoNomeResponsavelTeste", "NovoContatoResponsavelTeste");
+        EstudanteCadastroDTO atualizarRequest = new EstudanteCadastroDTO( "NovoNomeTeste", "NovaDataTeste", "NovoNomeResponsavelTeste", "NovoContatoResponsavelTeste");
         try {
             serviceEstudante.editarTudoEstudante(id, atualizarRequest);
         }  catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+    //Patch
+    @Test
+    public void deveAtualizarEstudante() {
+        Long id = 1L;
+        EstudanteRequest request = new EstudanteRequest(true, "NovoNomeAluno", "NovoNomeResponsavel",
+                "NovoContatoResponsavel", 1L);
+
+        Estudante estudanteExistente = new Estudante();
+        estudanteExistente.setId(id);
+        estudanteExistente.setNomeAluno("NomeAntigo");
+        estudanteExistente.setNomeResponsavel("ResponsavelAntigo");
+        estudanteExistente.setContatoResponsavel("ContatoAntigo");
+        estudanteExistente.setEstaAtivo(false);
+
+        Turma turma = new Turma();
+        turma.setId(1L);
+
+        when(repositorioEstudante.findById(id)).thenReturn(Optional.of(estudanteExistente));
+        when(turmaRepositorio.findById(1L)).thenReturn(Optional.of(turma));
+        when(repositorioEstudante.save(estudanteExistente)).thenReturn(estudanteExistente);
+
+        ResponseEntity<Estudante> responseEntity = serviceEstudante.atualizarEstudante(id, request);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("NovoNomeAluno", estudanteExistente.getNomeAluno());
+        assertEquals("NovoNomeResponsavel", estudanteExistente.getNomeResponsavel());
+        assertEquals("NovoContatoResponsavel", estudanteExistente.getContatoResponsavel());
+        assertEquals(true, estudanteExistente.getEstaAtivo());
+        assertEquals(turma, estudanteExistente.getTurma());
+    }
 }
+
+
