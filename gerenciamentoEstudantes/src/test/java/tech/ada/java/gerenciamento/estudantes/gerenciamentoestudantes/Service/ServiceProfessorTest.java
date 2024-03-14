@@ -12,10 +12,13 @@ import org.springframework.http.ResponseEntity;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller.ControllerProfessor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarProfessorRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.ProfessorRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,6 +40,8 @@ class ServiceProfessorTest {
     //instanciar a classe que usamos como retorno em alguns metodos
     Professor professor;
     ProfessorDTO professorDTO;
+
+    AtualizarProfessorRequest professorRequest;
     List<Professor> listaProfessores;
 
     String nomeProfessor = "Brunno Nogueira";
@@ -48,6 +53,8 @@ class ServiceProfessorTest {
     public void setup() {
         professor = new Professor(nomeProfessor, email, disciplinaLecionada, estaAtivo);
         professorDTO = new ProfessorDTO(nomeProfessor, email, disciplinaLecionada, estaAtivo);
+        professorRequest = new AtualizarProfessorRequest(nomeProfessor, email, disciplinaLecionada, estaAtivo);
+
     }
 
     @Test
@@ -111,10 +118,64 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void atualizarProfessor() {
+    void atualizarProfessorComSuceso() throws Exception {
+        when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.of(professor));
+        when(repositorioProfessor.save(any())).thenReturn(professor);
+
+        Professor professorAtualizado = serviceProfessor.atualizarProfessor(1L, professorRequest);
+
+        // Verificações
+        assertNotNull(professorAtualizado);
+        assertEquals(nomeProfessor, professorAtualizado.getNomeProfessor());
+        assertEquals(email, professorAtualizado.getEmail());
+        assertEquals(disciplinaLecionada, professorAtualizado.getDisciplinaLecionada());
+        assertEquals(estaAtivo, professorAtualizado.getEstaAtivo());
+
+
+        verify(repositorioProfessor, times(1)).findById(1L);
+        verify(repositorioProfessor, times(1)).save(any());
+        verifyNoMoreInteractions(repositorioProfessor);
     }
 
     @Test
-    void filtrarProfessorPorNome() {
+    void atualizarProfessorComException() {
+        when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.empty());
 
-}}
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceProfessor.atualizarProfessor(1L, professorRequest);
+        });
+
+        verify(repositorioProfessor, times(1)).findById(1L);
+        verifyNoMoreInteractions(repositorioProfessor);
+    }
+
+
+    @Test
+    void filtrarProfessorPorNomeComSuceso() {
+        when(repositorioProfessor.findProfessorsByNomeProfessor(anyString())).thenReturn(List.of(professor));
+        List<Professor> professoresFiltrados = serviceProfessor.filtrarProfessorPorNome("Brunno Nogueira");
+
+        assertNotNull(professoresFiltrados);
+        assertEquals(1, professoresFiltrados.size());
+
+        assertEquals("Brunno Nogueira", professoresFiltrados.get(0).getNomeProfessor());
+
+        verify(repositorioProfessor, times(1)).findProfessorsByNomeProfessor("Brunno Nogueira");
+
+        verifyNoMoreInteractions(repositorioProfessor);
+    }
+
+    @Test
+    void filtrarProfessorPorNomeComException() {
+        when(repositorioProfessor.findProfessorsByNomeProfessor(anyString())).thenThrow(new ResourceNotFoundException("professor por nome"));
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceProfessor.filtrarProfessorPorNome("Pepito Perez");
+        });
+
+        verify(repositorioProfessor, times(1)).findProfessorsByNomeProfessor("Pepito Perez");
+        verifyNoMoreInteractions(repositorioProfessor);
+    }
+
+
+}
