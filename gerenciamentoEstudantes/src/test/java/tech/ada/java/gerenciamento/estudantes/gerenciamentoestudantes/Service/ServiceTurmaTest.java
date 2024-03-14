@@ -86,17 +86,22 @@ class ServiceTurmaTest {
     }
 
     @Test
-    void deveBuscarTurmaEspecificaComSucesso() {
+    void deveBuscarTurmaEspecificaComSucesso() throws Exception{
+        when(repositorioTurma.findById(anyLong())).thenReturn(Optional.of(turma));
+        Turma turmaBuscada = serviceTurma.buscarTurmaEspecifica(1L);
+        assertNotNull(turmaBuscada);
+        verify(repositorioTurma, times(1)).findById(1L);
+        verifyNoMoreInteractions(repositorioTurma);
     }
 
     @Test
     void deveRetornarNotFoundExceptionBuscarTurmaEspecifica() {
-//        when(repositorioTurma.findById(anyLong())).thenReturn(Optional.empty());
-//        assertThrows(ResourceNotFoundException.class, () -> {
-//            serviceTurma.alterarTurma(1L, turmaRequest);
-//        });
-//        verify(repositorioTurma, times(1)).findById(1L);
-//        verifyNoMoreInteractions(repositorioTurma);
+        when(repositorioTurma.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceTurma.buscarTurmaEspecifica(1L);
+        });
+        verify(repositorioTurma, times(1)).findById(1L);
+        verifyNoMoreInteractions(repositorioTurma);
     }
 
     @Test
