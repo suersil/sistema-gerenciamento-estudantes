@@ -145,14 +145,13 @@ class ControllerTurmaTest {
     //em implementação
     @Test
     void retornarNotFoundAlterarTurma() throws Exception {
-//        when(serviceTurma.alterarTurma(any(Long.class), any(AlterarTurmaRequest.class))).thenThrow(new ResourceNotFoundException("Turma", "ID", 1L));
-//        mockMvc.perform(MockMvcRequestBuilders.patch("/turma/1")
-////                        .param("estaAtiva", String.valueOf(false))
-//                        .param("nomeTurma", "3oAnoC"))
-//                .andExpect(status().isNotFound());
+        when(serviceTurma.alterarTurma(any(), any())).thenThrow(new ResourceNotFoundException("Turma", "ID", turmaID));
+        mockMvc.perform(MockMvcRequestBuilders.patch("/turma/1")
+                .content(asJsonString(alterarTurmaRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
-    //em implementação
     @Test
     void alteraTurmaCompleto() throws Exception{
         when(serviceTurma.alteraTurmaCompleto(any(Long.class), any(AlterarTurmaRequest.class))).thenReturn(turmaDTO.toEntity());
@@ -168,10 +167,11 @@ class ControllerTurmaTest {
     //em implementação
     @Test
     void retornarNotFoundAlterarTurmaCompleto() throws Exception {
-//        when(serviceTurma.alteraTurmaCompleto(any(Long.class), any(AlterarTurmaRequest.class))).thenThrow(new ResourceNotFoundException("lista de turmas"));
-//        mockMvc.perform(MockMvcRequestBuilders.put("/turma/1")
-//                        .param("estaAtiva", String.valueOf(true)))
-//                .andExpect(status().isNotFound());
+        when(serviceTurma.alteraTurmaCompleto(any(Long.class), any(AlterarTurmaRequest.class))).thenThrow(new ResourceNotFoundException("lista de turmas"));
+        mockMvc.perform(MockMvcRequestBuilders.put("/turma/1")
+                .content(asJsonString(alterarTurmaRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
