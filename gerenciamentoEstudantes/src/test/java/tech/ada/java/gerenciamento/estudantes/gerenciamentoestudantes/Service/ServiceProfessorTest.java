@@ -7,18 +7,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller.ControllerProfessor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarProfessorRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.ProfessorRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,6 +33,8 @@ class ServiceProfessorTest {
     @Mock //mockar classes que usamos na controller
     RepositorioProfessor repositorioProfessor;
     @Mock
+    RepositorioTurma repositorioTurma;
+    @Mock
     ModelMapper modelMapper;
     //RepositorioTurma turmaRepositorio;
 
@@ -40,20 +42,29 @@ class ServiceProfessorTest {
     //instanciar a classe que usamos como retorno em alguns metodos
     Professor professor;
     ProfessorDTO professorDTO;
+    ProfessorRequest professorRequest;
+    AtualizarProfessorRequest atualizarProfessorRequest;
 
-    AtualizarProfessorRequest professorRequest;
-    List<Professor> listaProfessores;
+    Turma turma;
+
+
+
 
     String nomeProfessor = "Brunno Nogueira";
     String email = "brunno@ada.com.br";
     String disciplinaLecionada = "Programacao Web";
     Boolean estaAtivo = true;
 
+    String nomeTurma= "5oAnoC";
+    Boolean estaAtiva = true;
+
     @BeforeEach //annotation para dados que podem ser usados em todos os testes
     public void setup() {
         professor = new Professor(nomeProfessor, email, disciplinaLecionada, estaAtivo);
         professorDTO = new ProfessorDTO(nomeProfessor, email, disciplinaLecionada, estaAtivo);
-        professorRequest = new AtualizarProfessorRequest(nomeProfessor, email, disciplinaLecionada, estaAtivo);
+        atualizarProfessorRequest = new AtualizarProfessorRequest(nomeProfessor, email, disciplinaLecionada, estaAtivo);
+        professorRequest = new ProfessorRequest(nomeProfessor, email, disciplinaLecionada, estaAtivo, 1L);
+        turma = new Turma(nomeTurma, estaAtiva);
 
     }
 
@@ -114,7 +125,48 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void editarParcialProfessor() {
+    void editarParcialProfessor() throws Exception{
+        when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.of(professor));
+        when(repositorioProfessor.save(any())).thenReturn(professor);
+        when(repositorioTurma.findById(anyLong())).thenReturn(Optional.of(turma));
+
+        Professor professorAtualizado = serviceProfessor.editarParcialProfessor(1L, professorRequest);
+
+        assertNotNull(professorAtualizado);
+        assertEquals(professor, professorAtualizado);
+
+        verify(repositorioProfessor, times(1)).findById(1L);
+        verify(repositorioTurma, times(1)).findById(1L);
+
+        verify(repositorioProfessor, times(1)).save(any());
+        verifyNoMoreInteractions(repositorioProfessor);
+    }
+
+    @Test
+    void editarParcialProfessorComProfessorNaoEncontrado() {
+
+        when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceProfessor.editarParcialProfessor(1L, professorRequest);
+        });
+
+        verify(repositorioProfessor, times(1)).findById(1L);
+        verifyNoMoreInteractions(repositorioProfessor);
+    }
+
+    @Test
+    void editarParcialProfessorComTurmaNaoEncontrada() {
+        when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.of(professor));
+        when(repositorioTurma.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceProfessor.editarParcialProfessor(1L, professorRequest);
+        });
+
+        verify(repositorioProfessor, times(1)).findById(1L);
+        verify(repositorioTurma, times(1)).findById(anyLong());
+        verifyNoMoreInteractions(repositorioProfessor, repositorioTurma);
     }
 
     @Test
@@ -122,7 +174,7 @@ class ServiceProfessorTest {
         when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.of(professor));
         when(repositorioProfessor.save(any())).thenReturn(professor);
 
-        Professor professorAtualizado = serviceProfessor.atualizarProfessor(1L, professorRequest);
+        Professor professorAtualizado = serviceProfessor.atualizarProfessor(1L, atualizarProfessorRequest);
 
         // Verificações
         assertNotNull(professorAtualizado);
@@ -142,7 +194,7 @@ class ServiceProfessorTest {
         when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            serviceProfessor.atualizarProfessor(1L, professorRequest);
+            serviceProfessor.atualizarProfessor(1L, atualizarProfessorRequest);
         });
 
         verify(repositorioProfessor, times(1)).findById(1L);

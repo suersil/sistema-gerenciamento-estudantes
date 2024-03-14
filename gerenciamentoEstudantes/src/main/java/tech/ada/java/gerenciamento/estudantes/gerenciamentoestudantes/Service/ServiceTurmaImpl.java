@@ -106,6 +106,6 @@ public class ServiceTurmaImpl implements ServiceTurma{
             throw new ResourceNotFoundException("lista de turmas");
         }
 
-        return repositorioTurma.findTurmaByEstaAtiva(status);
+        return statusTurmaFiltrada;
     }
 }
