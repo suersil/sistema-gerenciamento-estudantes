@@ -106,6 +106,19 @@ class ServiceTurmaTest {
     }
 
     @Test
+    void alteraTurmaCompletoComException() {
+        when(repositorioTurma.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceTurma.alteraTurmaCompleto(1L, turmaRequest);
+        });
+
+        verify(repositorioTurma, times(1)).findById(1L);
+        verifyNoMoreInteractions(repositorioTurma);
+    }
+
+
+    @Test
     void findTurmaByEstaAtivaComSucesso() throws Exception{
         when(repositorioTurma.findTurmaByEstaAtiva(true)).thenReturn(List.of(turma));
         List<Turma> turmaFiltrada = serviceTurma.findTurmaByEstaAtiva(true);
