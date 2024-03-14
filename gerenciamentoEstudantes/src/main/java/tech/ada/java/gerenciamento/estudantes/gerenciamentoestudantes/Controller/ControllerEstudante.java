@@ -17,7 +17,8 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.Se
 import java.util.List;
 import java.util.Optional;
 @Validated
-@RestController("/estudante")
+@RestController
+@RequestMapping("/estudante")
 public class ControllerEstudante {
 
     private final ServiceEstudante serviceEstudante;
@@ -28,10 +29,10 @@ public class ControllerEstudante {
         this.serviceEstudante = serviceEstudante;
         
     }
-    
-    @PostMapping("/estudante")
+
+    @PostMapping
     public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request) {
-        
+
         return serviceEstudante.cadastrarEstudante(request);
     
         

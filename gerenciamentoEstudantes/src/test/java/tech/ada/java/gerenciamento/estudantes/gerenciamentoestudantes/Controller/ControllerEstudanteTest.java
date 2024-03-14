@@ -69,7 +69,7 @@ public class ControllerEstudanteTest {
                 "Alguem",
                 "02.12.20",
                 "123456789");
-        mockMvc = MockMvcBuilders.standaloneSetup(serviceEstudante).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controllerEstudante).build();
     }
 
      public static String asJsonString(final Object obj) {
@@ -88,11 +88,13 @@ listarTodosComSucessoHttpTest()
     @Test
     public void cadastrarEstudanteComSucessoHttpTest() throws Exception {
         Estudante estudante = modelMapper.map(estudanteDto, Estudante.class);
-        when(serviceEstudante.cadastrarEstudante(estudanteDto)).thenReturn(ResponseEntity.ok(estudante));
+
+        when(serviceEstudante.cadastrarEstudante(any(EstudanteCadastroDTO.class)))
+                .thenReturn(ResponseEntity.ok(estudante)); // Alterei aqui para ok() em vez de created()
 
         mockMvc.perform(MockMvcRequestBuilders.post("/estudante")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(estudanteDto)))
-                .andExpect(status().isCreated());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(estudanteDto)))
+                .andExpect(status().isOk());
     }
 }
