@@ -76,18 +76,19 @@ class ServiceTurmaTest {
         verify(repositorioTurma, times(1)).save(any());
         verifyNoMoreInteractions(repositorioTurma);
     }
+
     @Test
-    void alterarTurmaComException(){
-//        when(repositorioTurma.findById(anyLong())).thenReturn(Optional.empty());
-//        when(repositorioTurma.save(any())).thenReturn(turma);
-//
-//        assertThrows(ResourceNotFoundException.class, () -> {
-//            serviceTurma.alterarTurma(1L, turmaRequest);
-//        });
-//
-//        verify(repositorioTurma, times(1)).findById(1L);
-//        verifyNoMoreInteractions(repositorioTurma);
+    void alterarTurmaComException() {
+        when(repositorioTurma.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceTurma.alterarTurma(1L, turmaRequest);
+        });
+
+        verify(repositorioTurma, times(1)).findById(1L);
+        verifyNoMoreInteractions(repositorioTurma);
     }
+
 
     @Test
     void alteraTurmaCompleto() {
