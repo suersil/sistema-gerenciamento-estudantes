@@ -81,24 +81,27 @@ class ServiceEstudanteTest {
         }
     }
     @Test
-    void listarEstudantesComSucesso(){
-        when(repositorioEstudante.findAll()).thenReturn(List.of(estudante));
-        ResponseEntity<List<Estudante>> response = serviceEstudante.listarTodosEstudantes();
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(ResponseEntity.class, response.getClass());
+    void filtrarEstudanteIdComSucesso() {
+        Long id = 1L;
+        Estudante estudante = new Estudante();
+        estudante.setId(id);
+        Optional<Estudante> optionalEstudante = Optional.of(estudante);
+        
+        when(repositorioEstudante.findById(id)).thenReturn(optionalEstudante);
+        
+        Optional<Estudante> response = serviceEstudante.filtrarEstudanteId(id);
+        
+        assertEquals(optionalEstudante, response);
     }
-
     @Test
     public void deveCadastrarEstudanteComSucesso() throws Exception {
         when(repositorioEstudante.save(Mockito.any())).thenReturn(estudante);
         when(modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(estudante);
 
-        ResponseEntity<Estudante> response = serviceEstudante.cadastrarEstudante(estudanteCadastroDTO);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
+        Estudante response = serviceEstudante.cadastrarEstudante(estudanteCadastroDTO);
+        assertNotNull(response);
         assertEquals(ResponseEntity.class, response.getClass());
-        assertEquals(estudante, response.getBody());
+        assertEquals(estudante, response);
 
        /*  mockMvc.perform(MockMvcRequestBuilders.post("/estudante")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -110,33 +113,32 @@ class ServiceEstudanteTest {
     public void deveFiltrarStatusEstudanteAtivo() {
         when(repositorioEstudante.findEstudantesByEstaAtivo(true)).thenReturn(List.of(estudante));
 
-        ResponseEntity<List<Estudante>> response = serviceEstudante.filtrarStatusEstudante(true);
+        List<Estudante> response = serviceEstudante.filtrarStatusEstudante(true);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
+        
+        assertNotNull(response);
+        assertEquals(1, response.size());
     }
 
     @Test
     public void deveFiltrarStatusEstudanteInativo() {
         when(repositorioEstudante.findEstudantesByEstaAtivo(false)).thenReturn(List.of(estudante));
 
-        ResponseEntity<List<Estudante>> response = serviceEstudante.filtrarStatusEstudante(false);
+       List<Estudante> response = serviceEstudante.filtrarStatusEstudante(false);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
+        assertNotNull(response);
+        assertEquals(1, response.size());
     }
 
     @Test
     public void deveFiltrarEstudanteId() {
         when(repositorioEstudante.findById(1L)).thenReturn(Optional.of(estudante));
 
-        ResponseEntity<Optional<Estudante>> response = serviceEstudante.filtrarEstudanteId(1L);
+        Optional<Estudante> response = serviceEstudante.filtrarEstudanteId(1L);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(estudante, response.getBody().get());
+        
+        assertNotNull(response);
+        assertEquals(estudante, response);
     }
 
     @Test
@@ -144,11 +146,11 @@ class ServiceEstudanteTest {
         String nome = "testeNome";
         when(repositorioEstudante.findByNomeAlunoQuery(nome)).thenReturn(List.of(estudante));
 
-        ResponseEntity<List<Estudante>> response = serviceEstudante.filtrarEstudanteNome(nome);
+       List<Estudante> response = serviceEstudante.filtrarEstudanteNome(nome);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(estudante, response.getBody().get(0));
+        
+        assertNotNull(response);
+        assertEquals(estudante, response.getFirst());
     }
 
     //PUT

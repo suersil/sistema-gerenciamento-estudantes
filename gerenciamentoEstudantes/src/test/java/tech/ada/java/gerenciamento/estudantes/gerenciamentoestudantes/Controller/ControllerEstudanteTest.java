@@ -13,11 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,8 +27,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.Estud
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceEstudante;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.MockitoJUnitRunner;
+
 
 
 @ExtendWith(MockitoExtension.class)
@@ -39,10 +35,9 @@ public class ControllerEstudanteTest {
 
     @Mock
     private ServiceEstudante serviceEstudante;
-    
 
-    @Spy
-    ModelMapper modelMapper=new ModelMapper();
+    @Mock
+    ModelMapper modelMapper;
 
     Estudante estudante;
 
@@ -69,7 +64,7 @@ public class ControllerEstudanteTest {
                 "Alguem",
                 "02.12.20",
                 "123456789");
-        mockMvc = MockMvcBuilders.standaloneSetup(serviceEstudante).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controllerEstudante).build();
     }
 
      public static String asJsonString(final Object obj) {
@@ -87,8 +82,8 @@ listarTodosComSucessoHttpTest()
 
     @Test
     public void cadastrarEstudanteComSucessoHttpTest() throws Exception {
-        Estudante estudante = modelMapper.map(estudanteDto, Estudante.class);
-        when(serviceEstudante.cadastrarEstudante(estudanteDto)).thenReturn(ResponseEntity.ok(estudante));
+        when(modelMapper.map(any(),any())).thenReturn(estudante);
+        when(serviceEstudante.cadastrarEstudante(any())).thenReturn(estudante);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/estudante")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -21,19 +21,19 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estu
 
 public interface ServiceEstudante {
 
-    public ResponseEntity<Estudante> cadastrarEstudante(EstudanteCadastroDTO request);
+    Estudante cadastrarEstudante(EstudanteCadastroDTO request);
    
-    public ResponseEntity<List<Estudante>> listarTodosEstudantes();
+    List<Estudante> listarTodosEstudantes();
    
-    public ResponseEntity<List<Estudante>> filtrarStatusEstudante(Boolean status);
+    List<Estudante> filtrarStatusEstudante(Boolean status);
 
-    public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(Long id);
+    Optional<Estudante> filtrarEstudanteId(Long id);
    
-    ResponseEntity<List<Estudante>> filtrarEstudanteNome(String nomeAluno);
+    List<Estudante> filtrarEstudanteNome(String nomeAluno);
      
-    ResponseEntity<Estudante> editarTudoEstudante(Long id, EstudanteCadastroDTO request);   
+    Estudante editarTudoEstudante(Long id, EstudanteCadastroDTO request);
 
-    ResponseEntity<Estudante> atualizarEstudante(Long id, EstudanteRequest request);
+    Estudante atualizarEstudante(Long id, EstudanteRequest request);
 
  }
 
