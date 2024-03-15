@@ -45,22 +45,17 @@ class ServiceEstudanteTest {
 
     @InjectMocks
     ServiceEstudanteImpl serviceEstudante;
-
     @Mock
     RepositorioEstudante repositorioEstudante;
-
     @Mock
     RepositorioTurma turmaRepositorio;
-
     @Mock
     ModelMapper modelMapper;
-
 
     Estudante estudante;
     EstudanteCadastroDTO estudanteCadastroDTO;
     Turma turma;
     LocalDateTime data = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
-
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -95,6 +90,14 @@ class ServiceEstudanteTest {
         assertNotNull(response);
         assertEquals(estudante, response);
 
+        assertEquals(estudante.getNomeAluno(), response.getNomeAluno());
+        assertEquals(estudante.getNomeResponsavel(), response.getNomeResponsavel());
+        assertEquals(estudante.getDataNascimento(), response.getDataNascimento());
+        assertEquals(estudante.getContatoResponsavel(), response.getContatoResponsavel());
+        assertEquals(estudante.getEstaAtivo(), response.getEstaAtivo());
+
+        verifyNoMoreInteractions(repositorioEstudante);
+
        /*  mockMvc.perform(MockMvcRequestBuilders.post("/estudante")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(asJsonString(estudanteCadastroDTO)))
@@ -103,17 +106,16 @@ class ServiceEstudanteTest {
 
     @Test
     public void deveListarEstudantesComSucesso() throws Exception {
-        ServiceEstudante serviceEstudanteMock = mock(ServiceEstudante.class);
-        //para retornar uma lista vazia
-        when(serviceEstudanteMock.listarTodosEstudantes()).thenReturn(Collections.emptyList());
+        when(repositorioEstudante.findAll()).thenReturn(List.of(estudante));
+        List<Estudante> response = serviceEstudante.listarTodosEstudantes();
 
-        ControllerEstudante controllerEstudante = new ControllerEstudante(serviceEstudanteMock);
+        assertNotNull(response);
+        assertEquals("Estudante", response.get(0).getClass().getSimpleName());
+        assertEquals(1, response.size());
+        assertEquals(Estudante.class, response.get(0).getClass());
 
-        ResponseEntity<List<Estudante>> response = controllerEstudante.listarTodosEstudantes();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertTrue(response.getBody().isEmpty());
+        verify(repositorioEstudante).findAll();
+        verifyNoMoreInteractions(repositorioEstudante);
     }
 
     @Test
@@ -121,7 +123,6 @@ class ServiceEstudanteTest {
         when(repositorioEstudante.findEstudantesByEstaAtivo(true)).thenReturn(List.of(estudante));
 
         List<Estudante> response = serviceEstudante.filtrarStatusEstudante(true);
-
         
         assertNotNull(response);
         assertEquals(1, response.size());
@@ -152,15 +153,30 @@ class ServiceEstudanteTest {
     }
 
     @Test
-    public void deveFiltrarEstudanteNome() {
+    public void deveFiltrarEstudanteNomeComSucesso() {
         String nome = "testeNome";
         when(repositorioEstudante.findByNomeAlunoQuery(nome)).thenReturn(List.of(estudante));
 
        List<Estudante> response = serviceEstudante.filtrarEstudanteNome(nome);
 
-        
         assertNotNull(response);
+        assertEquals(1, response.size());
         assertEquals(estudante, response.getFirst());
+
+        verify(repositorioEstudante, times(1)).findByNomeAlunoQuery(nome);
+        verifyNoMoreInteractions(repositorioEstudante);
+    }
+
+    @Test
+    public void deveFiltrarEstudanteNomeComException() {
+        when(repositorioEstudante.findByNomeAlunoQuery(anyString())).thenThrow(new ResourceNotFoundException("Estudante por nome"));
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceEstudante.filtrarEstudanteNome("nomeTeste");
+        });
+
+        verify(repositorioEstudante, times(1)).findByNomeAlunoQuery("nomeTeste");
+        verifyNoMoreInteractions(repositorioEstudante);
     }
 
     //PUT
