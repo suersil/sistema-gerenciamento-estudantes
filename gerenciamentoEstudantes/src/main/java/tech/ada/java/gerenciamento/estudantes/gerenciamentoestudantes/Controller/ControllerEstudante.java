@@ -41,7 +41,7 @@ public class ControllerEstudante {
     }
 
     @GetMapping(params = "status")
-    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
+    public ResponseEntity<List<Estudante>> filtrarStatusEstudante(@RequestParam Boolean status) {
      List<Estudante>   estudantes = serviceEstudante.filtrarStatusEstudante(status);
      return ResponseEntity.status(HttpStatus.OK).body(estudantes);
     }
