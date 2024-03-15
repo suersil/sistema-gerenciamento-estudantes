@@ -60,5 +60,6 @@ public class Estudante {
         this.contatoResponsavel = contatoResponsavel;
         this.dataDeCadastro = LocalDateTime.now(ZoneId.of("UTC"));
         this.turma = turma;
+    
     }
 }
