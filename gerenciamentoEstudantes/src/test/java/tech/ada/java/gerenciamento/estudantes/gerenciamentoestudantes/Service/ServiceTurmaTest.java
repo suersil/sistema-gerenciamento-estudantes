@@ -13,6 +13,8 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.Res
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AlterarTurmaRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -77,11 +79,10 @@ class ServiceTurmaTest {
 
     @Test
     void deveRetornarNotFoundExceptionBuscarTurmas() {
-        when(repositorioTurma.findAll()).thenThrow(new ResourceNotFoundException("lista de turmas"));
+        when(repositorioTurma.findAll()).thenReturn(new ArrayList<>());
         assertThrows(ResourceNotFoundException.class, () -> {
             serviceTurma.buscarTurmas();
         });
-        verify(repositorioTurma, times(1)).findAll();
         verifyNoMoreInteractions(repositorioTurma);
     }
 
