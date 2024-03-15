@@ -1,0 +1,212 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ServiceProfessorImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service</a>
+</div>
+
+<h1>Coverage Summary for Class: ServiceProfessorImpl (tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ServiceProfessorImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/41)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service;
+&nbsp;
+&nbsp;import org.modelmapper.ModelMapper;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarProfessorRequest;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.ProfessorRequest;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class ServiceProfessorImpl implements ServiceProfessor{
+&nbsp;
+&nbsp;    private final RepositorioProfessor repositorioProfessor;
+&nbsp;    private final RepositorioTurma turmaRepositorio;
+&nbsp;    private final ModelMapper modelMapper;
+&nbsp;
+&nbsp;
+&nbsp;    @Autowired
+<b class="nc">&nbsp;    public ServiceProfessorImpl(RepositorioProfessor repositorioProfessor, ModelMapper modelMapper, RepositorioTurma turmaRepositorio) {</b>
+<b class="nc">&nbsp;        this.repositorioProfessor = repositorioProfessor;</b>
+<b class="nc">&nbsp;        this.turmaRepositorio = turmaRepositorio;</b>
+<b class="nc">&nbsp;        this.modelMapper = modelMapper;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Professor cadastrarProfessor(ProfessorDTO professorDTO) {
+<b class="nc">&nbsp;        Professor professorConvertido = modelMapper.map(professorDTO, Professor.class);</b>
+<b class="nc">&nbsp;        Professor novoProfessor = repositorioProfessor.save(professorConvertido);</b>
+<b class="nc">&nbsp;        return novoProfessor;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Professor&gt; listarTodos() {
+<b class="nc">&nbsp;        List&lt;Professor&gt; listaProfessores = repositorioProfessor.findAll();</b>
+<b class="nc">&nbsp;        if(listaProfessores.isEmpty()){</b>
+<b class="nc">&nbsp;            throw new ResourceNotFoundException(&quot;lista de professores&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return listaProfessores;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Professor editarParcialProfessor(Long id, ProfessorRequest professorRequest) throws Exception {
+<b class="nc">&nbsp;        Optional&lt;Professor&gt; optionalProfessor = repositorioProfessor.findById(id);</b>
+<b class="nc">&nbsp;        if (optionalProfessor.isPresent()) {</b>
+<b class="nc">&nbsp;            Professor professorModificado = optionalProfessor.get();</b>
+&nbsp;            // verificamos se um das tres variaveis que esperamos foi passada para ser atualizada
+<b class="nc">&nbsp;            if (professorRequest.nomeProfessor() != null) professorModificado.setNomeProfessor(professorRequest.nomeProfessor());</b>
+<b class="nc">&nbsp;            if (professorRequest.email() != null) professorModificado.setEmail(professorRequest.email());</b>
+<b class="nc">&nbsp;            if (professorRequest.disciplinaLecionada() != null) professorModificado.setDisciplinaLecionada(professorRequest.disciplinaLecionada());</b>
+<b class="nc">&nbsp;            if (professorRequest.estaAtivo() != null) professorModificado.setEstaAtivo(professorRequest.estaAtivo());</b>
+<b class="nc">&nbsp;            Long turmaId = professorRequest.turma_id();</b>
+<b class="nc">&nbsp;            if (turmaId != null) {</b>
+<b class="nc">&nbsp;                Optional&lt;Turma&gt; optionalTurma = turmaRepositorio.findById(turmaId);</b>
+<b class="nc">&nbsp;                if(optionalTurma.isPresent()) {</b>
+<b class="nc">&nbsp;                    professorModificado.AdicionarTurma(optionalTurma.get());</b>
+&nbsp;                } else{
+<b class="nc">&nbsp;                    throw new ResourceNotFoundException(&quot;turma registrada&quot;);</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            Professor professorSalvo = repositorioProfessor.save(professorModificado);</b>
+<b class="nc">&nbsp;            return professorSalvo;</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            throw new ResourceNotFoundException(&quot;professor encontrado&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Professor atualizarProfessor(Long id, AtualizarProfessorRequest atualizarProfessorRequest) throws Exception {
+<b class="nc">&nbsp;        Optional&lt;Professor&gt; optionalProfessor = repositorioProfessor.findById(id);</b>
+&nbsp;
+<b class="nc">&nbsp;        if(optionalProfessor.isEmpty()){</b>
+<b class="nc">&nbsp;            throw new ResourceNotFoundException(&quot;Professor&quot;, &quot;ID&quot;, id);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Professor professorExistente = optionalProfessor.get();</b>
+&nbsp;
+<b class="nc">&nbsp;        professorExistente.setNomeProfessor(atualizarProfessorRequest.nomeProfessor());</b>
+<b class="nc">&nbsp;        professorExistente.setEmail(atualizarProfessorRequest.email());</b>
+<b class="nc">&nbsp;        professorExistente.setDisciplinaLecionada(atualizarProfessorRequest.disciplinaLecionada());</b>
+<b class="nc">&nbsp;        professorExistente.setEstaAtivo(atualizarProfessorRequest.estaAtivo());</b>
+&nbsp;
+<b class="nc">&nbsp;        Professor professorSalvo = repositorioProfessor.save(professorExistente);</b>
+&nbsp;
+<b class="nc">&nbsp;        return professorSalvo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Professor&gt; filtrarProfessorPorNome(String nomeProfessor) {
+<b class="nc">&nbsp;        List&lt;Professor&gt; listaProfessores = repositorioProfessor.findProfessorsByNomeProfessor(nomeProfessor);</b>
+&nbsp;
+<b class="nc">&nbsp;        if(listaProfessores.isEmpty()){</b>
+<b class="nc">&nbsp;            throw new ResourceNotFoundException(&quot;professor por nome&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return listaProfessores;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-15 18:35</div>
+</div>
+</body>
+</html>
