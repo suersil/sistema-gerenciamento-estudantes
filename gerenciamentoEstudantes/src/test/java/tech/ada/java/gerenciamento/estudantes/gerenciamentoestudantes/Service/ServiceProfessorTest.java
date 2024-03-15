@@ -18,7 +18,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,7 +44,6 @@ class ServiceProfessorTest {
     ProfessorDTO professorDTO;
     ProfessorRequest professorRequest;
     AtualizarProfessorRequest atualizarProfessorRequest;
-
     Turma turma;
 
 
@@ -125,7 +124,7 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void editarParcialProfessor() throws Exception{
+    void deveEditarParcialProfessorComSucesso() throws Exception{
         when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.of(professor));
         when(repositorioProfessor.save(any())).thenReturn(professor);
         when(repositorioTurma.findById(anyLong())).thenReturn(Optional.of(turma));
@@ -143,7 +142,7 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void editarParcialProfessorComProfessorNaoEncontrado() {
+    void deveRetornarExceptionQuandoEditarParcialProfessorComProfessorNaoEncontrado() {
 
         when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -156,7 +155,7 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void editarParcialProfessorComTurmaNaoEncontrada() {
+    void deveRetornarExceptionQuandoEditarParcialProfessorComTurmaNaoEncontrada() {
         when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.of(professor));
         when(repositorioTurma.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -170,7 +169,7 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void atualizarProfessorComSuceso() throws Exception {
+    void deveAtualizarProfessorComSuceso() throws Exception {
         when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.of(professor));
         when(repositorioProfessor.save(any())).thenReturn(professor);
 
@@ -190,7 +189,7 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void atualizarProfessorComException() {
+    void deveRetornarExceptionQuandoatualizarProfessor() {
         when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
@@ -203,7 +202,8 @@ class ServiceProfessorTest {
 
 
     @Test
-    void filtrarProfessorPorNomeComSuceso() {
+    void deveFiltrarProfessorPorNomeComSuceso() {
+
         when(repositorioProfessor.findProfessorsByNomeProfessor(anyString())).thenReturn(List.of(professor));
         List<Professor> professoresFiltrados = serviceProfessor.filtrarProfessorPorNome("Brunno Nogueira");
 
@@ -218,7 +218,7 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void filtrarProfessorPorNomeComException() {
+    void deveRetornarExceptionQuandoFiltrarProfessorPorNome() {
         when(repositorioProfessor.findProfessorsByNomeProfessor(anyString())).thenThrow(new ResourceNotFoundException("professor por nome"));
 
         assertThrows(ResourceNotFoundException.class, () -> {

@@ -32,18 +32,23 @@ class ServiceTurmaTest {
     RepositorioTurma repositorioTurma;
     @Mock
     ModelMapper modelMapper;
-    Turma turma;
+    Turma turma, turmaFalse;
     TurmaDTO turmaDTO;
     AlterarTurmaRequest turmaRequest;
     List<Turma> listaTurma;
     String nomeTurma= "5oAnoC";
     Boolean estaAtiva = true;
+    String nomeTurmaFalse= "6oAnoC";
+    Boolean estaAtivaFase = false;
 
     @BeforeEach
     public void setup() {
         turma = new Turma(nomeTurma, estaAtiva);
         turmaDTO = new TurmaDTO(nomeTurma, estaAtiva);
         turmaRequest = new AlterarTurmaRequest(estaAtiva, nomeTurma);
+
+        turmaFalse = new Turma(nomeTurmaFalse, estaAtivaFase);
+
     }
 
     @Test
@@ -161,6 +166,17 @@ class ServiceTurmaTest {
         assertEquals(1, turmaFiltrada.size());
         assertFalse(turmaFiltrada.isEmpty());
         verify(repositorioTurma, times(1)).findTurmaByEstaAtiva(true);
+        verifyNoMoreInteractions(repositorioTurma);
+    }
+
+    @Test
+    void deveListarTurmaByEstaAtivaFalseComSucesso() throws Exception{
+        when(repositorioTurma.findTurmaByEstaAtiva(false)).thenReturn(List.of(turmaFalse));
+        List<Turma> turmaFiltrada = serviceTurma.findTurmaByEstaAtiva(false);
+        assertNotNull(turmaFiltrada);
+        assertEquals(1, turmaFiltrada.size());
+        assertFalse(turmaFiltrada.isEmpty());
+        verify(repositorioTurma, times(1)).findTurmaByEstaAtiva(false);
         verifyNoMoreInteractions(repositorioTurma);
     }
 
