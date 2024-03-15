@@ -13,7 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.Se
 
 
 @ExtendWith(MockitoExtension.class)
+//@MockitoSettings(strictness = Strictness.LENIENT)
 public class ControllerEstudanteTest {
 
     @Mock
@@ -54,11 +58,11 @@ public class ControllerEstudanteTest {
 
     private MockMvc mockMvc; 
 
-    @BeforeEach
+   @BeforeEach
     public void setup() {
-        turma = new Turma(); 
+      //  turma = new Turma();
         estudante = new Estudante(true, "Joao","02.12.122",
-         "Alguem", "99929929", data, turma); 
+         "Alguem", "99929929",data, turma);
 
         estudanteDto = new EstudanteCadastroDTO("Joao",
                 "Alguem",
@@ -82,12 +86,12 @@ listarTodosComSucessoHttpTest()
 
     @Test
     public void cadastrarEstudanteComSucessoHttpTest() throws Exception {
-        when(modelMapper.map(any(),any())).thenReturn(estudante);
-        when(serviceEstudante.cadastrarEstudante(any())).thenReturn(estudante);
-
+  // when(modelMapper.map(any(), any())).thenReturn(estudante);
+  // when(serviceEstudante.cadastrarEstudante(any())).thenReturn(estudante);
+        
         mockMvc.perform(MockMvcRequestBuilders.post("/estudante")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(estudanteDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(estudanteDto)))
                 .andExpect(status().isCreated());
     }
 }
