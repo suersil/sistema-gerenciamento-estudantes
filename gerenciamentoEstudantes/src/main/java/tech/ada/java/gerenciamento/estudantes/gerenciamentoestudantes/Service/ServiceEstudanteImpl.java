@@ -24,11 +24,11 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
 
     @Autowired
     RepositorioTurma turmaRepositorio;
-
     ModelMapper modelMapper = new ModelMapper();
 
-    public ServiceEstudanteImpl(RepositorioEstudante repositorioEstudante, ModelMapper modelMapper) { 
+    public ServiceEstudanteImpl(RepositorioEstudante repositorioEstudante, RepositorioTurma turmaRepositorio, ModelMapper modelMapper) {
         this.repositorioEstudante = repositorioEstudante;
+        this.turmaRepositorio = turmaRepositorio;
         this.modelMapper = modelMapper;
     }
 
@@ -39,7 +39,6 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
         var novoEstudante = repositorioEstudante.save(estudante);
 
         return novoEstudante;
-
     }
     
     @Override
@@ -49,7 +48,7 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
         if (listaEstudantes.isEmpty()) {
             throw new ResourceNotFoundException("lista de estudantes");
         }
-        return repositorioEstudante.findAll();
+        return listaEstudantes;
       //  return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
     }
 
@@ -83,7 +82,6 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
             throw new ResourceNotFoundException("estudante", "id", id);
         }
         return estudante;
-     
     }
    
     @Override
@@ -117,7 +115,6 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
        // return ResponseEntity.status(HttpStatus.OK).body(estudanteSalvo);
         return estudanteAtualizado;
     }
-        
 
     @Override
     public Estudante atualizarEstudante(Long id, EstudanteRequest request) {
@@ -145,8 +142,7 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
 
                 estudanteItemModificado.setTurma(turma);
             }
-            Estudante estudanteSalvo = repositorioEstudante.save(estudanteItemModificado);
-            return estudanteSalvo;
+            return repositorioEstudante.save(estudanteItemModificado);
         } else {
             throw new ResourceNotFoundException("Estudante não encontrado com o id: " + id);
         }

@@ -21,38 +21,30 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/estudante")
 public class ControllerEstudante {
-
     private final ServiceEstudante serviceEstudante;
-    
     
     @Autowired
     public ControllerEstudante(ServiceEstudante serviceEstudante) {
         this.serviceEstudante = serviceEstudante;
-        
     }
     
     @PostMapping
     public ResponseEntity<Estudante> cadastrarEstudante(@RequestBody @Valid EstudanteCadastroDTO request) {
         var novoEstudante = serviceEstudante.cadastrarEstudante(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEstudante);
-        
     }
-    
-    
+
     @GetMapping
     public ResponseEntity<List<Estudante>> listarTodosEstudantes() {
-    
-    return ResponseEntity.status(HttpStatus.OK).body(serviceEstudante.listarTodosEstudantes());
+        List<Estudante> estudantes = serviceEstudante.listarTodosEstudantes();
+        return ResponseEntity.status(HttpStatus.OK).body(estudantes);
     }
-    
-    
-    
+
     @GetMapping(params = "status")
     public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
      List<Estudante>   estudantes = serviceEstudante.filtrarStatusEstudante(status);
      return ResponseEntity.status(HttpStatus.OK).body(estudantes);
     }
-    
     
     @GetMapping(value = "/{id}")
     public ResponseEntity<Optional<Estudante>> filtrarEstudanteId(@PathVariable Long id) {
@@ -60,14 +52,12 @@ public class ControllerEstudante {
         return ResponseEntity.status(HttpStatus.OK).body(estudante);
     }
     
-    
     @GetMapping(params = {"nomeAluno"})
     public ResponseEntity<List<Estudante>> filtrarEstudanteNome(@RequestParam String nomeAluno) {
         System.out.println("entrou");
         List<Estudante> estudantes = serviceEstudante.filtrarEstudanteNome(nomeAluno);
     return ResponseEntity.status(HttpStatus.OK).body(estudantes);
     }
-    
     
     @PutMapping("/{id}")
     public ResponseEntity<Estudante> editarTudoEstudante
@@ -77,14 +67,13 @@ public class ControllerEstudante {
       
         return ResponseEntity.status(HttpStatus.OK).body(estudanteModificado);
     }
-    
-    
+
     @PatchMapping("/{id}")
-    public ResponseEntity<Estudante> atualizarEstudante(
+    public static ResponseEntity<Estudante> atualizarEstudante (
             @PathVariable Long id,
             @RequestBody EstudanteRequest request) {
         
-        Estudante estudanteAtualizado = serviceEstudante.atualizarEstudante(id, request);
+        Estudante estudanteAtualizado = ControllerEstudante.atualizarEstudante(id, request).getBody();
         return ResponseEntity.ok(estudanteAtualizado);
     }
 }

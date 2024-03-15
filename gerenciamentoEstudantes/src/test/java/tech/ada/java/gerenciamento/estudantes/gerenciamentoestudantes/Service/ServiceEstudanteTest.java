@@ -1,6 +1,7 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,11 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller.ControllerEstudante;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller.ControllerEstudanteTest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarEstudanteRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.EstudanteRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -28,6 +31,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.Se
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,33 +84,36 @@ class ServiceEstudanteTest {
             throw new RuntimeException(e);
         }
     }
-    @Test
-    void filtrarEstudanteIdComSucesso() {
-        Long id = 1L;
-        Estudante estudante = new Estudante();
-        estudante.setId(id);
-        Optional<Estudante> optionalEstudante = Optional.of(estudante);
-        
-        when(repositorioEstudante.findById(id)).thenReturn(optionalEstudante);
-        
-        Optional<Estudante> response = serviceEstudante.filtrarEstudanteId(id);
-        
-        assertEquals(optionalEstudante, response);
-    }
+
     @Test
     public void deveCadastrarEstudanteComSucesso() throws Exception {
         when(repositorioEstudante.save(Mockito.any())).thenReturn(estudante);
         when(modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(estudante);
 
         Estudante response = serviceEstudante.cadastrarEstudante(estudanteCadastroDTO);
+
         assertNotNull(response);
-        assertEquals(ResponseEntity.class, response.getClass());
         assertEquals(estudante, response);
 
        /*  mockMvc.perform(MockMvcRequestBuilders.post("/estudante")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(asJsonString(estudanteCadastroDTO)))
                 .andExpect(status().isCreated()); */
+    }
+
+    @Test
+    public void deveListarEstudantesComSucesso() throws Exception {
+        ServiceEstudante serviceEstudanteMock = mock(ServiceEstudante.class);
+        //para retornar uma lista vazia
+        when(serviceEstudanteMock.listarTodosEstudantes()).thenReturn(Collections.emptyList());
+
+        ControllerEstudante controllerEstudante = new ControllerEstudante(serviceEstudanteMock);
+
+        ResponseEntity<List<Estudante>> response = controllerEstudante.listarTodosEstudantes();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().isEmpty());
     }
 
     @Test
@@ -131,14 +138,17 @@ class ServiceEstudanteTest {
     }
 
     @Test
-    public void deveFiltrarEstudanteId() {
-        when(repositorioEstudante.findById(1L)).thenReturn(Optional.of(estudante));
+    public void devefiltrarEstudanteIdComSucesso() {
+        Long id = 1L;
+        Estudante estudante = new Estudante();
+        estudante.setId(id);
+        Optional<Estudante> optionalEstudante = Optional.of(estudante);
 
-        Optional<Estudante> response = serviceEstudante.filtrarEstudanteId(1L);
+        when(repositorioEstudante.findById(id)).thenReturn(optionalEstudante);
 
-        
-        assertNotNull(response);
-        assertEquals(estudante, response);
+        Optional<Estudante> response = serviceEstudante.filtrarEstudanteId(id);
+
+        assertEquals(optionalEstudante, response);
     }
 
     @Test
@@ -165,5 +175,37 @@ class ServiceEstudanteTest {
         }  catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //Patch
+    @Test
+    public void deveAtualizarEstudante() {
+        Long idEstudante = 1L;
+        EstudanteRequest request = new EstudanteRequest(true, "NovoNomeAluno", "NovoNomeResponsavel",
+                "NovoContatoResponsavel", 1L);
+
+        Estudante estudanteExistente = new Estudante();
+        estudanteExistente.setId(1L);
+        estudanteExistente.setNomeAluno("NomeAntigo");
+        estudanteExistente.setNomeResponsavel("ResponsavelAntigo");
+        estudanteExistente.setContatoResponsavel("ContatoAntigo");
+        estudanteExistente.setEstaAtivo(false);
+
+        Turma turma = new Turma();
+        turma.setId(1L);
+
+        when(repositorioEstudante.findById(idEstudante)).thenReturn(Optional.of(estudanteExistente));
+        when(turmaRepositorio.findById(1L)).thenReturn(Optional.of(turma));
+        when(repositorioEstudante.save(any(Estudante.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Estudante estudanteAtualizado = serviceEstudante.atualizarEstudante(idEstudante, request);
+
+        assertNotNull(estudanteAtualizado);
+        assertEquals(request.nomeAluno(), estudanteAtualizado.getNomeAluno());
+        assertEquals(request.nomeResponsavel(), estudanteAtualizado.getNomeResponsavel());
+        assertEquals(request.contatoResponsavel(), estudanteAtualizado.getContatoResponsavel());
+        assertEquals(request.estaAtivo(), estudanteAtualizado.getEstaAtivo());
+
+
     }
 }
