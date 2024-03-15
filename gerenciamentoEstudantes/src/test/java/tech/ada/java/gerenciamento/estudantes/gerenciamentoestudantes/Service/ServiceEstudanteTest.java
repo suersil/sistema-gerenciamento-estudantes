@@ -20,10 +20,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller.ControllerEstudanteTest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarEstudanteRequest;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.EstudanteRequest;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.*;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioEstudante;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
@@ -118,6 +115,21 @@ class ServiceEstudanteTest {
         verifyNoMoreInteractions(repositorioEstudante);
     }
 
+    //ResourceNotFoundException
+    @Test
+    public void deveListarEstudantesComNotFoundException() throws Exception {
+        when(repositorioEstudante.findAll()).thenReturn(Collections.emptyList());
+
+        try {
+            serviceEstudante.listarTodosEstudantes();
+            fail("Expected ResourceNotFoundException to be thrown");
+        } catch (ResourceNotFoundException ex) {
+            assertEquals("Não há registros de lista de estudantes no sistema.", ex.getMessage());
+        }
+        verify(repositorioEstudante).findAll();
+        verifyNoMoreInteractions(repositorioEstudante);
+    }
+
     @Test
     public void deveFiltrarStatusEstudanteAtivo() {
         when(repositorioEstudante.findEstudantesByEstaAtivo(true)).thenReturn(List.of(estudante));
@@ -138,64 +150,105 @@ class ServiceEstudanteTest {
         assertEquals(1, response.size());
     }
 
+    //ResourceNotFoundException
     @Test
-    public void devefiltrarEstudanteIdComSucesso() {
-        Long id = 1L;
+    public void deveFiltrarStatusEstudanteComNotFoundExcepction() {
+        Mockito.when(repositorioEstudante.findEstudantesByEstaAtivo(Mockito.anyBoolean()))
+                .thenReturn(Collections.emptyList());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceEstudante.filtrarStatusEstudante(true);
+            serviceEstudante.filtrarStatusEstudante(false);
+        });
+    }
+
+    @Test
+    public void deveFiltrarEstudanteIdComSucesso() {
         Estudante estudante = new Estudante();
-        estudante.setId(id);
+        estudante.setId(anyLong());
         Optional<Estudante> optionalEstudante = Optional.of(estudante);
 
-        when(repositorioEstudante.findById(id)).thenReturn(optionalEstudante);
+        when(repositorioEstudante.findById(1L)).thenReturn(optionalEstudante);
 
-        Optional<Estudante> response = serviceEstudante.filtrarEstudanteId(id);
+        Optional<Estudante> response = serviceEstudante.filtrarEstudanteId(1L);
 
         assertEquals(optionalEstudante, response);
     }
 
+    //ResourceNotFoundException
+    @Test
+    public void deveFiltrarEstudanteIdComNotFoundException(){
+        Optional<Estudante> optionalEstudante = Optional.empty();
+
+        when(repositorioEstudante.findById(1L)).thenReturn(optionalEstudante);
+
+        assertThrows(ResourceNotFoundException.class, () -> serviceEstudante.filtrarEstudanteId(1L));
+    }
+
+    //IllegalArgumentException
+    @Test
+    public void deveFiltrarEstudanteIdNullIllegalArgumentException(){
+        Long estudanteId = null;
+        assertThrows(IllegalArgumentException.class, () -> serviceEstudante.filtrarEstudanteId(estudanteId));
+    }
+
     @Test
     public void deveFiltrarEstudanteNomeComSucesso() {
-        String nome = "testeNome";
-        when(repositorioEstudante.findByNomeAlunoQuery(nome)).thenReturn(List.of(estudante));
+        when(repositorioEstudante.findByNomeAlunoQuery(anyString())).thenReturn(List.of(estudante));
 
-       List<Estudante> response = serviceEstudante.filtrarEstudanteNome(nome);
+       List<Estudante> response = serviceEstudante.filtrarEstudanteNome("NomeAlunoTeste");
 
         assertNotNull(response);
         assertEquals(1, response.size());
         assertEquals(estudante, response.getFirst());
 
-        verify(repositorioEstudante, times(1)).findByNomeAlunoQuery(nome);
+        verify(repositorioEstudante, times(1)).findByNomeAlunoQuery("NomeAlunoTeste");
         verifyNoMoreInteractions(repositorioEstudante);
     }
 
+    //ResourceNotFoundException
     @Test
-    public void deveFiltrarEstudanteNomeComException() {
-        when(repositorioEstudante.findByNomeAlunoQuery(anyString())).thenThrow(new ResourceNotFoundException("Estudante por nome"));
+    public void deveFiltrarEstudanteNomeComNotFoundException() {
+        String nomeAlunoTeste = "nomeAlunoTeste";
 
+        when(repositorioEstudante.findByNomeAlunoQuery(eq(nomeAlunoTeste))).thenReturn(Collections.emptyList());
         assertThrows(ResourceNotFoundException.class, () -> {
-            serviceEstudante.filtrarEstudanteNome("nomeTeste");
+            serviceEstudante.filtrarEstudanteNome(nomeAlunoTeste);
         });
 
-        verify(repositorioEstudante, times(1)).findByNomeAlunoQuery("nomeTeste");
+        verify(repositorioEstudante, times(1)).findByNomeAlunoQuery(eq(nomeAlunoTeste));
         verifyNoMoreInteractions(repositorioEstudante);
     }
 
     //PUT
     @Test
-    public void deveEditarTudoEstudante() {
-        Long id = 1L;
-        when(repositorioEstudante.findById(id)).thenReturn(Optional.of(estudante));
+    public void deveEditarTudoEstudanteComSucesso() {
+        when(repositorioEstudante.findById(anyLong())).thenReturn(Optional.of(estudante));
 
         EstudanteCadastroDTO  atualizarRequest = new EstudanteCadastroDTO( "NovoNomeTeste", "NovaDataTeste", "NovoNomeResponsavelTeste", "NovoContatoResponsavelTeste");
         try {
-            serviceEstudante.editarTudoEstudante(id, atualizarRequest);
+            serviceEstudante.editarTudoEstudante(1L, atualizarRequest);
         }  catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    //PUT - ResourceNotFoundException
+    @Test
+    public void deveEditarTudoEstudanteComNotFoundException() {
+        EstudanteCadastroDTO  atualizarRequest = new EstudanteCadastroDTO( "NovoNomeTeste", "NovaDataTeste", "NovoNomeResponsavelTeste", "NovoContatoResponsavelTeste");
+
+        // Simulando que o estudante não foi encontrado
+        when(repositorioEstudante.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceEstudante.editarTudoEstudante(1L, atualizarRequest);
+        });
+    }
+
     //Patch
     @Test
-    public void deveAtualizarEstudante() {
+    public void deveAtualizarEstudanteComSucesso() {
         Long idEstudante = 1L;
         EstudanteRequest request = new EstudanteRequest(true, "NovoNomeAluno", "NovoNomeResponsavel",
                 "NovoContatoResponsavel", 1L);
@@ -221,7 +274,20 @@ class ServiceEstudanteTest {
         assertEquals(request.nomeResponsavel(), estudanteAtualizado.getNomeResponsavel());
         assertEquals(request.contatoResponsavel(), estudanteAtualizado.getContatoResponsavel());
         assertEquals(request.estaAtivo(), estudanteAtualizado.getEstaAtivo());
+    }
 
+    //PATCH - ResourceNotFoundException
+    @Test
+    public void deveAtualizarEstudanteComNotFoundException() {
+        Long idEstudante = 1L;
+        EstudanteRequest request = new EstudanteRequest(true, "NovoNomeAluno", "NovoNomeResponsavel",
+                "NovoContatoResponsavel", 1L);
 
+        // Simulando que o estudante não foi encontrado
+        when(repositorioEstudante.findById(idEstudante)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceEstudante.atualizarEstudante(idEstudante, request);
+        });
     }
 }

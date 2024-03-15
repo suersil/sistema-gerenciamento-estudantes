@@ -1,0 +1,91 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ServiceTurma</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service</a>
+</div>
+
+<h1>Coverage Summary for Class: ServiceTurma (tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ServiceTurma</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service;
+&nbsp;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaDTO;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AlterarTurmaRequest;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface ServiceTurma {
+&nbsp;
+&nbsp;    Turma cadastrarTurma(TurmaDTO turmaDTO) throws BadRequest;
+&nbsp;
+&nbsp;    List&lt;Turma&gt; buscarTurmas();
+&nbsp;
+&nbsp;    Turma buscarTurmaEspecifica(Long id) throws Exception;
+&nbsp;
+&nbsp;    Turma alterarTurma(Long id, AlterarTurmaRequest alterarTurmaRequest) throws Exception;
+&nbsp;
+&nbsp;    Turma alteraTurmaCompleto(Long id, AlterarTurmaRequest alterarTurmaRequest);
+&nbsp;
+&nbsp;    List&lt;Turma&gt; findTurmaByEstaAtiva(Boolean status);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-15 18:35</div>
+</div>
+</body>
+</html>
