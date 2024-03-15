@@ -16,6 +16,7 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turm
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,10 +106,10 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void deveRetornarResourceNotFoundExceptionQuandoListarProfessores(){
+    void deveRetornarExceptionListarProfessoresComListaVazia(){
         //Config do comportamento do mock
-        //lancar uma exception quando chamar o metodo findAll
-        when(repositorioProfessor.findAll()).thenThrow(new ResourceNotFoundException("lista de professores"));
+        //lancar uma exception quando chamar o metodo findAll e receber uma lista vazia como retorno
+        when(repositorioProfessor.findAll()).thenReturn(Collections.emptyList());
 
         try {
             serviceProfessor.listarTodos();
@@ -117,8 +118,6 @@ class ServiceProfessorTest {
             assertEquals("Não há registros de lista de professores no sistema.", ex.getMessage()); //comparar msg lancada
         }
 
-        assertThrows(ResourceNotFoundException.class, () -> {
-            serviceProfessor.listarTodos();}); //Verificacar se a excecao é lançada quando o metodo retorna uma lista vazia
         verifyNoMoreInteractions(repositorioProfessor); //verificar se nao houve mais interacao com o repository
 
     }
@@ -142,8 +141,8 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void deveRetornarExceptionQuandoEditarParcialProfessorComProfessorNaoEncontrado() {
 
+    void deveRetornarExceptionQuandoEditarParcialProfessorComProfessorNaoEncontrado() {
         when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
@@ -169,7 +168,7 @@ class ServiceProfessorTest {
     }
 
     @Test
-    void deveAtualizarProfessorComSuceso() throws Exception {
+    void deveAtualizarProfessorComSucesso() throws Exception {
         when(repositorioProfessor.findById(anyLong())).thenReturn(Optional.of(professor));
         when(repositorioProfessor.save(any())).thenReturn(professor);
 
@@ -181,7 +180,6 @@ class ServiceProfessorTest {
         assertEquals(email, professorAtualizado.getEmail());
         assertEquals(disciplinaLecionada, professorAtualizado.getDisciplinaLecionada());
         assertEquals(estaAtivo, professorAtualizado.getEstaAtivo());
-
 
         verify(repositorioProfessor, times(1)).findById(1L);
         verify(repositorioProfessor, times(1)).save(any());
@@ -203,7 +201,6 @@ class ServiceProfessorTest {
 
     @Test
     void deveFiltrarProfessorPorNomeComSuceso() {
-
         when(repositorioProfessor.findProfessorsByNomeProfessor(anyString())).thenReturn(List.of(professor));
         List<Professor> professoresFiltrados = serviceProfessor.filtrarProfessorPorNome("Brunno Nogueira");
 
@@ -226,6 +223,18 @@ class ServiceProfessorTest {
         });
 
         verify(repositorioProfessor, times(1)).findProfessorsByNomeProfessor("Pepito Perez");
+        verifyNoMoreInteractions(repositorioProfessor);
+    }
+
+    @Test
+    void deveRetornarExceptionFiltrarProfessorPorNomeComListaVazia() throws Exception {
+        when(repositorioProfessor.findProfessorsByNomeProfessor(anyString()))
+                .thenReturn(Collections.emptyList());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            serviceProfessor.filtrarProfessorPorNome(anyString());
+        });
+
         verifyNoMoreInteractions(repositorioProfessor);
     }
 
