@@ -40,4 +40,9 @@ public class Turma {
 
     public Turma() {
     }
+
+    public Turma(String nomeTurma, Boolean estaAtiva) {
+        this.nomeTurma = nomeTurma;
+        this.estaAtiva = estaAtiva;
+    }
 }
