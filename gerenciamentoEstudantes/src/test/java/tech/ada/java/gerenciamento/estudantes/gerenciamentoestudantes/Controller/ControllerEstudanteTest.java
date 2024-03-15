@@ -1,7 +1,9 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
@@ -24,34 +26,25 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceEstudante;
 
-
-
 @ExtendWith(MockitoExtension.class)
 public class ControllerEstudanteTest {
-
     @Mock
     private ServiceEstudante serviceEstudante;
-
     @Mock
     ModelMapper modelMapper;
-
     Estudante estudante;
-
     EstudanteCadastroDTO estudanteDto;
-
     List<Estudante> estudantes;
-
     LocalDateTime data = LocalDateTime.now();
-
     Turma turma;
 
     @InjectMocks
     private ControllerEstudante controllerEstudante;
-
     private MockMvc mockMvc; 
 
     @BeforeEach
@@ -82,12 +75,39 @@ listarTodosComSucessoHttpTest()
 
     @Test
     public void cadastrarEstudanteComSucessoHttpTest() throws Exception {
-        when(modelMapper.map(any(),any())).thenReturn(estudante);
-        when(serviceEstudante.cadastrarEstudante(any())).thenReturn(estudante);
+        Estudante estudante = modelMapper.map(estudanteDto, Estudante.class);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/estudante")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(estudanteDto)))
-                .andExpect(status().isCreated());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(estudanteDto)))
+                        .andExpect(status().isCreated()); //Para corresponder ao status 201
+    }
+
+    @Test
+    void retornarBadRequestCadastrandoEstudante() throws Exception {
+        when(serviceEstudante.cadastrarEstudante(any())).thenThrow(new BadRequest("BAD REQUEST"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/estudante")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(estudanteDto)))
+                        .andExpect(status().isBadRequest()); // status 400 Bad Request.
+
+        verify(serviceEstudante, times(1)).cadastrarEstudante(any());
+    }
+
+    @Test
+    void listarTodosComSucessoHttpTest() throws Exception {
+
+        Estudante estudante = new Estudante();
+        estudante.setNomeAluno("Fulaninho");
+
+        when(serviceEstudante.listarTodosEstudantes()).thenReturn(List.of(estudante));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/estudante"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", equalTo(1)))
+                .andExpect(jsonPath("$.[0].nomeAluno", equalTo("Fulaninho")));
+
+        verify(serviceEstudante, times(1)).listarTodosEstudantes();
     }
 }
