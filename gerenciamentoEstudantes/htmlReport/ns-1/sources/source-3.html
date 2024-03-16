@@ -1,0 +1,176 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ControllerTurma</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller</a>
+</div>
+
+<h1>Coverage Summary for Class: ControllerTurma (tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ControllerTurma</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
+&nbsp;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.modelmapper.ModelMapper;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AlterarTurmaRequest;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaDTO;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceTurma;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@RestController(&quot;/turma&quot;)
+&nbsp;public class ControllerTurma {
+&nbsp;
+&nbsp;    private final ServiceTurma serviceTurma;
+&nbsp;
+&nbsp;    @Autowired
+<b class="nc">&nbsp;    public ControllerTurma(ServiceTurma serviceTurma) {</b>
+<b class="nc">&nbsp;        this.serviceTurma = serviceTurma;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/turma&quot;)
+&nbsp;    public ResponseEntity&lt;Turma&gt; cadastrarTurma(@RequestBody @Valid TurmaDTO turmaRequest) throws BadRequest {
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED)</b>
+<b class="nc">&nbsp;                .body(serviceTurma.cadastrarTurma(turmaRequest));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/turmas&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Turma&gt;&gt; buscarTurmas(){
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
+<b class="nc">&nbsp;                .body(serviceTurma.buscarTurmas());</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/turma/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Turma&gt; buscarTurmaEspecifica(@PathVariable Long id) throws Exception{
+<b class="nc">&nbsp;        return ResponseEntity.ok(serviceTurma.buscarTurmaEspecifica(id));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PatchMapping(&quot;/turma/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Turma&gt; alterarTurma(
+&nbsp;            @PathVariable Long id,
+&nbsp;            @RequestBody AlterarTurmaRequest turmaRequest) throws Exception {
+&nbsp;
+<b class="nc">&nbsp;            return ResponseEntity.ok(serviceTurma.alterarTurma(id, turmaRequest));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/turma/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Turma&gt; alteraTurmaCompleto(
+&nbsp;            @PathVariable Long id,
+&nbsp;            @RequestBody AlterarTurmaRequest turmaRequest
+&nbsp;    ) {
+&nbsp;
+<b class="nc">&nbsp;            return ResponseEntity.ok(serviceTurma.alteraTurmaCompleto(id, turmaRequest));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(value = &quot;/turmas&quot;, params = &quot;estaAtiva&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Turma&gt;&gt; filtrarStatusTurma(@RequestParam Boolean estaAtiva){
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.OK)</b>
+<b class="nc">&nbsp;                    .body(serviceTurma.findTurmaByEstaAtiva(estaAtiva));</b>
+&nbsp;
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-16 19:11</div>
+</div>
+</body>
+</html>
