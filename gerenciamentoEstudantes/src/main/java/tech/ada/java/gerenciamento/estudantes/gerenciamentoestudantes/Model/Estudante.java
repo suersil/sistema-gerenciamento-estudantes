@@ -62,4 +62,12 @@ public class Estudante {
         this.turma = turma;
     
     }
+    
+    public Estudante(Boolean estaAtivo, String nomeAluno, String nomeResponsavel, String contatoResponsavel, Turma turma) {
+        this.estaAtivo = estaAtivo;
+        this.nomeAluno = nomeAluno;
+        this.nomeResponsavel = nomeResponsavel;
+        this.contatoResponsavel = contatoResponsavel;
+        this.turma = turma;
+    }
 }

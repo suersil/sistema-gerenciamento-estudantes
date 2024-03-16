@@ -1,5 +1,6 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,7 +8,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,28 +18,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.EstudanteCadastroDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
+import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Estudante;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.EstudanteRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceEstudante;
 
 @ExtendWith(MockitoExtension.class)
-//@MockitoSettings(strictness = Strictness.LENIENT)
 public class ControllerEstudanteTest {
     @Mock
     private ServiceEstudante serviceEstudante;
@@ -58,7 +52,7 @@ public class ControllerEstudanteTest {
 
    @BeforeEach
     public void setup() {
-       turma = new Turma();
+        turma = new Turma();
         estudante = new Estudante(true, "Joao","02.12.122",
          "Alguem", "99929929",data, turma);
 
@@ -66,6 +60,8 @@ public class ControllerEstudanteTest {
                 "Alguem",
                 "02.12.20",
                 "123456789");
+        estudanteRequest = new EstudanteRequest(true,"João", "Alguém","111222333",1L);
+        modelMapper = new ModelMapper();
         mockMvc = MockMvcBuilders.standaloneSetup(controllerEstudante).build();
     }
 
@@ -76,11 +72,6 @@ public class ControllerEstudanteTest {
             throw new RuntimeException(e);
         }
     }
-
-/*     cadastrarEstudanteComSucessoHttpTest()
-retornarBadRequestCadastrandoEstudante()
-listarTodosComSucessoHttpTest()
-     */
 
     @Test
     public void cadastrarEstudanteComSucessoHttpTest() throws Exception {
@@ -169,31 +160,48 @@ listarTodosComSucessoHttpTest()
     void editarTudoEstudanteComSucessoHttp() throws Exception {
         Long idEstudante = 1L;
         
-        EstudanteCadastroDTO atualizacaoEstudanteDto = new EstudanteCadastroDTO
-                ("nome",
-                        "luiz",
-                        "02.02.02",
-                        "123456789");
+        Estudante estudanteAtualizado = modelMapper.map(estudanteDto, Estudante.class);
+        estudanteAtualizado.setId(idEstudante);
+        estudanteAtualizado.setTurma(new Turma());
+        estudanteAtualizado.setDataAtualizacao(LocalDateTime.now());
         
-        atualizacaoEstudanteDto.setNomeAluno("Novo Nome");
-        atualizacaoEstudanteDto.setDataNascimento("03.03.03");
-        atualizacaoEstudanteDto.setNomeResponsavel("Novo Responsável");
-        atualizacaoEstudanteDto.setContatoResponsavel("987654321");
-        
-        Estudante estudanteAtualizado = new Estudante(true, "Novo Nome", "03.03.03", "Novo Responsável", "987654321", LocalDateTime.now(), new Turma());
-        
-        when(serviceEstudante.editarTudoEstudante(any(), any())).thenReturn(estudanteAtualizado);
+        when(serviceEstudante.editarTudoEstudante(eq(idEstudante), any()))
+                .thenReturn(estudanteAtualizado);
         
         mockMvc.perform(MockMvcRequestBuilders.put("/estudante/{id}", idEstudante)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(atualizacaoEstudanteDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nomeAluno", equalTo("Novo Nome")))
-                .andExpect(jsonPath("$.dataNascimento", equalTo("03.03.03")))
-                .andExpect(jsonPath("$.nomeResponsavel", equalTo("Novo Responsável")))
-                .andExpect(jsonPath("$.contatoResponsavel", equalTo("987654321")));
+                        .content(asJsonString(estudanteDto)))
+                .andExpect(status().isOk());
+        verify(serviceEstudante, times(1)).editarTudoEstudante(eq(idEstudante), any());
+    }
+    
+    @Test
+    public void atualizarEstudanteComSucessoHttpTest() throws Exception {
+        Long id = 1L;
+        Estudante estudanteAtualizado = modelMapper.map(estudanteDto, Estudante.class);
+        estudanteAtualizado.setId(id);
         
-        verify(serviceEstudante, times(1)).editarTudoEstudante(any(), any());
+        when(serviceEstudante.atualizarEstudante(id, estudanteRequest)).thenReturn(estudanteAtualizado);
+       
+        mockMvc.perform(MockMvcRequestBuilders.patch("/estudante/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(estudanteRequest)))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id", equalTo(id.intValue())));
+        
+        verify(serviceEstudante, times(1)).atualizarEstudante(id, estudanteRequest);
+    }
+    
+   @Test
+    void atualizarEstudanteComException() throws Exception {
+        when(serviceEstudante.atualizarEstudante(anyLong(), any())).thenThrow(new ResourceNotFoundException("Estudante", "ID", 1L));
+        
+        mockMvc.perform(MockMvcRequestBuilders.patch("/estudante/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(estudanteRequest)))
+                .andExpect(status().isNotFound());
+        
+        verify(serviceEstudante, times(1)).atualizarEstudante(anyLong(), any());
     }
     
   

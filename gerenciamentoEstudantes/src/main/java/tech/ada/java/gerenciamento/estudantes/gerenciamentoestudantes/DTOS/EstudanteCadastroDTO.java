@@ -34,6 +34,8 @@ public class EstudanteCadastroDTO {
         this.estaAtivo = true;
     
     }
-
+    
+    public EstudanteCadastroDTO() {
+    }
 }
 
