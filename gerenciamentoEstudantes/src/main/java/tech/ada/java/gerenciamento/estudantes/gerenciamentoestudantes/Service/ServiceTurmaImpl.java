@@ -1,8 +1,6 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
