@@ -1,0 +1,177 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ControllerProfessor</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller</a>
+</div>
+
+<h1>Coverage Summary for Class: ControllerProfessor (tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ControllerProfessor</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
+&nbsp;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AtualizarProfessorRequest;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.ProfessorRequest;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
+&nbsp;import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceProfessor;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;
+&nbsp;@RestController
+&nbsp;public class ControllerProfessor {
+&nbsp;
+&nbsp;    private final ServiceProfessor serviceProfessor;
+&nbsp;
+&nbsp;    @Autowired
+<b class="nc">&nbsp;    public ControllerProfessor(ServiceProfessor serviceProfessor) {;</b>
+<b class="nc">&nbsp;        this.serviceProfessor = serviceProfessor;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/professor&quot;)
+&nbsp;    public ResponseEntity&lt;Professor&gt; cadastrarProfessor(@RequestBody @Valid ProfessorDTO professorRequest) throws BadRequest {
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED)</b>
+<b class="nc">&nbsp;                .body(serviceProfessor.cadastrarProfessor(professorRequest));</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/professores&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Professor&gt;&gt; listarTodos() {
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
+<b class="nc">&nbsp;                .body(serviceProfessor.listarTodos());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/professor/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Professor&gt; editarTudoProfessor(
+&nbsp;            @PathVariable(&quot;id&quot;) Long id,
+&nbsp;            @RequestBody AtualizarProfessorRequest atualizarProfessorRequest) throws Exception {
+<b class="nc">&nbsp;        return ResponseEntity.ok</b>
+<b class="nc">&nbsp;                (serviceProfessor.atualizarProfessor(id, atualizarProfessorRequest));</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @PatchMapping(&quot;/professor/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Professor&gt; atualizarProfessor(
+&nbsp;            @PathVariable(&quot;id&quot;) Long id,
+&nbsp;            @RequestBody ProfessorRequest professorRequest) throws Exception {
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok</b>
+<b class="nc">&nbsp;                (serviceProfessor.editarParcialProfessor(id, professorRequest));</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /** Método para filtrar um professor pelo NOME.*/
+&nbsp;     @GetMapping(value = &quot;/professor&quot;, params = {&quot;nomeProfessor&quot;})
+&nbsp;        public ResponseEntity&lt;List&lt;Professor&gt;&gt; filtrarProfessorPorNome(@RequestParam String nomeProfessor) {
+&nbsp;
+<b class="nc">&nbsp;         return ResponseEntity.status(HttpStatus.OK).body(serviceProfessor.filtrarProfessorPorNome(nomeProfessor));</b>
+&nbsp;
+&nbsp;     }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-16 19:11</div>
+</div>
+</body>
+</html>

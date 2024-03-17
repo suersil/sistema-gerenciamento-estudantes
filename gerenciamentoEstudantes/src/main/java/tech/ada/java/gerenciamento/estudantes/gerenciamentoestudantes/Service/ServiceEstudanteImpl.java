@@ -18,26 +18,26 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository
 
 @Service 
 public class ServiceEstudanteImpl implements ServiceEstudante {
-
+    
     @Autowired
     RepositorioEstudante repositorioEstudante;
-
+    
     @Autowired
     RepositorioTurma turmaRepositorio;
     ModelMapper modelMapper = new ModelMapper();
-
+    
     public ServiceEstudanteImpl(RepositorioEstudante repositorioEstudante, RepositorioTurma turmaRepositorio, ModelMapper modelMapper) {
         this.repositorioEstudante = repositorioEstudante;
         this.turmaRepositorio = turmaRepositorio;
         this.modelMapper = modelMapper;
     }
-
+    
     @Override
     public Estudante cadastrarEstudante(EstudanteCadastroDTO request) {
         Estudante estudante = modelMapper.map(request, Estudante.class);
-      
+        
         var novoEstudante = repositorioEstudante.save(estudante);
-
+        
         return novoEstudante;
     }
     
@@ -49,11 +49,11 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
             throw new ResourceNotFoundException("lista de estudantes");
         }
         return listaEstudantes;
-      //  return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
+        //  return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findAll());
     }
-
+    
     @Override
-    public List<Estudante> filtrarStatusEstudante(Boolean status){
+    public List<Estudante> filtrarStatusEstudante(Boolean status) {
         List<Estudante> statusEstudantesFiltrados;
         
         if (Boolean.TRUE.equals(status)) {
@@ -63,19 +63,19 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
         }
         
         if (!statusEstudantesFiltrados.isEmpty()) {
-        //return ResponseEntity.status(HttpStatus.OK).body(statusEstudantesFiltrados);
-        return statusEstudantesFiltrados;
+            //return ResponseEntity.status(HttpStatus.OK).body(statusEstudantesFiltrados);
+            return statusEstudantesFiltrados;
         } else {
             throw new ResourceNotFoundException("lista de estudantes");
         }
     }
-
+    
     @Override
     public Optional<Estudante> filtrarEstudanteId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("O id deve ser enviado");
         }
-       
+        
         Optional<Estudante> estudante = repositorioEstudante.findById(id);
         
         if (estudante.isEmpty()) {
@@ -83,7 +83,7 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
         }
         return estudante;
     }
-   
+    
     @Override
     public List<Estudante> filtrarEstudanteNome(String nomeAluno) {
         List<Estudante> estudantePorNome = repositorioEstudante.findByNomeAlunoQuery(nomeAluno);
@@ -92,9 +92,9 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
             throw new ResourceNotFoundException("estudante", "nome ", nomeAluno);
         }
         return estudantePorNome;
-      //  return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAlunoQuery(nomeAluno));
+        //  return ResponseEntity.status(HttpStatus.OK).body(repositorioEstudante.findByNomeAlunoQuery(nomeAluno));
     }
-
+    
     @Override
     public Estudante editarTudoEstudante(Long id, EstudanteCadastroDTO request) {
         Optional<Estudante> estudante = repositorioEstudante.findById(id);
@@ -102,27 +102,27 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
         if (estudante.isEmpty()) {
             throw new ResourceNotFoundException("estudante", "id", id);
         }
-       
+        
         Estudante estudanteAtualizado = estudante.get();
         estudanteAtualizado.setNomeAluno(request.getNomeAluno());
         estudanteAtualizado.setNomeResponsavel(request.getNomeResponsavel());
         estudanteAtualizado.setDataNascimento(request.getDataNascimento());
         estudanteAtualizado.setContatoResponsavel(request.getContatoResponsavel());
         estudanteAtualizado.setEstaAtivo(request.getEstaAtivo());
-
+        
         Estudante estudanteSalvo = repositorioEstudante.save(estudanteAtualizado);
-
-       // return ResponseEntity.status(HttpStatus.OK).body(estudanteSalvo);
+        
+        // return ResponseEntity.status(HttpStatus.OK).body(estudanteSalvo);
         return estudanteAtualizado;
     }
-
+    
     @Override
     public Estudante atualizarEstudante(Long id, EstudanteRequest request) {
         Optional<Estudante> optionalEstudante = repositorioEstudante.findById(id);
-
+        
         if (optionalEstudante.isPresent()) {
             Estudante estudanteItemModificado = optionalEstudante.get();
-
+            
             if (request.nomeAluno() != null) {
                 estudanteItemModificado.setNomeAluno(request.nomeAluno());
             }
@@ -132,14 +132,14 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
             if (request.contatoResponsavel() != null) {
                 estudanteItemModificado.setContatoResponsavel(request.contatoResponsavel());
             }
-            if(request.estaAtivo() != null) {
+            if (request.estaAtivo() != null) {
                 estudanteItemModificado.setEstaAtivo(request.estaAtivo());
             }
-
+            
             if (request.turma_id() != null) {
                 Turma turma = turmaRepositorio.findById(request.turma_id())
                         .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada"));
-
+                
                 estudanteItemModificado.setTurma(turma);
             }
             return repositorioEstudante.save(estudanteItemModificado);
@@ -147,6 +147,8 @@ public class ServiceEstudanteImpl implements ServiceEstudante {
             throw new ResourceNotFoundException("Estudante não encontrado com o id: " + id);
         }
     }
+    
 }
+
 
 

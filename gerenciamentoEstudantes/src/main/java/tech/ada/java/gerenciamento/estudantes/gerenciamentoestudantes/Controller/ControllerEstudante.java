@@ -21,10 +21,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/estudante")
 public class ControllerEstudante {
+    
     private final ServiceEstudante serviceEstudante;
     
     @Autowired
     public ControllerEstudante(ServiceEstudante serviceEstudante) {
+        
         this.serviceEstudante = serviceEstudante;
     }
     
@@ -41,7 +43,7 @@ public class ControllerEstudante {
     }
 
     @GetMapping(params = "status")
-    public ResponseEntity<List<Estudante>> filtrarStatusTurma(@RequestParam Boolean status) {
+    public ResponseEntity<List<Estudante>> filtrarStatusEstudante(@RequestParam Boolean status) {
      List<Estudante>   estudantes = serviceEstudante.filtrarStatusEstudante(status);
      return ResponseEntity.status(HttpStatus.OK).body(estudantes);
     }
@@ -69,11 +71,11 @@ public class ControllerEstudante {
     }
 
     @PatchMapping("/{id}")
-    public static ResponseEntity<Estudante> atualizarEstudante (
+    public ResponseEntity<Estudante> atualizarEstudante (
             @PathVariable Long id,
-            @RequestBody EstudanteRequest request) {
+            @RequestBody EstudanteRequest request) throws Exception{
         
-        Estudante estudanteAtualizado = ControllerEstudante.atualizarEstudante(id, request).getBody();
+        Estudante estudanteAtualizado = serviceEstudante.atualizarEstudante(id,request);
         return ResponseEntity.ok(estudanteAtualizado);
     }
 }
