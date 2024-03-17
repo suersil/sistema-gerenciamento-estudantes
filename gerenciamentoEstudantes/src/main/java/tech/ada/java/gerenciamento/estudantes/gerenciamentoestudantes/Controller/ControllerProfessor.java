@@ -10,8 +10,6 @@ import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Atua
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Professor;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.ProfessorDTO;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.ProfessorRequest;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioProfessor;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceProfessor;
 
 import java.util.*;

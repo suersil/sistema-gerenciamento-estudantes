@@ -1,22 +1,18 @@
 package tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Controller;
 
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.BadRequest;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Errors.ResourceNotFoundException;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.AlterarTurmaRequest;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Model.Turma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.DTOS.TurmaDTO;
-import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Repository.RepositorioTurma;
 import tech.ada.java.gerenciamento.estudantes.gerenciamentoestudantes.Service.ServiceTurma;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController("/turma")
 public class ControllerTurma {
@@ -59,7 +55,6 @@ public class ControllerTurma {
             @PathVariable Long id,
             @RequestBody AlterarTurmaRequest turmaRequest
     ) {
-
             return ResponseEntity.ok(serviceTurma.alteraTurmaCompleto(id, turmaRequest));
     }
 
