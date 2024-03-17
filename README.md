@@ -113,6 +113,7 @@ classDiagram
 - [Métodos Implementados](#métods)
 - [Documentação da API](#documentação-da-api)
 - [Métodos de busca e listagem](#métodos-de-busca-e-listagem)
+- [Testes Unitários](#mtestes-unitários)
 - [Autoras](#autoras)
 
 
@@ -125,7 +126,9 @@ classDiagram
 - PostgreSQL
 - H2
 - Authentication
-
+- JUnit
+- Mockito
+- JaCoCo
 ## Pré-requisitos
 
 Java instalado (versão 17 ou superior) e conexão com o banco de dados H2 ou Postgres. 
@@ -414,8 +417,32 @@ encontrado, obtemos a resposta "null".
 Estes métodos foram implementados para que se possa obter a lista de todos os estudantes, professores
 ou turmas cadastradas no banco de dados.
 
+## Testes Unitários
 
 
+Os testes unitários garantem que cada componente individual do software esteja funcionando corretamente de
+acordo com as especificações. Neste projeto, implementamos testes unitários para as
+classes Controller e Service de Estudante, Turma e Professor. Para realizar tais testes,
+recorremos aos frameworks JUnit e Mockito, além de bibliotecas
+específicas para testes de persistência de dados, como Spring Data JPA Test.
+
+As classes de testes das Controllers foram implementadas para verificar o comportamento dos
+endpoints listados em cada Controller. Esses testes cobrem os casos de sucesso e de falha,
+como BadRequest e ResourceNotFoundException. Por exemplo, todos os métodos da classe ControllerTurma
+foram implementados, incluindo criar turma, listar todas as turmas, buscar turma por ID,
+alterar turma, filtrar turma por status e capturar exceções adequadas.
+
+Os testes das Services envolvem a lógica de negócios relacionada a cada entidade.
+De modo geral, garantimos que o cadastro, atualização e busca, que foram todos os métodos descritos
+acima estejam funcionando corretamente. Isto é, verificamos se as exceções são tratadas
+adequadamente e se os dados são manipulados conforme esperado.
+
+
+<figure>
+  <img src="gerenciamentoEstudantes/assets/testescoverage.png" alt="Cobertura dos Testes">
+  <figcaption>Relatório da cobertura dos testes criado pelo JaCoCo. Ao todo os testes performados cobrem 
+75% da API.</figcaption>
+</figure>
 
 ## Autoras
 
