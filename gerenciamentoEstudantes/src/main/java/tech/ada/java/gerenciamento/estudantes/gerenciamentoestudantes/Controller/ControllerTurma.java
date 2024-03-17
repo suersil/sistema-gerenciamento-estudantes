@@ -55,7 +55,6 @@ public class ControllerTurma {
             @PathVariable Long id,
             @RequestBody AlterarTurmaRequest turmaRequest
     ) {
-
             return ResponseEntity.ok(serviceTurma.alteraTurmaCompleto(id, turmaRequest));
     }
 

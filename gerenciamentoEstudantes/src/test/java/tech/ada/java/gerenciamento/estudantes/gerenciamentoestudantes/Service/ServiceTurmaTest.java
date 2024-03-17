@@ -48,7 +48,6 @@ class ServiceTurmaTest {
         turmaRequest = new AlterarTurmaRequest(estaAtiva, nomeTurma);
 
         turmaFalse = new Turma(nomeTurmaFalse, estaAtivaFase);
-
     }
 
     @Test
