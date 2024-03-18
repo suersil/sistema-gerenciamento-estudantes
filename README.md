@@ -17,92 +17,120 @@ obter as listas de turmas, estudantes e professores, e alterar os dados desses o
 
 ```mermaid
 classDiagram
-    class Estudante{
-        +Long id
-        +String nome
-        +String nomeResponsavel
-        +String contatoResponsavel
-        +String dataNascimento
-	+Boolean estaAtivo
-	+LocalDate dataMatricula
-        +Turma turma
-    }
+class Estudante {
+ + Long id
+ + String nome
+ + String nomeResponsavel
+ + String contatoResponsavel
+ + String dataNascimento
+ + Boolean estaAtivo
+ + LocalDate dataMatricula
+ + Turma turma
+}
 
-    class Turma{
-        +Long id
-        +String identificacaoTurma
-        +Boolean estaAtiva
-        +List <Estudante> estudantes
-        +List <Professor> professores
-    }
-    Turma --> "1..*" Estudante
-    Turma --> "*..*" Professor
+class Turma {
+ + Long id
+ + String identificacaoTurma
+ + Boolean estaAtiva
+ + List<Estudante> estudantes
+ + List<Professor> professores
+}
 
-    class Professor{
-        +Long id
-        +String nome
-        +String email
-        +String disciplina
-        +List <Turma> turmas
-    }
-    
-    class EstudanteRepository{
-        +save(Estudante estudante): Estudante
-        +findById(Long id): Estudante
-        +findAll(): List<Estudante>
-    }
-    
-    class TurmaRepository{
-        +save(Turma turma): Turma
-        +findById(Long id): Turma
-        +findAll(): List<Turma>
-    }
-    
-    class ProfessorRepository{
-        +save(Professor professor): Professor
-        +findById(Long id): Professor
-        +findAll(): List<Professor>
-	+filtrarPorNome(String nome): ResponseEntity<?>
-    }
-    
-    class EstudanteController{
-        +cadastrarEstudante(EstudanteDTO estudanteDTO): ResponseEntity<?>
-        +listarTodos(): ResponseEntity<List<EstudanteDTO>>
-        +editarEstudante(Long id, EstudanteDTO estudanteDTO): ResponseEntity<?>
-        +filtrarPorId(Long id): ResponseEntity<?>
-	+filtrarPorNome(String nome): ResponseEntity<?>
-	+filtrarPorStatus(Boolean estaAtivo): ResponseEntity<?>
-    }
-    
-    class TurmaController{
-        +criarTurma(TurmaDTO turmaDTO): ResponseEntity<?>
-        +listarTodas(): ResponseEntity<List<TurmaDTO>>
-        +editarTurma(Long id, TurmaDTO turmaDTO): ResponseEntity<?>
-	+filtrarPorStatus(Boolean estaAtiva): ResponseEntity<?>
-				
-    }
-    
-    class ProfessorController{
-        +cadastrarProfessor(ProfessorDTO professorDTO): ResponseEntity<?>
-        +listarTodos(): ResponseEntity<List<ProfessorDTO>>
-        +editarProfessor(Long id, ProfessorDTO professorDTO): ResponseEntity<?>
-	+filtrarPorNome(String nome): ResponseEntity<?>
-    }
+class Professor {
+ + Long id
+ + String nome
+ + String email
+ + String disciplina
+ + List<Turma> turmas
+}
 
-    
-    class CustomExceptionHandler{
-        +handleNotFoundException()
-        +handleBadRequestException()
-        +handleInternalServerError()
-    }
-    
-    EstudanteRepository --> Estudante
-    TurmaRepository --> Turma
-    ProfessorRepository --> Professor
-  
-    EstudanteController --> EstudanteRepository
-    TurmaController --> TurmaRepository
-    ProfessorController --> ProfessorRepository
+Turma --> "1..*" Estudante
+ Turma --> "*..*" Professor
+
+
+class EstudanteService {
+ + EstudanteRepository estudanteRepository
+ + save(Estudante estudante): Estudante
+ + findById(Long id): Estudante
+ + findAll(): List<Estudante>
+}
+
+class TurmaService {
+ + TurmaRepository turmaRepository
+ + save(Turma turma): Turma
+ + findById(Long id): Turma
+ + findAll(): List<Turma>
+}
+
+class ProfessorService {
+ + ProfessorRepository professorRepository
+ + save(Professor professor): Professor
+ + findById(Long id): Professor
+ + findAll(): List<Professor>
+}
+
+class EstudanteRepository {
+ + save(Estudante estudante): Estudante
+ + findById(Long id): Estudante
+ + findAll(): List<Estudante>
+}
+
+class TurmaRepository {
+ + save(Turma turma): Turma
+ + findById(Long id): Turma
+ + findAll(): List<Turma>
+}
+
+class ProfessorRepository {
+ + save(Professor professor): Professor
+ + findById(Long id): Professor
+ + findAll(): List<Professor>
+ + filtrarPorNome(String nome): ResponseEntity<?>
+}
+
+class EstudanteController {
+ + estudanteService: EstudanteService
+ + cadastrarEstudante(EstudanteDTO estudanteDTO): ResponseEntity<?>
+ + listarTodos(): ResponseEntity<List<EstudanteDTO>>
+ + editarEstudante(Long id, EstudanteDTO estudanteDTO): ResponseEntity<?>
+ + filtrarPorId(Long id): ResponseEntity<?>
+ + filtrarPorNome(String nome): ResponseEntity<?>
+ + filtrarPorStatus(Boolean estaAtivo): ResponseEntity<?>
+}
+
+class TurmaController {
+ + turmaService: TurmaService
+ + criarTurma(TurmaDTO turmaDTO): ResponseEntity<?>
+ + listarTodas(): ResponseEntity<List<TurmaDTO>>
+ + editarTurma(Long id, TurmaDTO turmaDTO): ResponseEntity<?>
+ + filtrarPorStatus(Boolean estaAtivo): ResponseEntity<?>
+}
+
+class ProfessorController {
+ + professorService: ProfessorService
+ + cadastrarProfessor(ProfessorDTO professorDTO): ResponseEntity<?>
+ + listarTodos(): ResponseEntity<List<ProfessorDTO>>
+ + editarProfessor(Long id, ProfessorDTO professorDTO): ResponseEntity<?>
+ + filtrarPorNome(String nome): ResponseEntity<?>
+}
+
+class CustomExceptionHandler {
+ + handleNotFoundException()
+ + handleBadRequestException()
+ + handleInternalServerError()
+}
+
+EstudanteController --> EstudanteService
+TurmaController --> TurmaService
+ProfessorController --> ProfessorService
+
+EstudanteService --> EstudanteRepository
+TurmaService --> TurmaRepository
+ProfessorService --> ProfessorRepository
+
+Estudante --> EstudanteController
+Turma --> TurmaController
+Professor --> ProfessorController
    
 ```
 
